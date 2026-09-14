@@ -45,20 +45,20 @@
 
         .hero-banner h1 {
             margin: 0 0 10px 0;
-            font-size: 24px;
+            font-size: 22px;
             letter-spacing: 0.5px;
         }
 
         .hero-banner h2 {
             margin: 0 0 8px 0;
-            font-size: 18px;
+            font-size: 16px;
             color: #38bdf8;
             font-weight: 600;
         }
 
         .hero-banner p {
             margin: 0;
-            font-size: 14px;
+            font-size: 13px;
             color: #e2e8f0;
         }
 
@@ -215,13 +215,13 @@
 
         .result-header-watermark h3 {
             margin: 0;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--primary);
         }
 
         .result-header-watermark p {
             margin: 4px 0 0 0;
-            font-size: 11px;
+            font-size: 10px;
             color: #64748b;
         }
 
@@ -742,29 +742,30 @@
 
         function downloadResultImage() {
             const resultBox = document.getElementById('resultContainer');
-            if (typeof html2canvas === 'undefined') {
-                alert('Image download tool is still loading or unavailable.');
-                return;
-            }
+            const downloadBtns = resultBox.querySelector('.btn-download-container');
+            downloadBtns.style.display = 'none';
+
             html2canvas(resultBox, { scale: 2 }).then(canvas => {
+                downloadBtns.style.display = 'flex';
                 const link = document.createElement('a');
-                link.download = 'MAKPOLY_Result_Slip.png';
+                link.download = `MAKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            }).catch(err => {
-                alert('Could not generate image on this mobile browser.');
+            }).catch(() => {
+                downloadBtns.style.display = 'flex';
+                alert('Could not generate image on this device.');
             });
         }
 
         function downloadResultPDF() {
+            const { jsPDF } = window.jspdf;
             const resultBox = document.getElementById('resultContainer');
-            if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
-                alert('PDF download tool is still loading or unavailable.');
-                return;
-            }
+            const downloadBtns = resultBox.querySelector('.btn-download-container');
+            downloadBtns.style.display = 'none';
+
             html2canvas(resultBox, { scale: 2 }).then(canvas => {
+                downloadBtns.style.display = 'flex';
                 const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 190;
                 const pageHeight = 295;
@@ -781,9 +782,11 @@
                     pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
                 }
-                pdf.save('MAKPOLY_Result_Slip.pdf');
-            }).catch(err => {
-                alert('Could not generate PDF on this mobile browser.');
+
+                pdf.save(`MAKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
+            }).catch(() => {
+                downloadBtns.style.display = 'flex';
+                alert('Could not generate PDF on this device.');
             });
         }
     </script>
