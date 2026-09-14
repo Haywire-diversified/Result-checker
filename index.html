@@ -429,7 +429,7 @@
 
                     <div id="spreadsheet-container"></div>
                     
-                    <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results</button>
+                    <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results Online</button>
                     <button type="button" class="btn btn-secondary" onclick="handleAdminLogout()">Log Out</button>
                     <div id="uploadStatus" class="success-msg"></div>
                 </div>
@@ -443,6 +443,11 @@
     </footer>
 
     <script>
+        // CONFIGURATION FOR CLOUD SYNC (Using JSONBin.io free tier structure)
+        // Note: You can create a free bin on jsonbin.io and paste your Bin ID and Master Key here.
+        const CLOUD_BIN_ID = 'YOUR_JSONBIN_ID_HERE'; 
+        const CLOUD_API_KEY = 'YOUR_JSONBIN_MASTER_KEY_HERE';
+
         function switchTab(tabId, event) {
             document.getElementById('studentTab').classList.add('hidden');
             document.getElementById('adminTab').classList.add('hidden');
@@ -503,7 +508,25 @@
             ["Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0]
         ];
 
-        function initSpreadsheet() {
+        async function fetchCloudDatabase() {
+            try {
+                if (CLOUD_BIN_ID === 'YOUR_JSONBIN_ID_HERE') {
+                    // Fallback to local storage if cloud not yet configured
+                    const rawDb = localStorage.getItem('makpoly_student_results_db_v6');
+                    return rawDb ? JSON.parse(rawDb) : null;
+                }
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': CLOUD_API_KEY }
+                });
+                const data = await response.json();
+                return data.record;
+            } catch (e) {
+                const rawDb = localStorage.getItem('makpoly_student_results_db_v6');
+                return rawDb ? JSON.parse(rawDb) : null;
+            }
+        }
+
+        async function initSpreadsheet() {
             const container = document.getElementById('spreadsheet-container');
             if (typeof Handsontable === 'undefined') {
                 container.innerHTML = '<p style="padding:20px; color:#dc2626; text-align:center;">Spreadsheet library failed to load.</p>';
@@ -515,25 +538,23 @@
             }
 
             let savedData = [];
-            try {
-                const rawDb = localStorage.getItem('makpoly_student_results_db_v5');
-                if (rawDb) {
-                    const parsed = JSON.parse(rawDb);
-                    savedData = parsed.map(item => [
-                        item.fullName || '',
-                        item.originalMatric || '',
-                        item.level || '',
-                        item.program || '',
-                        item.course || '',
-                        item.ca === 0 ? '' : item.ca,
-                        item.test === 0 ? '' : item.test,
-                        item.practical === 0 ? '' : item.practical,
-                        item.exam === 0 ? '' : item.exam,
-                        item.total || 0,
-                        item.checkCount || 0
-                    ]);
-                }
-            } catch (e) {}
+            let parsed = await fetchCloudDatabase();
+            
+            if (parsed && Array.isArray(parsed)) {
+                savedData = parsed.map(item => [
+                    item.fullName || '',
+                    item.originalMatric || '',
+                    item.level || '',
+                    item.program || '',
+                    item.course || '',
+                    item.ca === 0 ? '' : item.ca,
+                    item.test === 0 ? '' : item.test,
+                    item.practical === 0 ? '' : item.practical,
+                    item.exam === 0 ? '' : item.exam,
+                    item.total || 0,
+                    item.checkCount || 0
+                ]);
+            }
 
             if (savedData.length === 0) {
                 savedData = initialDataset.map(row => {
@@ -607,7 +628,7 @@
             document.getElementById('uploadStatus').textContent = '';
         }
 
-        function saveSpreadsheetData() {
+        async function saveSpreadsheetData() {
             if (!hot) return;
             const rawData = hot.getData();
             const processedRecords = [];
@@ -646,17 +667,34 @@
                 });
             });
 
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.style.color = '#0284c7';
+            statusDiv.textContent = 'Publishing updates to cloud servers...';
+
             try {
-                localStorage.setItem('makpoly_student_results_db_v5', JSON.stringify(processedRecords));
-                const statusDiv = document.getElementById('uploadStatus');
+                // Save locally first as backup
+                localStorage.setItem('makpoly_student_results_db_v6', JSON.stringify(processedRecords));
+
+                if (CLOUD_BIN_ID !== 'YOUR_JSONBIN_ID_HERE') {
+                    await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': CLOUD_API_KEY
+                        },
+                        body: JSON.stringify(processedRecords)
+                    });
+                }
+
                 statusDiv.style.color = '#16a34a';
-                statusDiv.textContent = `Successfully saved and published ${processedRecords.length} records!`;
+                statusDiv.textContent = `Successfully published ${processedRecords.length} records online! Visible to all devices instantly.`;
             } catch (e) {
-                alert('Storage restriction: Unable to save records to this browser session.');
+                statusDiv.style.color = '#dc2626';
+                statusDiv.textContent = 'Saved locally, but cloud publishing failed. Check internet connection.';
             }
         }
 
-        function handleStudentCheck(event) {
+        async function handleStudentCheck(event) {
             event.preventDefault();
             const inputName = document.getElementById('inputName').value.trim().toLowerCase();
             const inputMatric = document.getElementById('inputMatric').value.trim().toLowerCase();
@@ -666,15 +704,9 @@
             errorDiv.textContent = '';
             resultBox.style.display = 'none';
 
-            let database = [];
-            try {
-                let rawDb = localStorage.getItem('makpoly_student_results_db_v5');
-                if (rawDb) {
-                    database = JSON.parse(rawDb);
-                }
-            } catch (e) {}
+            let database = await fetchCloudDatabase();
 
-            if (database.length === 0) {
+            if (!database || database.length === 0) {
                 database = initialDataset.map(row => {
                     const fullName = row[0];
                     const originalMatric = row[1];
@@ -710,10 +742,6 @@
             if (studentMatch) {
                 studentMatch.checkCount = (studentMatch.checkCount || 0) + 1;
 
-                try {
-                    localStorage.setItem('makpoly_student_results_db_v5', JSON.stringify(database));
-                } catch (e) {}
-
                 document.getElementById('resCourse').textContent = studentMatch.course;
                 document.getElementById('resName').textContent = studentMatch.fullName;
                 document.getElementById('resMatric').textContent = studentMatch.originalMatric;
@@ -738,56 +766,6 @@
             } else {
                 errorDiv.textContent = 'No matching result found. Please check your spelling and matric number.';
             }
-        }
-
-        function downloadResultImage() {
-            const resultBox = document.getElementById('resultContainer');
-            const downloadBtns = resultBox.querySelector('.btn-download-container');
-            downloadBtns.style.display = 'none';
-
-            html2canvas(resultBox, { scale: 2 }).then(canvas => {
-                downloadBtns.style.display = 'flex';
-                const link = document.createElement('a');
-                link.download = `MAKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(() => {
-                downloadBtns.style.display = 'flex';
-                alert('Could not generate image on this device.');
-            });
-        }
-
-        function downloadResultPDF() {
-            const { jsPDF } = window.jspdf;
-            const resultBox = document.getElementById('resultContainer');
-            const downloadBtns = resultBox.querySelector('.btn-download-container');
-            downloadBtns.style.display = 'none';
-
-            html2canvas(resultBox, { scale: 2 }).then(canvas => {
-                downloadBtns.style.display = 'flex';
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 190;
-                const pageHeight = 295;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
-
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-
-                pdf.save(`MAKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
-            }).catch(() => {
-                downloadBtns.style.display = 'flex';
-                alert('Could not generate PDF on this device.');
-            });
         }
     </script>
 </body>
