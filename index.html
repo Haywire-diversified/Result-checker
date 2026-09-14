@@ -264,18 +264,6 @@
             color: #4ade80 !important;
         }
 
-        .rerun-msg-box {
-            background: rgba(220, 38, 38, 0.15);
-            border: 1px solid #dc2626;
-            color: #fca5a5;
-            padding: 12px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: 600;
-            margin-top: 15px;
-            line-height: 1.5;
-        }
-
         .admin-help-box {
             margin-top: 15px;
             padding-top: 10px;
@@ -757,81 +745,74 @@
                 });
             });
 
-            // Find matching record
-            const found = database.find(item => {
+            const matchedRecord = database.find(item => {
                 const matricMatch = item.matricClean === inputMatric;
-                const nameMatch = item.nameParts.some(part => inputName.includes(part)) || inputName.split(/\s+/).every(token => item.nameParts.some(p => p.includes(token)));
+                const nameInputParts = inputName.split(/\s+/).filter(Boolean);
+                const nameMatch = nameInputParts.every(part => item.nameParts.some(dbPart => dbPart.includes(part)));
                 return matricMatch && nameMatch;
             });
 
-            if (!found) {
-                errorDiv.textContent = 'No matching result found. Please check your spelling and Matric Number.';
+            if (!matchedRecord) {
+                errorDiv.textContent = 'No matching record found. Please verify your Name and Matric Number.';
                 return;
             }
 
-            // Populate result slip view
-            document.getElementById('resCourse').textContent = found.course || 'N/A';
-            document.getElementById('resName').textContent = found.fullName;
-            document.getElementById('resMatric').textContent = found.originalMatric;
-            document.getElementById('resLevel').textContent = found.level;
-            document.getElementById('resProgram').textContent = found.program;
+            document.getElementById('resCourse').textContent = matchedRecord.course;
+            document.getElementById('resName').textContent = matchedRecord.fullName;
+            document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
+            document.getElementById('resLevel').textContent = matchedRecord.level;
+            document.getElementById('resProgram').textContent = matchedRecord.program;
 
             const scoresContainer = document.getElementById('dynamicScoresContainer');
             scoresContainer.innerHTML = '';
-            
-            if (found.ca !== '') {
-                scoresContainer.innerHTML += `<div class="result-row"><span>C.A Score:</span> <span>${found.ca}</span></div>`;
-            }
-            if (found.test !== '') {
-                scoresContainer.innerHTML += `<div class="result-row"><span>Test Score:</span> <span>${found.test}</span></div>`;
-            }
-            if (found.practical !== '') {
-                scoresContainer.innerHTML += `<div class="result-row"><span>Practical Score:</span> <span>${found.practical}</span></div>`;
-            }
-            if (found.exam !== '') {
-                scoresContainer.innerHTML += `<div class="result-row"><span>Exam Score:</span> <span>${found.exam}</span></div>`;
-            }
 
-            document.getElementById('resTotal').textContent = found.total + ' / 100';
+            const scoreFields = [
+                { label: 'C.A Score:', val: matchedRecord.ca },
+                { label: 'Test Score:', val: matchedRecord.test },
+                { label: 'Practical Score:', val: matchedRecord.practical },
+                { label: 'Exam Score:', val: matchedRecord.exam }
+            ];
+
+            scoreFields.forEach(sf => {
+                if (sf.val !== '' && sf.val !== undefined && sf.val !== null && !isNaN(parseFloat(sf.val))) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'result-row';
+                    rowDiv.innerHTML = `<span>${sf.label}</span> <span>${sf.val}</span>`;
+                    scoresContainer.appendChild(rowDiv);
+                }
+            });
+
+            document.getElementById('resTotal').textContent = matchedRecord.total;
 
             const msgArea = document.getElementById('scoreMessageArea');
-            if (found.total < 40) {
-                msgArea.innerHTML = `<div class="rerun-msg-box">⚠️ RERUN REQUIRED: Your total score is below 40. You are required to repeat/rerun this course.</div>`;
+            if (matchedRecord.total < 45) {
+                msgArea.innerHTML = `<div class="rerun-msg-box">⚠️ Total Score is below pass mark (45). Supplementary or carryover required.</div>`;
             } else {
-                msgArea.innerHTML = `<div class="success-msg" style="margin-top:15px; font-weight:bold;">🎉 Congratulations! You passed this course successfully.</div>`;
+                msgArea.innerHTML = `<div class="success-msg" style="margin-top:15px; font-weight:600;">🎉 Congratulations! You passed this course.</div>`;
             }
 
             resultBox.style.display = 'block';
-            resultBox.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function downloadResultImage() {
+        async function downloadResultImage() {
             const resultBox = document.getElementById('resultContainer');
-            // Hide action buttons before capture
-            const buttons = resultBox.querySelectorAll('button');
-            buttons.forEach(b => b.style.display = 'none');
-
-            html2canvas(resultBox, { backgroundColor: '#1c1917', scale: 2 }).then(canvas => {
-                buttons.forEach(b => b.style.display = 'block');
+            try {
+                const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
                 const link = document.createElement('a');
-                link.download = 'MAPKPOLY_Result_Slip.png';
+                link.download = `MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            }).catch(err => {
-                buttons.forEach(b => b.style.display = 'block');
-                alert('Could not download image. Try printing instead.');
-            });
+            } catch (err) {
+                alert('Could not download image. Please try printing or use another browser.');
+            }
         }
 
-        function downloadResultPDF() {
+        async function downloadResultPDF() {
+            const { jsPDF } = window.jspdf;
             const resultBox = document.getElementById('resultContainer');
-            const buttons = resultBox.querySelectorAll('button');
-            buttons.forEach(b => b.style.display = 'none');
-
-            html2canvas(resultBox, { backgroundColor: '#1c1917', scale: 2 }).then(canvas => {
-                buttons.forEach(b => b.style.display = 'block');
+            try {
+                const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
                 const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 190;
                 const pageHeight = 295;
@@ -842,11 +823,17 @@
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
 
-                pdf.save('MAPKPOLY_Result_Slip.pdf');
-            }).catch(err => {
-                buttons.forEach(b => b.style.display = 'block');
-                window.print();
-            });
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save(`MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
+            } catch (err) {
+                alert('Could not generate PDF. Please try again.');
+            }
         }
     </script>
 </body>
