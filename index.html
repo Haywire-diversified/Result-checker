@@ -131,6 +131,7 @@
             color: #334155;
             margin-top: 10px;
         }
+
         .btn-secondary:hover {
             background: #cbd5e1;
         }
@@ -139,6 +140,7 @@
             background: #16a34a;
             margin-top: 10px;
         }
+
         .btn-success:hover {
             background: #15803d;
         }
@@ -212,7 +214,7 @@
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
-            max-height: 380px;
+            max-height: 400px;
         }
 
         #privacy-shield {
@@ -241,63 +243,63 @@
     <div class="portal-wrapper">
         <div class="card">
             <div class="nav-tabs">
-               <button class="nav-tab active" onclick="switchTab('studentTab', event)">Student Portal</button>
-               <button class="nav-tab" onclick="switchTab('adminTab', event)">Admin Panel</button>
+                <button class="nav-tab active" onclick="switchTab('studentTab', event)">Student Portal</button>
+                <button class="nav-tab" onclick="switchTab('adminTab', event)">Admin Panel</button>
             </div>
 
             <!-- STUDENT TAB -->
             <div id="studentTab">
-               <h2>Check Student Result</h2>
-               <form id="studentForm" onsubmit="handleStudentCheck(event)">
-                   <div class="form-group">
-                       <label for="inputName">Your Name (e.g., Adeleke, Chinedu, or Grace)</label>
-                       <input type="text" id="inputName" placeholder="Type any name (case-insensitive)" required autocomplete="off">
-                   </div>
-                   <div class="form-group">
-                       <label for="inputMatric">Matric Number</label>
-                       <input type="text" id="inputMatric" placeholder="e.g., SCI/2026/442" required autocomplete="off">
-                   </div>
-                   <button type="submit" class="btn">View Result</button>
-                   <div id="studentError" class="error-msg"></div>
-               </form>
+                <h2>Check Student Result</h2>
+                <form id="studentForm" onsubmit="handleStudentCheck(event)">
+                    <div class="form-group">
+                        <label for="inputName">Your Name (e.g., Agboluaje, Azeez)</label>
+                        <input type="text" id="inputName" placeholder="Type any name (case-insensitive)" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputMatric">Matric Number</label>
+                        <input type="text" id="inputMatric" placeholder="e.g., 25NQS001" required autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn">View Result</button>
+                    <div id="studentError" class="error-msg"></div>
+                </form>
 
-               <div id="resultContainer" class="result-box">
-                   <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
-                   <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
-                   <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
-                   <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
-                   <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
-                   <div class="result-row"><span>C.A. Test:</span> <span id="resCA"></span></div>
-                   <div class="result-row"><span>Practical:</span> <span id="resPractical"></span></div>
-                   <div class="result-row"><span>Exam:</span> <span id="resExam"></span></div>
-                   <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
-               </div>
+                <div id="resultContainer" class="result-box">
+                    <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
+                    <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
+                    <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
+                    <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
+                    <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
+                    <div class="result-row"><span>C.A. Test:</span> <span id="resCA"></span></div>
+                    <div class="result-row"><span>Practical:</span> <span id="resPractical"></span></div>
+                    <div class="result-row"><span>Exam:</span> <span id="resExam"></span></div>
+                    <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
+                </div>
             </div>
 
             <!-- ADMIN TAB -->
             <div id="adminTab" class="hidden">
-               <h2>Admin Panel</h2>
-               
-               <div id="adminLoginBox">
-                   <div class="form-group">
-                       <label for="adminPassInput">Admin Password</label>
-                       <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="new-password">
-                   </div>
-                   <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
-                   <div id="loginError" class="error-msg"></div>
-               </div>
+                <h2>Admin Panel</h2>
+                
+                <div id="adminLoginBox">
+                    <div class="form-group">
+                        <label for="adminPassInput">Admin Password</label>
+                        <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="new-password">
+                    </div>
+                    <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
+                    <div id="loginError" class="error-msg"></div>
+                </div>
 
-               <div id="adminUploadBox" class="hidden">
-                   <div class="spreadsheet-hint">
-                       📊 <strong>Excel Spreadsheet Grid:</strong> Edit values directly in the cells below. The <strong>Total</strong> column updates automatically. Click <strong>Save & Publish Results</strong> when done.
-                   </div>
-                   
-                   <div id="spreadsheet-container"></div>
-                   
-                   <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results</button>
-                   <button type="button" class="btn btn-secondary" onclick="handleAdminLogout()">Log Out</button>
-                   <div id="uploadStatus" class="success-msg"></div>
-               </div>
+                <div id="adminUploadBox" class="hidden">
+                    <div class="spreadsheet-hint">
+                        📊 <strong>Excel Spreadsheet Grid:</strong> You can edit records directly or select cells from Excel, click any cell below, and press <strong>Ctrl + V</strong> to paste. Click <strong>Save & Publish Results</strong> to update calculations.
+                    </div>
+                    
+                    <div id="spreadsheet-container"></div>
+                    
+                    <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results</button>
+                    <button type="button" class="btn btn-secondary" onclick="handleAdminLogout()">Log Out</button>
+                    <div id="uploadStatus" class="success-msg"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -345,77 +347,75 @@
             const rawDb = localStorage.getItem('student_results_db');
             if (rawDb) {
                 const parsed = JSON.parse(rawDb);
-                savedData = parsed.map(item => {
-                    const ca = parseFloat(item.caTest) || 0;
-                    const practical = parseFloat(item.practical) || 0;
-                    const exam = parseFloat(item.exam) || 0;
-                    const total = ca + practical + exam;
-                    return [
-                        item.fullName || '',
-                        item.originalMatric || '',
-                        item.level || '',
-                        item.program || '',
-                        item.course || '',
-                        item.caTest !== '' ? item.caTest : '',
-                        item.practical !== '' ? item.practical : '',
-                        item.exam !== '' ? item.exam : '',
-                        total
-                    ];
-                });
+                savedData = parsed.map(item => [
+                    item.fullName || '',
+                    item.originalMatric || '',
+                    item.level || '',
+                    item.program || '',
+                    item.course || '',
+                    item.caTest || '',
+                    item.practical || '',
+                    item.exam || ''
+                ]);
             }
 
             if (savedData.length === 0) {
                 savedData = [
-                    ['Agboluaje Tijani', '25NQS001', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW', 13, 16, 15, 44],
-                    ['Azeez Mutiat', '25NQS002', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW', 1, 1, 1, 3],
-                    ['Adetoro Praise', '25NQS003', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW', 13, 17, 15, 45],
-                    ['Rabiu Tijani', '25NQS004', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW', 14, 16, 15, 45],
-                    ['Ibiyemi Bashit', '25NQS007', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW', 1, 1, 1, 3],
-                    ['Egbeleke Segun', '25NQS008', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW', 1, 1, 1, 34],
-                    ['Adeyeye Samuel', '25PQS001', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW', 15, 16, 15, 46],
-                    ['Ayantunde Kehinde', '25PQS002', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW', 1, 1, 1, 22],
-                    ['Hassan Ahmad', '25PQS003', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW', 1, 1, 1, 10],
-                    ['Mudasiru Maleek', '25HQS001', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 9, 15, 33, 57],
-                    ['Gbadegein', '25HQS002', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 7, 15, 30, 52],
-                    ['Ogundele Kaosara', '25HQS003', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 6, 15, 20, 41],
-                    ['Ishola Esther', '25HQS004', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 7, 15, 25, 47],
-                    ['Owoade Dorcas', '25HQS005', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 7, 15, 29, 51],
-                    ['Akeem Mariam', '25HQS007', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 8, 15, 27, 50],
-                    ['Issa Abduqowiwu', '25HQS008', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 6, 15, 29, 50],
-                    ['Ogungbenro Bose', '25HQS009', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 5, 15, 25, 45],
-                    ['Ogunkunle Opeyemi', '25HQS010', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 6, 10, 28, 44],
-                    ['Mukaila Kehinde', '25HQS011', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 8, 15, 32, 55],
-                    ['Aramide Faith', '25HQS012', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 8, 8, 29, 45],
-                    ['Dairo Emmanuel', '25HQS013', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 1, 5, 11, 17],
-                    ['Olaniyi Christianah', '25HQS014', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 8, 10, 30, 48],
-                    ['Adeleke Olamide', '25HQS015', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 1, 8, 22, 31],
-                    ['Lateef Qoyum', '25HQS016', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 8, 10, 30, 48],
-                    ['Salami Hakeem', '25HQS017', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', 6, 10, 24, 40],
-                    ['Ahmed Sobur', '24NQS001', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 28, 28],
-                    ['Kehinde Simeon', '24NQS004', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 13, 13],
-                    ['Olabamiji Fathia', '24NQS005', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 4, 4],
-                    ['Akinyemi Aishat', '24NQS006', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 9, 9],
-                    ['Wasila Qowiyu', '24NQS007', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 4, 4],
-                    ['Adebisi Qudus', '24NQS009', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 10, 10],
-                    ['Popoola Faruq', '24NQS010', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 28, 28],
-                    ['Adewale Hamed', '24NQS011', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 1, 1],
-                    ['Owolabi Islamiat', '24NQS012', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 5, 5],
-                    ['Babalola Victor', '24NQS013', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 4, 4],
-                    ['Lawal Muhammed', '24NQS014', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 17, 17],
-                    ['Afolayan Kamaldeen', '24NQS015', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 5, 5],
-                    ['Okolo Richard', '24PQS001', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 2, 2],
-                    ['Adigun Olusola', '24PQS002', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 3, 3],
-                    ['Ayinde Samad', '24PQS003', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 1, 1],
-                    ['Mustapha Qudus', '24PQS004', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 1, 1],
-                    ['Musibau Abdurasheed', '24PQS006', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 17, 17],
-                    ['Abdulrasheed Sefiu', '24PQS007', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 4, 4],
-                    ['Muhideen Abdhameed', '24PQS009', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', 2, 2]
+                    // Principle of Law of Contract (Full Time & Part Time)
+                    ['Agboluaje Tijani', '25NQS001', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '16', '15'],
+                    ['Azeez Mutiat', '25NQS002', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1'],
+                    ['Adetoro Praise', '25NQS003', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '17', '15'],
+                    ['Rabiu Tijani', '25NQS004', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '14', '16', '15'],
+                    ['Ibiyemi Bashit', '25NQS007', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1'],
+                    ['Egbeleke Segun', '25NQS008', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1'],
+                    ['Adeyeye Samuel', '25PQS001', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '15', '16', '15'],
+                    ['Ayantunde Kehinde', '25PQS002', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1'],
+                    ['Hassan Ahmad', '25PQS003', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1'],
+                    
+                    // Computer Applications (HND 1 Full Time)
+                    ['Mudasiru Maleek', '25HQS001', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '15', '33'],
+                    ['Gbadegesin', '25HQS002', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '15', '30'],
+                    ['Ogundele Kaosara', '25HQS003', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '15', '20'],
+                    ['Ishola Esther', '25HQS004', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '15', '25'],
+                    ['Owoade Dorcas', '25HQS005', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '15', '29'],
+                    ['Akeem Mariam', '25HQS007', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '15', '27'],
+                    ['Issa Abduqowiwu', '25HQS008', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '15', '29'],
+                    ['Ogungbenro Bose', '25HQS009', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '5', '15', '25'],
+                    ['Ogunkunle Opeyemi', '25HQS010', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '10', '28'],
+                    ['Mukaila Kehinde', '25HQS011', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '15', '32'],
+                    ['Aramide Faith', '25HQS012', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '8', '29'],
+                    ['Dairo Emmanuel', '25HQS013', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '5', '11'],
+                    ['Olaniyi Christianah', '25HQS014', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '10', '30'],
+                    ['Adeleke Olamide', '25HQS015', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '8', '22'],
+                    ['Lateef Qoyum', '25HQS016', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '10', '30'],
+                    ['Salami Hakeem', '25HQS017', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '10', '24'],
+
+                    // Sustainable Construction (ND 2 Full Time & Part Time)
+                    ['Ahmed Sobur', '24NQS001', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '28'],
+                    ['Kehinde Simeon', '24NQS004', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '13'],
+                    ['Olabamiji Fathia', '24NQS005', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '4'],
+                    ['Akinyemi Aishat', '24NQS006', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '9'],
+                    ['Wasila Qowiyu', '24NQS007', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '4'],
+                    ['Adebisi Qudus', '24NQS009', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '10'],
+                    ['Popoola Faruq', '24NQS010', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '28'],
+                    ['Adewale Hamed', '24NQS011', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '1'],
+                    ['Owolabi Islamiat', '24NQS012', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '5'],
+                    ['Babalola Victor', '24NQS013', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '4'],
+                    ['Lawal Muhammed', '24NQS0014', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '17'],
+                    ['Afolayan Kamaldeen', '24NQS015', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '5'],
+                    ['Okolo Richard', '24PQS001', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '2'],
+                    ['Adigun Olusola', '24PQS002', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '3'],
+                    ['Ayinde Samad', '24PQS003', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '1'],
+                    ['Mustapha Qudus', '24PQS004', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '1'],
+                    ['Musibau Abdurasheed', '24PQS006', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '17'],
+                    ['Abdulrasheed Sefiu', '24PQS007', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '4'],
+                    ['Muhideen Abdhameed', '24PQS009', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '0', '0', '2']
                 ];
             }
 
             hot = new Handsontable(container, {
                 data: savedData,
-                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'Course', 'C.A', 'Pract', 'Exam', 'Total'],
+                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'Course', 'C.A', 'Pract', 'Exam'],
                 columns: [
                     { data: 0, type: 'text' },
                     { data: 1, type: 'text' },
@@ -424,27 +424,12 @@
                     { data: 4, type: 'text' },
                     { data: 5, type: 'numeric' },
                     { data: 6, type: 'numeric' },
-                    { data: 7, type: 'numeric' },
-                    { data: 8, type: 'numeric', readOnly: true }
+                    { data: 7, type: 'numeric' }
                 ],
                 rowHeaders: true,
                 contextMenu: true,
                 minRows: 10,
-                licenseKey: 'non-commercial-and-evaluation',
-                afterChange: function(changes, source) {
-                    if (!changes || source === 'loadData') return;
-                    
-                    // Automatically recalculate total column when score cells change
-                    changes.forEach(([row, prop]) => {
-                        if (prop === 5 || prop === 6 || prop === 7) {
-                            const ca = parseFloat(hot.getDataAtCell(row, 5)) || 0;
-                            const practical = parseFloat(hot.getDataAtCell(row, 6)) || 0;
-                            const exam = parseFloat(hot.getDataAtCell(row, 7)) || 0;
-                            const total = ca + practical + exam;
-                            hot.setDataAtCell(row, 8, total, 'autoCalculate');
-                        }
-                    });
-                }
+                licenseKey: 'non-commercial-and-evaluation'
             });
         }
 
@@ -481,11 +466,10 @@
                 const level = String(row[2] || '').trim();
                 const program = String(row[3] || '').trim();
                 const course = String(row[4] || '').trim();
-                const caTest = row[5] !== '' && !isNaN(row[5]) ? parseFloat(row[5]) : '';
-                const practical = row[6] !== '' && !isNaN(row[6]) ? parseFloat(row[6]) : '';
-                const exam = row[7] !== '' && !isNaN(row[7]) ? parseFloat(row[7]) : '';
-                
-                const total = (parseFloat(caTest) || 0) + (parseFloat(practical) || 0) + (parseFloat(exam) || 0);
+                const caTest = parseFloat(row[5]) || 0;
+                const practical = parseFloat(row[6]) || 0;
+                const exam = parseFloat(row[7]) || 0;
+                const total = caTest + practical + exam;
 
                 const nameParts = fullName.toLowerCase().split(/\s+/).filter(Boolean);
 
@@ -540,9 +524,9 @@
                 document.getElementById('resMatric').textContent = studentMatch.originalMatric;
                 document.getElementById('resLevel').textContent = studentMatch.level;
                 document.getElementById('resProgram').textContent = studentMatch.program;
-                document.getElementById('resCA').textContent = studentMatch.caTest !== '' ? studentMatch.caTest : '-';
-                document.getElementById('resPractical').textContent = studentMatch.practical !== '' ? studentMatch.practical : '-';
-                document.getElementById('resExam').textContent = studentMatch.exam !== '' ? studentMatch.exam : '-';
+                document.getElementById('resCA').textContent = studentMatch.caTest;
+                document.getElementById('resPractical').textContent = studentMatch.practical;
+                document.getElementById('resExam').textContent = studentMatch.exam;
                 document.getElementById('resTotal').textContent = studentMatch.total;
                 
                 resultBox.style.display = 'block';
