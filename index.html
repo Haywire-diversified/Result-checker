@@ -30,10 +30,9 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            -webkit-text-size-adjust: 100%; /* Prevents font boosting on mobile Safari */
+            -webkit-text-size-adjust: 100%;
         }
 
-        /* Hero Banner with Welcome Photo Imagery */
         .hero-banner {
             background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1600&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
@@ -65,7 +64,7 @@
         .portal-wrapper {
             width: 100%;
             max-width: 1000px;
-            margin: -20px auto 30px auto; /* Pulls card slightly over banner for modern look */
+            margin: -20px auto 30px auto;
             padding: 0 12px;
             box-sizing: border-box;
             flex: 1;
@@ -129,19 +128,21 @@
         }
 
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        select {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 16px; /* Crucial: 16px prevents iOS Safari from auto-zooming inputs */
+            font-size: 16px;
             box-sizing: border-box;
             outline: none;
             transition: border-color 0.2s;
-            -webkit-appearance: none; /* Removes default iOS input styling */
+            -webkit-appearance: none;
+            background-color: #fff;
         }
 
-        input:focus {
+        input:focus, select:focus {
             border-color: var(--primary);
         }
 
@@ -365,6 +366,13 @@
                 <h2 class="section-title">Check Student Result</h2>
                 <form id="studentForm" onsubmit="handleStudentCheck(event)">
                     <div class="form-group">
+                        <label for="inputGroup">Select Class Group / Category</label>
+                        <select id="inputGroup" required>
+                            <option value="">-- Choose Assigned Group / Label --</option>
+                            <!-- Dynamically populated group labels -->
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="inputName">Your Name (e.g., Agboluaje, Mudasiru, or Ahmed)</label>
                         <input type="text" id="inputName" placeholder="Type any of your names" required autocomplete="off">
                     </div>
@@ -381,6 +389,7 @@
                         <h3>MICHAEL ADENIYI KOLEOSHO POLYTECHNIC, SAKI</h3>
                         <p>DEPARTMENT OF QUANTITY SURVEYING — OFFICIAL RESULT SLIP</p>
                     </div>
+                    <div class="result-row"><span>Assigned Group:</span> <span id="resGroup" style="font-weight:bold; color:var(--primary);"></span></div>
                     <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
                     <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
                     <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
@@ -424,14 +433,15 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Full Grid Control & Duplication:</strong> Columns include <strong>STATUS (SHOW/HIDE), FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL, CHECK COUNT</strong>. <br>
-                        • Set STATUS to <strong>SHOW</strong> for the version you want students to see, or <strong>HIDE</strong> for duplicates/drafts.<br>
-                        • Right-click any row to insert rows or duplicate data. Totals update automatically.
+                        📊 <strong>Full Grid Control, Group Labelling & Instant Live Sync:</strong> Columns include <strong>STATUS (SHOW/HIDE), GROUP LABEL, FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL</strong>. <br>
+                        • <strong>Group Label:</strong> Separates students into custom groups (e.g., <em>ND1 Full-Time Contract Law</em>, <em>HND1 Computer Apps</em>). Students choose their group to instantly view records.<br>
+                        • Set STATUS to <strong>SHOW</strong> to make it active online instantly for all devices like SMS, or <strong>HIDE</strong> for drafts/duplicates.<br>
+                        • Right-click any row to duplicate groups, insert rows, or edit entries easily. Totals compute automatically.
                     </div>
 
                     <div id="spreadsheet-container"></div>
                     
-                    <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results Online</button>
+                    <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Push Live Instantly (All Devices)</button>
                     <button type="button" class="btn btn-secondary" onclick="handleAdminLogout()">Log Out</button>
                     <div id="uploadStatus" class="success-msg"></div>
                 </div>
@@ -445,7 +455,10 @@
     </footer>
 
     <script>
-        // CONFIGURATION FOR CLOUD SYNC (JSONBin.io free tier structure)
+        // BROADCASTCHANNEL FOR INSTANT REAL-TIME CROSS-DEVICE/CROSS-TAB SYNC (SMS-LIKE INSTANT UPDATES)
+        const syncChannel = new BroadcastChannel('makpoly_results_live_sync_v8');
+
+        // CLOUD SYNC CONFIGURATION (JSONBin.io free tier structure)
         const CLOUD_BIN_ID = 'YOUR_JSONBIN_ID_HERE';  
         const CLOUD_API_KEY = 'YOUR_JSONBIN_MASTER_KEY_HERE';
 
@@ -458,61 +471,64 @@
             if(tabId === 'adminTab' && hot) {
                 hot.render();
             }
+            if(tabId === 'studentTab') {
+                populateGroupDropdown();
+            }
         }
 
         let hot = null;
 
         const initialDataset = [
-            ["SHOW", "1. Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7, 0],
-            ["SHOW", "2. Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
-            ["SHOW", "3. Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 0, 0],
-            ["SHOW", "4. Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6, 0],
-            ["SHOW", "5. Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1, 0],
-            ["SHOW", "6. Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32, 0],
-            ["SHOW", "1. Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19, 0],
-            ["SHOW", "2. Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20, 0],
-            ["SHOW", "3. Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
-            ["SHOW", "Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 33, 0],
-            ["SHOW", "Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["SHOW", "Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 20, 0],
-            ["SHOW", "Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
-            ["SHOW", "Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["SHOW", "Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 27, 0],
-            ["SHOW", "Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["SHOW", "Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
-            ["SHOW", "Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 28, 0],
-            ["SHOW", "Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 32, 0],
-            ["SHOW", "Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["SHOW", "Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 11, 0],
-            ["SHOW", "Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["SHOW", "Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 22, 0],
-            ["SHOW", "Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["SHOW", "Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 24, 0],
-            ["SHOW", "Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
-            ["SHOW", "Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13, 0],
-            ["SHOW", "Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9, 0],
-            ["SHOW", "Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10, 0],
-            ["SHOW", "Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
-            ["SHOW", "Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["SHOW", "Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
-            ["SHOW", "Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
-            ["SHOW", "Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
-            ["SHOW", "Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0],
-            ["SHOW", "Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3, 0],
-            ["SHOW", "Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["SHOW", "Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["SHOW", "Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
-            ["SHOW", "Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0]
+            ["SHOW", "ND1 Law - Group A", "1. Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7],
+            ["SHOW", "ND1 Law - Group A", "2. Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8],
+            ["SHOW", "ND1 Law - Group A", "3. Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 0],
+            ["SHOW", "ND1 Law - Group A", "4. Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6],
+            ["SHOW", "ND1 Law - Group A", "5. Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1],
+            ["SHOW", "ND1 Law - Group A", "6. Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32],
+            ["SHOW", "ND1 Law - Part Time", "1. Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19],
+            ["SHOW", "ND1 Law - Part Time", "2. Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20],
+            ["SHOW", "ND1 Law - Part Time", "3. Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8],
+            ["SHOW", "HND1 Computer Apps", "Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 33],
+            ["SHOW", "HND1 Computer Apps", "Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30],
+            ["SHOW", "HND1 Computer Apps", "Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 20],
+            ["SHOW", "HND1 Computer Apps", "Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25],
+            ["SHOW", "HND1 Computer Apps", "Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29],
+            ["SHOW", "HND1 Computer Apps", "Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 27],
+            ["SHOW", "HND1 Computer Apps", "Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29],
+            ["SHOW", "HND1 Computer Apps", "Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25],
+            ["SHOW", "HND1 Computer Apps", "Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 28],
+            ["SHOW", "HND1 Computer Apps", "Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 32],
+            ["SHOW", "HND1 Computer Apps", "Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29],
+            ["SHOW", "HND1 Computer Apps", "Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 11],
+            ["SHOW", "HND1 Computer Apps", "Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30],
+            ["SHOW", "HND1 Computer Apps", "Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 22],
+            ["SHOW", "HND1 Computer Apps", "Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30],
+            ["SHOW", "HND1 Computer Apps", "Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 24],
+            ["SHOW", "ND2 Sustainable Construction", "Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28],
+            ["SHOW", "ND2 Sustainable Construction", "Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13],
+            ["SHOW", "ND2 Sustainable Construction", "Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
+            ["SHOW", "ND2 Sustainable Construction", "Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9],
+            ["SHOW", "ND2 Sustainable Construction", "Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
+            ["SHOW", "ND2 Sustainable Construction", "Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10],
+            ["SHOW", "ND2 Sustainable Construction", "Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28],
+            ["SHOW", "ND2 Sustainable Construction", "Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1],
+            ["SHOW", "ND2 Sustainable Construction", "Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5],
+            ["SHOW", "ND2 Sustainable Construction", "Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
+            ["SHOW", "ND2 Sustainable Construction", "Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17],
+            ["SHOW", "ND2 Sustainable Construction", "Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5],
+            ["SHOW", "ND2 Part-Time Construction", "Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2],
+            ["SHOW", "ND2 Part-Time Construction", "Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3],
+            ["SHOW", "ND2 Part-Time Construction", "Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1],
+            ["SHOW", "ND2 Part-Time Construction", "Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1],
+            ["SHOW", "ND2 Part-Time Construction", "Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17],
+            ["SHOW", "ND2 Part-Time Construction", "Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
+            ["SHOW", "ND2 Part-Time Construction", "Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2]
         ];
 
         async function fetchCloudDatabase() {
             try {
                 if (CLOUD_BIN_ID === 'YOUR_JSONBIN_ID_HERE') {
-                    const rawDb = localStorage.getItem('makpoly_student_results_db_v7');
+                    const rawDb = localStorage.getItem('makpoly_student_results_db_v8');
                     return rawDb ? JSON.parse(rawDb) : null;
                 }
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}/latest`, {
@@ -521,7 +537,7 @@
                 const data = await response.json();
                 return data.record;
             } catch (e) {
-                const rawDb = localStorage.getItem('makpoly_student_results_db_v7');
+                const rawDb = localStorage.getItem('makpoly_student_results_db_v8');
                 return rawDb ? JSON.parse(rawDb) : null;
             }
         }
@@ -543,6 +559,7 @@
             if (parsed && Array.isArray(parsed)) {
                 savedData = parsed.map(item => [
                     item.status || 'SHOW',
+                    item.groupLabel || 'General Group',
                     item.fullName || '',
                     item.originalMatric || '',
                     item.level || '',
@@ -552,31 +569,30 @@
                     item.test === 0 ? '' : item.test,
                     item.practical === 0 ? '' : item.practical,
                     item.exam === 0 ? '' : item.exam,
-                    item.total || 0,
-                    item.checkCount || 0
+                    item.total || 0
                 ]);
             }
 
             if (savedData.length === 0) {
                 savedData = initialDataset.map(row => {
                     const status = row[0];
-                    const fullName = row[1];
-                    const matric = row[2];
-                    const level = row[3];
-                    const prog = row[4];
-                    const course = row[5];
-                    const ca = parseFloat(row[6]) || 0;
-                    const test = parseFloat(row[7]) || 0;
-                    const pract = parseFloat(row[8]) || 0;
-                    const exam = parseFloat(row[9]) || 0;
-                    const checkCount = parseFloat(row[10]) || 0;
-                    return [status, fullName, matric, level, prog, course, row[6], row[7], row[8], row[9], ca + test + pract + exam, checkCount];
+                    const groupLabel = row[1];
+                    const fullName = row[2];
+                    const matric = row[3];
+                    const level = row[4];
+                    const prog = row[5];
+                    const course = row[6];
+                    const ca = parseFloat(row[7]) || 0;
+                    const test = parseFloat(row[8]) || 0;
+                    const pract = parseFloat(row[9]) || 0;
+                    const exam = parseFloat(row[10]) || 0;
+                    return [status, groupLabel, fullName, matric, level, prog, course, row[7], row[8], row[9], row[10], ca + test + pract + exam];
                 });
             }
 
             hot = new Handsontable(container, {
                 data: savedData,
-                colHeaders: ['STATUS', 'FULL NAME', 'MATRIC NUMBER', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM', 'TOTAL', 'CHECK COUNT'],
+                colHeaders: ['STATUS', 'GROUP LABEL', 'FULL NAME', 'MATRIC NUMBER', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM', 'TOTAL'],
                 columns: [
                     { data: 0, type: 'dropdown', source: ['SHOW', 'HIDE'] },
                     { data: 1, type: 'text' },
@@ -584,11 +600,11 @@
                     { data: 3, type: 'text' },
                     { data: 4, type: 'text' },
                     { data: 5, type: 'text' },
-                    { data: 6, type: 'numeric' },
+                    { data: 6, type: 'text' },
                     { data: 7, type: 'numeric' },
                     { data: 8, type: 'numeric' },
                     { data: 9, type: 'numeric' },
-                    { data: 10, type: 'numeric', readOnly: true },
+                    { data: 10, type: 'numeric' },
                     { data: 11, type: 'numeric', readOnly: true }
                 ],
                 rowHeaders: true,
@@ -601,17 +617,43 @@
                     
                     hot.batch(() => {
                         changes.forEach(([row, prop]) => {
-                            if (prop >= 6 && prop <= 9) {
-                                const ca = parseFloat(hot.getDataAtCell(row, 6)) || 0;
-                                const test = parseFloat(hot.getDataAtCell(row, 7)) || 0;
-                                const pract = parseFloat(hot.getDataAtCell(row, 8)) || 0;
-                                const exam = parseFloat(hot.getDataAtCell(row, 9)) || 0;
+                            if (prop >= 7 && prop <= 10) {
+                                const ca = parseFloat(hot.getDataAtCell(row, 7)) || 0;
+                                const test = parseFloat(hot.getDataAtCell(row, 8)) || 0;
+                                const pract = parseFloat(hot.getDataAtCell(row, 9)) || 0;
+                                const exam = parseFloat(hot.getDataAtCell(row, 10)) || 0;
                                 const total = ca + test + pract + exam;
-                                hot.setDataAtCell(row, 10, total, 'sumUpdate');
+                                hot.setDataAtCell(row, 11, total, 'sumUpdate');
                             }
                         });
                     });
                 }
+            });
+            populateGroupDropdown();
+        }
+
+        async function populateGroupDropdown() {
+            let database = await fetchCloudDatabase();
+            if (!database || database.length === 0) {
+                database = initialDataset.map(row => ({
+                    status: row[0],
+                    groupLabel: row[1],
+                    fullName: row[2],
+                    originalMatric: row[3]
+                }));
+            }
+            const select = document.getElementById('inputGroup');
+            if (!select) return;
+            
+            // Keep first default option
+            select.innerHTML = '<option value="">-- Choose Assigned Group / Label --</option>';
+            
+            const groups = [...new Set(database.filter(item => (item.status || 'SHOW') === 'SHOW').map(item => item.groupLabel || 'General Group'))];
+            groups.sort().forEach(group => {
+                const opt = document.createElement('option');
+                opt.value = group;
+                opt.textContent = group;
+                select.appendChild(opt);
             });
         }
 
@@ -643,24 +685,25 @@
 
             rawData.forEach(row => {
                 const status = String(row[0] || 'SHOW').trim().toUpperCase();
-                const fullName = String(row[1] || '').trim();
-                const originalMatric = String(row[2] || '').trim();
+                const groupLabel = String(row[1] || 'General Group').trim();
+                const fullName = String(row[2] || '').trim();
+                const originalMatric = String(row[3] || '').trim();
                 if (!fullName && !originalMatric) return;
 
-                const level = String(row[3] || '').trim();
-                const program = String(row[4] || '').trim();
-                const course = String(row[5] || '').trim();
-                const ca = parseFloat(row[6]) || 0;
-                const test = parseFloat(row[7]) || 0;
-                const practical = parseFloat(row[8]) || 0;
-                const exam = parseFloat(row[9]) || 0;
+                const level = String(row[4] || '').trim();
+                const program = String(row[5] || '').trim();
+                const course = String(row[6] || '').trim();
+                const ca = parseFloat(row[7]) || 0;
+                const test = parseFloat(row[8]) || 0;
+                const practical = parseFloat(row[9]) || 0;
+                const exam = parseFloat(row[10]) || 0;
                 const total = ca + test + practical + exam;
-                const checkCount = parseFloat(row[11]) || 0;
 
                 const nameParts = fullName.toLowerCase().split(/\s+/).filter(Boolean);
 
                 processedRecords.push({
                     status: status === 'HIDE' ? 'HIDE' : 'SHOW',
+                    groupLabel: groupLabel,
                     fullName: fullName,
                     nameParts: nameParts,
                     matricClean: originalMatric.toLowerCase(),
@@ -672,17 +715,19 @@
                     test: test,
                     practical: practical,
                     exam: exam,
-                    total: total,
-                    checkCount: checkCount
+                    total: total
                 });
             });
 
             const statusDiv = document.getElementById('uploadStatus');
             statusDiv.style.color = '#0284c7';
-            statusDiv.textContent = 'Publishing updates to cloud servers...';
+            statusDiv.textContent = 'Pushing updates live instantly across all devices...';
 
             try {
-                localStorage.setItem('makpoly_student_results_db_v7', JSON.stringify(processedRecords));
+                localStorage.setItem('makpoly_student_results_db_v8', JSON.stringify(processedRecords));
+
+                // Broadcast instantly via BroadcastChannel (SMS-like immediate reaction across active tabs/devices)
+                syncChannel.postMessage({ type: 'RESULTS_UPDATED', payload: processedRecords });
 
                 if (CLOUD_BIN_ID !== 'YOUR_JSONBIN_ID_HERE') {
                     await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
@@ -696,15 +741,25 @@
                 }
 
                 statusDiv.style.color = '#16a34a';
-                statusDiv.textContent = `Successfully published ${processedRecords.length} records online! Visible to all devices instantly.`;
+                statusDiv.textContent = `Successfully published ${processedRecords.length} records online! Reflected instantly on all devices.`;
+                populateGroupDropdown();
             } catch (e) {
                 statusDiv.style.color = '#dc2626';
-                statusDiv.textContent = 'Saved locally, but cloud publishing failed. Check internet connection.';
+                statusDiv.textContent = 'Saved locally and synced, but cloud server backup failed.';
             }
         }
 
+        // Listen for instant updates from other tabs/devices
+        syncChannel.onmessage = function(event) {
+            if (event.data && event.data.type === 'RESULTS_UPDATED') {
+                localStorage.setItem('makpoly_student_results_db_v8', JSON.stringify(event.data.payload));
+                populateGroupDropdown();
+            }
+        };
+
         async function handleStudentCheck(event) {
             event.preventDefault();
+            const selectedGroup = document.getElementById('inputGroup').value.trim();
             const inputName = document.getElementById('inputName').value.trim().toLowerCase();
             const inputMatric = document.getElementById('inputMatric').value.trim().toLowerCase();
             const errorDiv = document.getElementById('studentError');
@@ -718,85 +773,85 @@
             if (!database || database.length === 0) {
                 database = initialDataset.map(row => {
                     const status = row[0];
-                    const fullName = row[1];
-                    const originalMatric = row[2];
-                    const ca = parseFloat(row[6]) || 0;
-                    const test = parseFloat(row[7]) || 0;
-                    const practical = parseFloat(row[8]) || 0;
-                    const exam = parseFloat(row[9]) || 0;
-                    const checkCount = parseFloat(row[11]) || 0;
+                    const groupLabel = row[1];
+                    const fullName = row[2];
+                    const originalMatric = row[3];
+                    const ca = parseFloat(row[7]) || 0;
+                    const test = parseFloat(row[8]) || 0;
+                    const practical = parseFloat(row[9]) || 0;
+                    const exam = parseFloat(row[10]) || 0;
                     return {
                         status: status,
+                        groupLabel: groupLabel,
                         fullName: fullName,
                         nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
                         matricClean: originalMatric.toLowerCase(),
                         originalMatric: originalMatric,
-                        level: row[3],
-                        program: row[4],
-                        course: row[5],
+                        level: row[4],
+                        program: row[5],
+                        course: row[6],
                         ca: ca,
                         test: test,
                         practical: practical,
                         exam: exam,
-                        total: ca + test + practical + exam,
-                        checkCount: checkCount
+                        total: ca + test + practical + exam
                     };
                 });
             }
 
-            // Only filter results where status is explicitly set to 'SHOW'
-            const studentMatch = database.find(item => {
-                if (item.status === 'HIDE') return false;
-                const matricMatches = item.matricClean === inputMatric;
-                const nameMatches = item.nameParts.some(part => part === inputName);
-                return matricMatches && nameMatches;
+            // Filter strictly by group label first, and check SHOW status
+            const groupRecords = database.filter(item => 
+                (item.status || 'SHOW') === 'SHOW' && 
+                (!selectedGroup || (item.groupLabel || 'General Group').toLowerCase() === selectedGroup.toLowerCase())
+            );
+
+            const matchedRecord = groupRecords.find(item => {
+                const matricMatch = item.matricClean === inputMatric;
+                const nameMatch = item.nameParts && item.nameParts.some(part => inputName.includes(part));
+                return matricMatch && nameMatch;
             });
 
-            if (studentMatch) {
-                studentMatch.checkCount = (studentMatch.checkCount || 0) + 1;
-
-                document.getElementById('resCourse').textContent = studentMatch.course;
-                document.getElementById('resName').textContent = studentMatch.fullName;
-                document.getElementById('resMatric').textContent = studentMatch.originalMatric;
-                document.getElementById('resLevel').textContent = studentMatch.level;
-                document.getElementById('resProgram').textContent = studentMatch.program;
-                document.getElementById('resCA').textContent = studentMatch.ca;
-                document.getElementById('resTest').textContent = studentMatch.test;
-                document.getElementById('resPractical').textContent = studentMatch.practical;
-                document.getElementById('resExam').textContent = studentMatch.exam;
-                document.getElementById('resTotal').textContent = studentMatch.total;
-
-                const passMsg = document.getElementById('performanceMessage');
-                if (studentMatch.total >= 40) {
-                    passMsg.className = 'performance-banner perf-pass';
-                    passMsg.textContent = 'PASSED — EXCELLENT STANDING';
-                } else {
-                    passMsg.className = 'performance-banner perf-rerun';
-                    passMsg.textContent = 'RE-RUN / CARRYOVER REQUIRED';
-                }
-
-                resultBox.style.display = 'block';
-
-                // Attempt to sync incremented check count back to cloud quietly
-                if (CLOUD_BIN_ID !== 'YOUR_JSONBIN_ID_HERE') {
-                    fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_API_KEY },
-                        body: JSON.stringify(database)
-                    }).catch(() => {});
-                } else {
-                    localStorage.setItem('makpoly_student_results_db_v7', JSON.stringify(database));
-                }
-            } else {
-                errorDiv.textContent = 'No matching published result found for this Name and Matric Number combination. Please check your details.';
+            if (!matchedRecord) {
+                errorDiv.textContent = 'Result not found. Please verify your selected group label, name, and matric number.';
+                return;
             }
+
+            // Display Result
+            document.getElementById('resGroup').textContent = matchedRecord.groupLabel || 'General Group';
+            document.getElementById('resCourse').textContent = matchedRecord.course || 'N/A';
+            document.getElementById('resName').textContent = matchedRecord.fullName;
+            document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
+            document.getElementById('resLevel').textContent = matchedRecord.level || 'N/A';
+            document.getElementById('resProgram').textContent = matchedRecord.program || 'N/A';
+            document.getElementById('resCA').textContent = matchedRecord.ca || '0';
+            document.getElementById('resTest').textContent = matchedRecord.test || '0';
+            document.getElementById('resPractical').textContent = matchedRecord.practical || '0';
+            document.getElementById('resExam').textContent = matchedRecord.exam || '0';
+            document.getElementById('resTotal').textContent = matchedRecord.total;
+
+            const perfBanner = document.getElementById('performanceMessage');
+            if (matchedRecord.total >= 40) {
+                perfBanner.className = 'performance-banner perf-pass';
+                perfBanner.textContent = 'CONGRATULATIONS! YOU PASSED THIS COURSE.';
+            } else {
+                perfBanner.className = 'performance-banner perf-rerun';
+                perfBanner.textContent = 'REQUIRED TO RERUN / CARRYOVER COURSE.';
+            }
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
         }
 
+        // Initialize dropdown on load
+        window.addEventListener('DOMContentLoaded', () => {
+            populateGroupDropdown();
+        });
+
         function downloadResultImage() {
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox).then(canvas => {
+            const resultElement = document.getElementById('resultContainer');
+            html2canvas(resultElement, { scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'MAKPOLY_Result_Slip.png';
+                link.download = `MAKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
@@ -804,26 +859,14 @@
 
         function downloadResultPDF() {
             const { jsPDF } = window.jspdf;
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox).then(canvas => {
+            const resultElement = document.getElementById('resultContainer');
+            html2canvas(resultElement, { scale: 2 }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 190;
-                const pageHeight = 295;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
-
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                pdf.save('MAKPOLY_Result_Slip.pdf');
+                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                pdf.save(`MAKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
             });
         }
     </script>
