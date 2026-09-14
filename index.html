@@ -30,7 +30,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            -webkit-text-size-adjust: 100%; /* Prevents font boosting on mobile Safari */
+            -webkit-text-size-adjust: 100%;
         }
 
         /* Hero Banner with Welcome Photo Imagery */
@@ -65,7 +65,7 @@
         .portal-wrapper {
             width: 100%;
             max-width: 1000px;
-            margin: -20px auto 30px auto; /* Pulls card slightly over banner for modern look */
+            margin: -20px auto 30px auto;
             padding: 0 12px;
             box-sizing: border-box;
             flex: 1;
@@ -134,11 +134,11 @@
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 16px; /* Crucial: 16px prevents iOS Safari from auto-zooming inputs */
+            font-size: 16px;
             box-sizing: border-box;
             outline: none;
             transition: border-color 0.2s;
-            -webkit-appearance: none; /* Removes default iOS input styling */
+            -webkit-appearance: none;
         }
 
         input:focus {
@@ -324,7 +324,7 @@
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
-            height: 350px;
+            height: 380px;
             width: 100%;
         }
 
@@ -416,7 +416,7 @@
                 <div id="adminLoginBox">
                     <div class="form-group">
                         <label for="adminPassInput">Admin Password</label>
-                        <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="new-password">
+                        <input type="password" id="adminPassInput" placeholder="Enter password (default: admin)" autocomplete="new-password">
                     </div>
                     <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
                     <div id="loginError" class="error-msg"></div>
@@ -424,9 +424,8 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Full Grid Control & Duplication:</strong> Columns include <strong>STATUS (SHOW/HIDE), FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL, CHECK COUNT</strong>. <br>
-                        • Set STATUS to <strong>SHOW</strong> for the version you want students to see, or <strong>HIDE</strong> for duplicates/drafts.<br>
-                        • Right-click any row to insert rows or duplicate data. Totals update automatically.
+                        📊 <strong>Full Grid Control & Editing:</strong> Columns include <strong>STATUS (SHOW/HIDE), FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL, CHECK COUNT</strong>. <br>
+                        • Right-click any row to insert/delete rows, columns, or duplicate records. Totals update automatically.
                     </div>
 
                     <div id="spreadsheet-container"></div>
@@ -463,50 +462,50 @@
         let hot = null;
 
         const initialDataset = [
-            ["SHOW", "1. Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7, 0],
-            ["SHOW", "2. Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
-            ["SHOW", "3. Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 0, 0],
-            ["SHOW", "4. Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6, 0],
-            ["SHOW", "5. Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1, 0],
-            ["SHOW", "6. Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32, 0],
-            ["SHOW", "1. Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19, 0],
-            ["SHOW", "2. Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20, 0],
-            ["SHOW", "3. Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
-            ["SHOW", "Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 33, 0],
-            ["SHOW", "Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["SHOW", "Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 20, 0],
-            ["SHOW", "Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
-            ["SHOW", "Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["SHOW", "Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 27, 0],
-            ["SHOW", "Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["SHOW", "Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
-            ["SHOW", "Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 28, 0],
-            ["SHOW", "Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 32, 0],
-            ["SHOW", "Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["SHOW", "Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 11, 0],
-            ["SHOW", "Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["SHOW", "Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 22, 0],
-            ["SHOW", "Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["SHOW", "Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 24, 0],
-            ["SHOW", "Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
-            ["SHOW", "Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13, 0],
-            ["SHOW", "Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9, 0],
-            ["SHOW", "Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10, 0],
-            ["SHOW", "Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
-            ["SHOW", "Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["SHOW", "Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
-            ["SHOW", "Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
-            ["SHOW", "Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
-            ["SHOW", "Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0],
-            ["SHOW", "Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3, 0],
-            ["SHOW", "Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["SHOW", "Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["SHOW", "Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
-            ["SHOW", "Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["SHOW", "Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0]
+            ["SHOW", "Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7, 7, 0],
+            ["SHOW", "Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 8, 0],
+            ["SHOW", "Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 8, 0],
+            ["SHOW", "Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6, 6, 0],
+            ["SHOW", "Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1, 1, 0],
+            ["SHOW", "Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32, 32, 0],
+            ["SHOW", "Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19, 19, 0],
+            ["SHOW", "Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20, 20, 0],
+            ["SHOW", "Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 8, 0],
+            ["SHOW", "Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 9, "", 15, 33, 57, 0],
+            ["SHOW", "Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 7, "", 15, 30, 52, 0],
+            ["SHOW", "Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 6, "", 15, 20, 41, 0],
+            ["SHOW", "Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 7, "", 15, 25, 47, 0],
+            ["SHOW", "Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 7, "", 15, 29, 51, 0],
+            ["SHOW", "Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 8, "", 15, 27, 50, 0],
+            ["SHOW", "Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 6, "", 15, 29, 50, 0],
+            ["SHOW", "Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 5, "", 15, 25, 45, 0],
+            ["SHOW", "Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 6, "", 10, 28, 44, 0],
+            ["SHOW", "Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 8, "", 15, 32, 55, 0],
+            ["SHOW", "Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 8, "", 8, 29, 45, 0],
+            ["SHOW", "Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 1, "", 5, 11, 17, 0],
+            ["SHOW", "Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 8, "", 10, 30, 48, 0],
+            ["SHOW", "Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 1, "", 8, 22, 31, 0],
+            ["SHOW", "Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 8, "", 10, 30, 48, 0],
+            ["SHOW", "Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", 6, "", 10, 24, 40, 0],
+            ["SHOW", "Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 28, 0],
+            ["SHOW", "Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13, 13, 0],
+            ["SHOW", "Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 4, 0],
+            ["SHOW", "Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9, 9, 0],
+            ["SHOW", "Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 4, 0],
+            ["SHOW", "Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10, 10, 0],
+            ["SHOW", "Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 28, 0],
+            ["SHOW", "Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 1, 0],
+            ["SHOW", "Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 5, 0],
+            ["SHOW", "Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 4, 0],
+            ["SHOW", "Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 17, 0],
+            ["SHOW", "Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 5, 0],
+            ["SHOW", "Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 2, 0],
+            ["SHOW", "Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3, 3, 0],
+            ["SHOW", "Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 1, 0],
+            ["SHOW", "Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 1, 0],
+            ["SHOW", "Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 17, 0],
+            ["SHOW", "Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 4, 0],
+            ["SHOW", "Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 2, 0]
         ];
 
         async function fetchCloudDatabase() {
@@ -558,20 +557,7 @@
             }
 
             if (savedData.length === 0) {
-                savedData = initialDataset.map(row => {
-                    const status = row[0];
-                    const fullName = row[1];
-                    const matric = row[2];
-                    const level = row[3];
-                    const prog = row[4];
-                    const course = row[5];
-                    const ca = parseFloat(row[6]) || 0;
-                    const test = parseFloat(row[7]) || 0;
-                    const pract = parseFloat(row[8]) || 0;
-                    const exam = parseFloat(row[9]) || 0;
-                    const checkCount = parseFloat(row[10]) || 0;
-                    return [status, fullName, matric, level, prog, course, row[6], row[7], row[8], row[9], ca + test + pract + exam, checkCount];
-                });
+                savedData = initialDataset;
             }
 
             hot = new Handsontable(container, {
@@ -744,87 +730,75 @@
                 });
             }
 
-            // Only filter results where status is explicitly set to 'SHOW'
-            const studentMatch = database.find(item => {
-                if (item.status === 'HIDE') return false;
-                const matricMatches = item.matricClean === inputMatric;
-                const nameMatches = item.nameParts.some(part => part === inputName);
-                return matricMatches && nameMatches;
+            const matchedRecord = database.find(record => {
+                if (record.status === 'HIDE') return false;
+                const matchesMatric = record.matricClean === inputMatric;
+                const matchesName = record.nameParts.some(part => inputName.includes(part));
+                return matchesMatric && matchesName;
             });
 
-            if (studentMatch) {
-                studentMatch.checkCount = (studentMatch.checkCount || 0) + 1;
-
-                document.getElementById('resCourse').textContent = studentMatch.course;
-                document.getElementById('resName').textContent = studentMatch.fullName;
-                document.getElementById('resMatric').textContent = studentMatch.originalMatric;
-                document.getElementById('resLevel').textContent = studentMatch.level;
-                document.getElementById('resProgram').textContent = studentMatch.program;
-                document.getElementById('resCA').textContent = studentMatch.ca;
-                document.getElementById('resTest').textContent = studentMatch.test;
-                document.getElementById('resPractical').textContent = studentMatch.practical;
-                document.getElementById('resExam').textContent = studentMatch.exam;
-                document.getElementById('resTotal').textContent = studentMatch.total;
-
-                const passMsg = document.getElementById('performanceMessage');
-                if (studentMatch.total >= 40) {
-                    passMsg.className = 'performance-banner perf-pass';
-                    passMsg.textContent = 'PASSED — EXCELLENT STANDING';
-                } else {
-                    passMsg.className = 'performance-banner perf-rerun';
-                    passMsg.textContent = 'RE-RUN / CARRYOVER REQUIRED';
-                }
-
-                resultBox.style.display = 'block';
-
-                // Attempt to sync incremented check count back to cloud quietly
-                if (CLOUD_BIN_ID !== 'YOUR_JSONBIN_ID_HERE') {
-                    fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_API_KEY },
-                        body: JSON.stringify(database)
-                    }).catch(() => {});
-                } else {
-                    localStorage.setItem('makpoly_student_results_db_v7', JSON.stringify(database));
-                }
-            } else {
-                errorDiv.textContent = 'No matching published result found for this Name and Matric Number combination. Please check your details.';
+            if (!matchedRecord) {
+                errorDiv.textContent = 'No matching result found. Please check your Matric Number and Name spelling.';
+                return;
             }
+
+            // Populate Result Slip
+            document.getElementById('resCourse').textContent = matchedRecord.course || 'N/A';
+            document.getElementById('resName').textContent = matchedRecord.fullName;
+            document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
+            document.getElementById('resLevel').textContent = matchedRecord.level || 'N/A';
+            document.getElementById('resProgram').textContent = matchedRecord.program || 'N/A';
+            document.getElementById('resCA').textContent = matchedRecord.ca !== 0 ? matchedRecord.ca : '-';
+            document.getElementById('resTest').textContent = matchedRecord.test !== 0 ? matchedRecord.test : '-';
+            document.getElementById('resPractical').textContent = matchedRecord.practical !== 0 ? matchedRecord.practical : '-';
+            document.getElementById('resExam').textContent = matchedRecord.exam !== 0 ? matchedRecord.exam : '-';
+            document.getElementById('resTotal').textContent = matchedRecord.total;
+
+            const perfBanner = document.getElementById('performanceMessage');
+            if (matchedRecord.total >= 40) {
+                perfBanner.className = 'performance-banner perf-pass';
+                perfBanner.textContent = '🎉 PASS - Excellent Performance!';
+            } else {
+                perfBanner.className = 'performance-banner perf-rerun';
+                perfBanner.textContent = '⚠️ RERUN REQUIRED - Score is below the passing mark.';
+            }
+
+            resultBox.style.display = 'block';
         }
 
-        function downloadResultImage() {
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'MAKPOLY_Result_Slip.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
+        async function downloadResultImage() {
+            const box = document.getElementById('resultContainer');
+            const canvas = await html2canvas(box, { scale: 2 });
+            const link = document.createElement('a');
+            link.download = `MAKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
         }
 
-        function downloadResultPDF() {
+        async function downloadResultPDF() {
             const { jsPDF } = window.jspdf;
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 190;
-                const pageHeight = 295;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
+            const box = document.getElementById('resultContainer');
+            const canvas = await html2canvas(box, { scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+            
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 190;
+            const pageHeight = 295;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 10;
 
+            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
+            }
 
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                pdf.save('MAKPOLY_Result_Slip.pdf');
-            });
+            pdf.save(`MAKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
         }
     </script>
 </body>
