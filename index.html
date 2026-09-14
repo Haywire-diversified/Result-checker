@@ -746,21 +746,21 @@
             document.getElementById('resCourse').textContent = matchedRecord.course || 'N/A';
             document.getElementById('resName').textContent = matchedRecord.fullName;
             document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
-            document.getElementById('resLevel').textContent = matchedRecord.level;
-            document.getElementById('resProgram').textContent = matchedRecord.program;
-            document.getElementById('resCA').textContent = matchedRecord.ca;
-            document.getElementById('resTest').textContent = matchedRecord.test;
-            document.getElementById('resPractical').textContent = matchedRecord.practical;
-            document.getElementById('resExam').textContent = matchedRecord.exam;
+            document.getElementById('resLevel').textContent = matchedRecord.level || 'N/A';
+            document.getElementById('resProgram').textContent = matchedRecord.program || 'N/A';
+            document.getElementById('resCA').textContent = matchedRecord.ca !== 0 ? matchedRecord.ca : '-';
+            document.getElementById('resTest').textContent = matchedRecord.test !== 0 ? matchedRecord.test : '-';
+            document.getElementById('resPractical').textContent = matchedRecord.practical !== 0 ? matchedRecord.practical : '-';
+            document.getElementById('resExam').textContent = matchedRecord.exam !== 0 ? matchedRecord.exam : '-';
             document.getElementById('resTotal').textContent = matchedRecord.total;
 
-            const perfBanner = document.getElementById('performanceMessage');
+            const perfMsg = document.getElementById('performanceMessage');
             if (matchedRecord.total >= 40) {
-                perfBanner.className = 'performance-banner perf-pass';
-                perfBanner.textContent = 'STATUS: PASS (CONGRATULATIONS)';
+                perfMsg.className = 'performance-banner perf-pass';
+                perfMsg.textContent = '🎉 PASSED — Excellent Academic Standing';
             } else {
-                perfBanner.className = 'performance-banner perf-rerun';
-                perfBanner.textContent = 'STATUS: FAIL / RERUN REQUIRED';
+                perfMsg.className = 'performance-banner perf-rerun';
+                perfMsg.textContent = '⚠️ RE-RUN / CARRYOVER — Consult Department Coordinator';
             }
 
             resultBox.style.display = 'block';
@@ -768,29 +768,17 @@
 
         function downloadResultImage() {
             const resultBox = document.getElementById('resultContainer');
-            const btns = resultBox.querySelector('.btn-download-container');
-            btns.style.display = 'none';
-
             html2canvas(resultBox, { scale: 2 }).then(canvas => {
-                btns.style.display = 'flex';
                 const link = document.createElement('a');
                 link.download = 'MAKPOLY_Result_Slip.png';
                 link.href = canvas.toDataURL('image/png');
-                link.link;
                 link.click();
-            }).catch(() => {
-                btns.style.display = 'flex';
-                alert('Image download failed.');
             });
         }
 
         function downloadResultPDF() {
             const resultBox = document.getElementById('resultContainer');
-            const btns = resultBox.querySelector('.btn-download-container');
-            btns.style.display = 'none';
-
             html2canvas(resultBox, { scale: 2 }).then(canvas => {
-                btns.style.display = 'flex';
                 const imgData = canvas.toDataURL('image/png');
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
@@ -811,9 +799,6 @@
                 }
 
                 pdf.save('MAKPOLY_Result_Slip.pdf');
-            }).catch(() => {
-                btns.style.display = 'flex';
-                alert('PDF download failed.');
             });
         }
     </script>
