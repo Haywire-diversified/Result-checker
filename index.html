@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Student Result Portal</title>
+    <title>MAPKPOLY - Secure Student Result Portal</title>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --border-color: #cbd5e1;
+            --primary: #d97706; /* Earthy Construction Amber primary */
+            --primary-hover: #b45309;
+            --bg-color: #1c1917; /* Slate Dark Construction vibe background */
+            --card-bg: #292524;
+            --text-color: #f5f5f4;
+            --border-color: #44403c;
         }
 
         body {
@@ -25,6 +25,7 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
+            transition: background-color 0.5s ease;
         }
 
         .portal-wrapper {
@@ -36,14 +37,60 @@
             background: var(--card-bg);
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Construction Media Banner Styles */
+        .media-banner {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+            max-height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid var(--border-color);
+        }
+
+        .media-banner img, .media-banner video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: 200px;
+            display: block;
+        }
+
+        .media-controls {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #fff;
+            display: flex;
+            gap: 6px;
+        }
+
+        .media-controls button {
+            background: var(--primary);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
         }
 
         .nav-tabs {
             display: flex;
             justify-content: space-between;
             margin-bottom: 25px;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
         }
 
@@ -52,7 +99,7 @@
             border: none;
             font-size: 15px;
             font-weight: 600;
-            color: #64748b;
+            color: #a8a29e;
             cursor: pointer;
             padding: 5px 10px;
             transition: color 0.2s;
@@ -67,7 +114,7 @@
         h2 {
             margin-top: 0;
             font-size: 22px;
-            color: #0f172a;
+            color: #fafaf9;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -81,14 +128,16 @@
             font-size: 14px;
             font-weight: 500;
             margin-bottom: 6px;
-            color: #475569;
+            color: #d6d3d1;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
             padding: 10px 12px;
+            background: #1c1917;
             border: 1px solid var(--border-color);
+            color: #f5f5f4;
             border-radius: 6px;
             font-size: 14px;
             box-sizing: border-box;
@@ -119,13 +168,13 @@
         }
 
         .btn-secondary {
-            background: #e2e8f0;
-            color: #334155;
+            background: #44403c;
+            color: #f5f5f4;
             margin-top: 10px;
         }
 
         .btn-secondary:hover {
-            background: #cbd5e1;
+            background: #57534e;
         }
 
         .btn-success {
@@ -161,16 +210,16 @@
         .result-box {
             margin-top: 20px;
             padding: 20px;
-            background: #f1f5f9;
+            background: #1c1917;
             border-radius: 8px;
             display: none;
             border-left: 4px solid var(--primary);
+            color: #f5f5f4;
         }
 
-        /* Printable Slip Header Styling */
         .slip-header {
             text-align: center;
-            border-bottom: 2px solid #cbd5e1;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 12px;
             margin-bottom: 15px;
         }
@@ -178,14 +227,14 @@
         .slip-header h3 {
             margin: 0 0 4px 0;
             font-size: 16px;
-            color: #0f172a;
+            color: #fafaf9;
             text-transform: uppercase;
         }
 
         .slip-header p {
             margin: 2px 0;
             font-size: 13px;
-            color: #475569;
+            color: #d6d3d1;
             font-weight: 600;
         }
 
@@ -198,42 +247,54 @@
 
         .result-row span:first-child {
             font-weight: 600;
-            color: #475569;
+            color: #d6d3d1;
         }
 
         .result-row span:last-child {
-            color: #0f172a;
+            color: #f5f5f4;
             text-align: right;
         }
 
         .total-row {
-            border-top: 1px dashed #cbd5e1;
+            border-top: 1px dashed var(--border-color);
             padding-top: 10px;
             margin-top: 10px;
             font-weight: bold;
             font-size: 16px;
-            color: #16a34a !important;
+            color: #4ade80 !important;
+        }
+
+        .rerun-msg-box {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid #dc2626;
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 15px;
+            line-height: 1.5;
         }
 
         .admin-help-box {
             margin-top: 15px;
             padding-top: 10px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border-color);
             font-size: 12px;
-            color: #64748b;
+            color: #a8a29e;
             text-align: center;
             line-height: 1.4;
         }
 
         .error-msg {
-            color: #dc2626;
+            color: #f87171;
             font-size: 13px;
             text-align: center;
             margin-top: 10px;
         }
 
         .success-msg {
-            color: #16a34a;
+            color: #4ade80;
             font-size: 13px;
             text-align: center;
             margin-top: 10px;
@@ -245,16 +306,15 @@
 
         .spreadsheet-hint {
             font-size: 12px;
-            color: #64748b;
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
+            color: #a8a29e;
+            background: #1c1917;
+            border: 1px dashed var(--border-color);
             padding: 8px 12px;
             border-radius: 6px;
             margin-bottom: 12px;
             line-height: 1.4;
         }
 
-        /* Responsive Mobile Table Wrapper */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -267,21 +327,21 @@
         .admin-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            background: #1c1917;
             text-align: left;
             font-size: 13px;
         }
 
         .admin-table th, .admin-table td {
             padding: 8px 10px;
-            border-bottom: 1px solid #e2e8f0;
-            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
             white-space: nowrap;
         }
 
         .admin-table th {
-            background: #f1f5f9;
-            color: #334155;
+            background: #292524;
+            color: #f5f5f4;
             font-weight: 600;
             position: sticky;
             top: 0;
@@ -291,7 +351,9 @@
         .admin-table input {
             width: 100px;
             padding: 6px;
-            border: 1px solid #cbd5e1;
+            background: #292524;
+            color: white;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 13px;
         }
@@ -300,13 +362,23 @@
             width: 180px;
         }
     </style>
-    <!-- Include html2canvas library for downloading result as image -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
     <div class="portal-wrapper">
         <div class="card">
+            <!-- Construction Media Display Header with Dynamic Color Extraction -->
+            <div class="media-banner" id="mediaBannerContainer">
+                <!-- Using a stable public construction/site engineering image -->
+                <img id="bannerMediaElement" src="https://images.unsplash.com/photo-1541888946425-d0fbb1857966?auto=format&fit=crop&w=1000&q=80" alt="Construction Site Engineering" crossorigin="anonymous">
+                <canvas id="colorExtractCanvas" class="hidden"></canvas>
+                <div class="media-controls">
+                    <span id="mediaLabel">Site View</span>
+                    <button type="button" onclick="toggleMediaSource()">Switch Video/Image</button>
+                </div>
+            </div>
+
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="switchTab('studentTab', event)">Student Portal</button>
                 <button class="nav-tab" onclick="switchTab('adminTab', event)">Admin Panel</button>
@@ -330,9 +402,9 @@
 
                 <div id="resultContainer" class="result-box">
                     <div class="slip-header">
-                        <h3>The Oke-Ogun Polytechnic, Saki</h3>
+                        <h3>Micheal Adeniyi Koleosho Polytechnic, Saki (MAPKPOLY)</h3>
                         <p>Quantity Surveying Department</p>
-                        <span style="font-size: 12px; color: #64748b;">Official Result Slip</span>
+                        <span style="font-size: 12px; color: #a8a29e;">Official Result Slip</span>
                     </div>
                     <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
                     <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
@@ -342,6 +414,8 @@
                     <div id="dynamicScoresContainer"></div>
                     <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
                     
+                    <div id="scoreMessageArea"></div>
+
                     <div class="admin-help-box">
                         Need help or found a discrepancy? WhatsApp or call the admin: <strong>08163059669 (Osuntoki Christopher Ayojesu)</strong>
                     </div>
@@ -404,6 +478,75 @@
     </div>
 
     <script>
+        // Media Switcher & Dynamic Layout Color Extraction
+        let mediaMode = 'image';
+        function toggleMediaSource() {
+            const container = document.getElementById('mediaBannerContainer');
+            const label = document.getElementById('mediaLabel');
+            
+            if (mediaMode === 'image') {
+                mediaMode = 'video';
+                container.innerHTML = `
+                    <video id="bannerMediaElement" autoplay muted loop playsinline crossorigin="anonymous">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-construction-site-with-cranes-and-buildings-42171-large.mp4" type="video/mp4">
+                        Your browser does not support video.
+                    </video>
+                    <canvas id="colorExtractCanvas" class="hidden"></canvas>
+                    <div class="media-controls">
+                        <span id="mediaLabel">Site Video</span>
+                        <button type="button" onclick="toggleMediaSource()">Switch Image</button>
+                    </div>
+                `;
+                setupDynamicColorExtraction(document.getElementById('bannerMediaElement'));
+            } else {
+                mediaMode = 'image';
+                container.innerHTML = `
+                    <img id="bannerMediaElement" src="https://images.unsplash.com/photo-1541888946425-d0fbb1857966?auto=format&fit=crop&w=1000&q=80" crossorigin="anonymous" alt="Construction Site">
+                    <canvas id="colorExtractCanvas" class="hidden"></canvas>
+                    <div class="media-controls">
+                        <span id="mediaLabel">Site View</span>
+                        <button type="button" onclick="toggleMediaSource()">Switch Video</button>
+                    </div>
+                `;
+                setupDynamicColorExtraction(document.getElementById('bannerMediaElement'));
+            }
+        }
+
+        // Dynamically extract dominant color from the loaded image/video frame to update UI theme accent
+        function setupDynamicColorExtraction(mediaElement) {
+            mediaElement.addEventListener('load', extractColor);
+            mediaElement.addEventListener('loadeddata', extractColor);
+            // If already loaded
+            if (mediaElement.complete || mediaElement.readyState >= 2) {
+                setTimeout(extractColor, 500);
+            }
+        }
+
+        function extractColor() {
+            try {
+                const img = document.getElementById('bannerMediaElement');
+                const canvas = document.getElementById('colorExtractCanvas');
+                if (!img || !canvas) return;
+                const ctx = canvas.getContext('2d');
+                canvas.width = 50;
+                canvas.height = 50;
+                ctx.drawImage(img, 0, 0, 50, 50);
+                const p = ctx.getImageData(25, 25, 1, 1).data;
+                // Formulate dominant hex color
+                const hex = "#" + ((1 << 24) + (p[0] << 16) + (p[1] << 8) + p[2]).toString(16).slice(1);
+                document.documentElement.style.setProperty('--primary', hex);
+                // Compute darker hover variant
+                const hoverHex = "#" + ((1 << 24) + (Math.max(0, p[0]-30) << 16) + (Math.max(0, p[1]-30) << 8) + Math.max(0, p[2]-30)).toString(16).slice(1);
+                document.documentElement.style.setProperty('--primary-hover', hoverHex);
+            } catch (e) {
+                console.log("Color extraction restricted due to cross-origin policies or timing.", e);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setupDynamicColorExtraction(document.getElementById('bannerMediaElement'));
+        });
+
         function switchTab(tabId, event) {
             document.getElementById('studentTab').classList.add('hidden');
             document.getElementById('adminTab').classList.add('hidden');
@@ -413,7 +556,6 @@
         }
 
         const defaultRecords = [
-            // Principle of Law of Contract
             ['Agboluaje Tijani', '25NQS001', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '16', '15', '7'],
             ['Azeez Mutiat', '25NQS002', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '8'],
             ['Adetoro Praise', '25NQS003', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '17', '15', '8'],
@@ -424,7 +566,6 @@
             ['Ayantunde Kehinde', '25PQS002', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '20'],
             ['Hassan Ahmad', '25PQS003', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '8'],
             
-            // Computer Applications
             ['Mudasiru Maleek', '25HQS001', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '', '15', '33'],
             ['Gbadegesin', '25HQS002', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '30'],
             ['Ogundele Kaosara', '25HQS003', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '15', '20'],
@@ -442,7 +583,6 @@
             ['Lateef Qoyum', '25HQS016', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '10', '30'],
             ['Salami Hakeem', '25HQS017', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '24'],
 
-            // Sustainable Construction
             ['Ahmed Sobur', '24NQS001', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '28'],
             ['Kehinde Simeon', '24NQS004', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
             ['Olabamiji Fathia', '24NQS005', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
@@ -470,31 +610,15 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            const rawDb = localStorage.getItem('student_results_db_v3');
+            const rawDb = localStorage.getItem('student_results_db_v4');
             let data = defaultRecords;
-            let headers = defaultHeaders;
 
             if (rawDb) {
                 const parsed = JSON.parse(rawDb);
                 if (parsed.rows && parsed.rows.length > 0) data = parsed.rows;
-                if (parsed.headers) headers = parsed.headers;
             }
 
-            const headerRow = document.getElementById('tableHeaderRow');
-            headerRow.innerHTML = `
-                <th>Full Name</th>
-                <th>Matric No</th>
-                <th>Level</th>
-                <th>Program</th>
-                <th>Course</th>
-                <th>C.A</th>
-                <th>Test</th>
-                <th>Practical</th>
-                <th>Exam</th>
-                <th>Action</th>
-            `;
-
-            data.forEach((row, rowIndex) => {
+            data.forEach((row) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><input type="text" class="wide-input" value="${escapeHtml(row[0] || '')}"></td>
@@ -531,8 +655,7 @@
         }
 
         function deleteRow(btn) {
-            const tr = btn.closest('tr');
-            tr.remove();
+            btn.closest('tr').remove();
         }
 
         function escapeHtml(str) {
@@ -565,7 +688,6 @@
             const rows = tbody.querySelectorAll('tr');
             const processedRows = [];
             const processedRecords = [];
-            const headers = defaultHeaders;
 
             rows.forEach(tr => {
                 const inputs = tr.querySelectorAll('input');
@@ -586,38 +708,16 @@
                 
                 const total = ca + test + practical + exam;
 
-                const rowValues = [
+                processedRows.push([
                     fullName, originalMatric, level, program, course,
                     inputs[5].value, inputs[6].value, inputs[7].value, inputs[8].value
-                ];
-                processedRows.push(rowValues);
+                ]);
 
-                processedRecords.push({
-                    fullName: fullName,
-                    nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
-                    matricClean: originalMatric.toLowerCase(),
-                    originalMatric: originalMatric,
-                    level: level,
-                    program: program,
-                    course: course,
-                    scoreBreakdown: {
-                        'C.A': ca,
-                        'Test': test,
-                        'Practical': practical,
-                        'Exam': exam
-                    },
-                    total: total
-                });
+                processedRecords.push({ total });
             });
 
-            const dbPayload = {
-                headers: headers,
-                rows: processedRows
-            };
-
-            localStorage.setItem('student_results_db_v3', JSON.stringify(dbPayload));
-            const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.textContent = `Successfully saved ${processedRecords.length} student records!`;
+            localStorage.setItem('student_results_db_v4', JSON.stringify({ headers: defaultHeaders, rows: processedRows }));
+            document.getElementById('uploadStatus').textContent = `Successfully saved ${processedRecords.length} student records!`;
         }
 
         function handleStudentCheck(event) {
@@ -630,15 +730,8 @@
             errorDiv.textContent = '';
             resultBox.style.display = 'none';
 
-            let rawDb = localStorage.getItem('student_results_db_v3');
-            let rowsToSearch = [];
-
-            if (rawDb) {
-                const parsed = JSON.parse(rawDb);
-                rowsToSearch = parsed.rows || [];
-            } else {
-                rowsToSearch = defaultRecords;
-            }
+            let rawDb = localStorage.getItem('student_results_db_v4');
+            let rowsToSearch = rawDb ? JSON.parse(rawDb).rows : defaultRecords;
 
             const database = [];
             rowsToSearch.forEach(row => {
@@ -660,20 +753,13 @@
                     level: String(row[2] || '').trim(),
                     program: String(row[3] || '').trim(),
                     course: String(row[4] || '').trim(),
-                    scoreBreakdown: {
-                        'C.A': ca,
-                        'Test': test,
-                        'Practical': practical,
-                        'Exam': exam
-                    },
+                    scoreBreakdown: { 'C.A': ca, 'Test': test, 'Practical': practical, 'Exam': exam },
                     total: total
                 });
             });
 
             const studentMatch = database.find(item => {
-                const matricMatches = item.matricClean === inputMatric;
-                const nameMatches = item.nameParts.some(part => part === inputName);
-                return matricMatches && nameMatches;
+                return item.matricClean === inputMatric && item.nameParts.some(part => part === inputName);
             });
 
             if (studentMatch) {
@@ -693,23 +779,28 @@
                 }
 
                 document.getElementById('resTotal').textContent = studentMatch.total;
+
+                // Handle score threshold requirement (< 40)
+                const msgArea = document.getElementById('scoreMessageArea');
+                if (studentMatch.total < 40) {
+                    msgArea.innerHTML = `<div class="rerun-msg-box">You've rerun this course, register for it again next year and prepare well for it. See again next year.</div>`;
+                } else {
+                    msgArea.innerHTML = '';
+                }
+
                 resultBox.style.display = 'block';
             } else {
                 errorDiv.textContent = 'Result not found. Please verify that both your Matric Number and name are correct.';
             }
         }
 
-        // Functions for downloading result as image or printing to PDF
         function downloadResultImage() {
             const resultBox = document.getElementById('resultContainer');
-            // Hide the download buttons temporarily from the snapshot
             const actionButtons = resultBox.querySelectorAll('.btn-info, .btn-success');
             actionButtons.forEach(btn => btn.style.display = 'none');
 
-            html2canvas(resultBox, { scale: 2 }).then(canvas => {
-                // Restore buttons
+            html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' }).then(canvas => {
                 actionButtons.forEach(btn => btn.style.display = 'block');
-
                 const link = document.createElement('a');
                 link.download = document.getElementById('resMatric').textContent + '_Result_Slip.png';
                 link.href = canvas.toDataURL('image/png');
@@ -718,13 +809,10 @@
         }
 
         function downloadResultPDF() {
-            // Triggers browser print dialog where users can select "Save as PDF"
             const resultBox = document.getElementById('resultContainer');
             const actionButtons = resultBox.querySelectorAll('.btn-info, .btn-success');
             actionButtons.forEach(btn => btn.style.display = 'none');
-
             window.print();
-
             actionButtons.forEach(btn => btn.style.display = 'block');
         }
     </script>
