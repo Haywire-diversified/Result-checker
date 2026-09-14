@@ -748,39 +748,39 @@
             document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
             document.getElementById('resLevel').textContent = matchedRecord.level || 'N/A';
             document.getElementById('resProgram').textContent = matchedRecord.program || 'N/A';
-            document.getElementById('resCA').textContent = matchedRecord.ca !== 0 ? matchedRecord.ca : '-';
-            document.getElementById('resTest').textContent = matchedRecord.test !== 0 ? matchedRecord.test : '-';
-            document.getElementById('resPractical').textContent = matchedRecord.practical !== 0 ? matchedRecord.practical : '-';
-            document.getElementById('resExam').textContent = matchedRecord.exam !== 0 ? matchedRecord.exam : '-';
+            document.getElementById('resCA').textContent = matchedRecord.ca || '0';
+            document.getElementById('resTest').textContent = matchedRecord.test || '0';
+            document.getElementById('resPractical').textContent = matchedRecord.practical || '0';
+            document.getElementById('resExam').textContent = matchedRecord.exam || '0';
             document.getElementById('resTotal').textContent = matchedRecord.total;
 
-            const perfMsg = document.getElementById('performanceMessage');
+            const perfBanner = document.getElementById('performanceMessage');
             if (matchedRecord.total >= 40) {
-                perfMsg.className = 'performance-banner perf-pass';
-                perfMsg.textContent = '🎉 PASSED — Excellent Academic Standing';
+                perfBanner.className = 'performance-banner perf-pass';
+                perfBanner.textContent = 'STATUS: PASS (Congratulations!)';
             } else {
-                perfMsg.className = 'performance-banner perf-rerun';
-                perfMsg.textContent = '⚠️ RE-RUN / CARRYOVER — Consult Department Coordinator';
+                perfBanner.className = 'performance-banner perf-rerun';
+                perfBanner.textContent = 'STATUS: FAIL / RERUN';
             }
 
             resultBox.style.display = 'block';
         }
 
         function downloadResultImage() {
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox, { scale: 2 }).then(canvas => {
+            const cardElement = document.getElementById('resultContainer');
+            html2canvas(cardElement, { scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'MAKPOLY_Result_Slip.png';
+                link.download = 'MAKPOLY_Quantity_Surveying_Result.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         }
 
         function downloadResultPDF() {
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox, { scale: 2 }).then(canvas => {
+            const { jsPDF } = window.jspdf;
+            const cardElement = document.getElementById('resultContainer');
+            html2canvas(cardElement, { scale: 2 }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 190;
                 const pageHeight = 295;
@@ -797,8 +797,7 @@
                     pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
                 }
-
-                pdf.save('MAKPOLY_Result_Slip.pdf');
+                pdf.save('MAKPOLY_Quantity_Surveying_Result.pdf');
             });
         }
     </script>
