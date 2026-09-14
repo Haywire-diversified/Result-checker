@@ -416,7 +416,7 @@
                 <div id="adminLoginBox">
                     <div class="form-group">
                         <label for="adminPassInput">Admin Password</label>
-                        <input type="password" id="adminPassInput" placeholder="Enter password (default: admin)" autocomplete="new-password">
+                        <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="new-password">
                     </div>
                     <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
                     <div id="loginError" class="error-msg"></div>
@@ -746,8 +746,8 @@
             document.getElementById('resCourse').textContent = matchedRecord.course || 'N/A';
             document.getElementById('resName').textContent = matchedRecord.fullName;
             document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
-            document.getElementById('resLevel').textContent = matchedRecord.level || 'N/A';
-            document.getElementById('resProgram').textContent = matchedRecord.program || 'N/A';
+            document.getElementById('resLevel').textContent = matchedRecord.level;
+            document.getElementById('resProgram').textContent = matchedRecord.program;
             document.getElementById('resCA').textContent = matchedRecord.ca;
             document.getElementById('resTest').textContent = matchedRecord.test;
             document.getElementById('resPractical').textContent = matchedRecord.practical;
@@ -757,32 +757,40 @@
             const perfBanner = document.getElementById('performanceMessage');
             if (matchedRecord.total >= 40) {
                 perfBanner.className = 'performance-banner perf-pass';
-                perfBanner.textContent = 'STATUS: PASS — Excellent Performance!';
+                perfBanner.textContent = 'STATUS: PASS (CONGRATULATIONS)';
             } else {
                 perfBanner.className = 'performance-banner perf-rerun';
-                perfBanner.textContent = 'STATUS: FAIL / RERUN — Supplemental Examination Required';
+                perfBanner.textContent = 'STATUS: FAIL / RERUN REQUIRED';
             }
 
             resultBox.style.display = 'block';
         }
 
-        async function downloadResultImage() {
-            const box = document.getElementById('resultContainer');
-            try {
-                const canvas = await html2canvas(box, { scale: 2 });
+        function downloadResultImage() {
+            const resultBox = document.getElementById('resultContainer');
+            const btns = resultBox.querySelector('.btn-download-container');
+            btns.style.display = 'none';
+
+            html2canvas(resultBox, { scale: 2 }).then(canvas => {
+                btns.style.display = 'flex';
                 const link = document.createElement('a');
                 link.download = 'MAKPOLY_Result_Slip.png';
                 link.href = canvas.toDataURL('image/png');
+                link.link;
                 link.click();
-            } catch (e) {
-                alert('Image download failed. Try taking a screenshot.');
-            }
+            }).catch(() => {
+                btns.style.display = 'flex';
+                alert('Image download failed.');
+            });
         }
 
-        async function downloadResultPDF() {
-            const box = document.getElementById('resultContainer');
-            try {
-                const canvas = await html2canvas(box, { scale: 2 });
+        function downloadResultPDF() {
+            const resultBox = document.getElementById('resultContainer');
+            const btns = resultBox.querySelector('.btn-download-container');
+            btns.style.display = 'none';
+
+            html2canvas(resultBox, { scale: 2 }).then(canvas => {
+                btns.style.display = 'flex';
                 const imgData = canvas.toDataURL('image/png');
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
@@ -793,10 +801,20 @@
                 let position = 10;
 
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
                 pdf.save('MAKPOLY_Result_Slip.pdf');
-            } catch (e) {
-                alert('PDF generation failed.');
-            }
+            }).catch(() => {
+                btns.style.display = 'flex';
+                alert('PDF download failed.');
+            });
         }
     </script>
 </body>
