@@ -22,7 +22,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             display: block; /* Allows natural document flow and scrolling on all devices */
         }
 
@@ -34,7 +34,7 @@
 
         .card {
             background: var(--card-bg);
-            padding: 20px;
+            padding: 16px;
             border-radius: 12px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             position: relative;
@@ -344,27 +344,38 @@
 
         function initSpreadsheet() {
             const container = document.getElementById('spreadsheet-container');
+            if (typeof Handsontable === 'undefined') {
+                container.innerHTML = '<p style="padding:20px; color:#dc2626; text-align:center;">Spreadsheet library failed to load. Check your internet connection.</p>';
+                return;
+            }
+
             if (hot) {
                 hot.destroy();
             }
 
             let savedData = [];
-            const rawDb = localStorage.getItem('student_results_db_full_v2');
-            if (rawDb) {
-                const parsed = JSON.parse(rawDb);
-                savedData = parsed.map(item => [
-                    item.fullName || '',
-                    item.originalMatric || '',
-                    item.level || '',
-                    item.program || '',
-                    item.course || '',
-                    item.ca === 0 ? '' : item.ca,
-                    item.test === 0 ? '' : item.test,
-                    item.practical === 0 ? '' : item.practical,
-                    item.exam === 0 ? '' : item.exam,
-                    item.total || 0
-                ]);
-            } else {
+            try {
+                const rawDb = localStorage.getItem('student_results_db_full_v2');
+                if (rawDb) {
+                    const parsed = JSON.parse(rawDb);
+                    savedData = parsed.map(item => [
+                        item.fullName || '',
+                        item.originalMatric || '',
+                        item.level || '',
+                        item.program || '',
+                        item.course || '',
+                        item.ca === 0 ? '' : item.ca,
+                        item.test === 0 ? '' : item.test,
+                        item.practical === 0 ? '' : item.practical,
+                        item.exam === 0 ? '' : item.exam,
+                        item.total || 0
+                    ]);
+                }
+            } catch (e) {
+                console.warn('LocalStorage unavailable or restricted');
+            }
+
+            if (savedData.length === 0) {
                 savedData = initialDataset.map(row => {
                     const ca = parseFloat(row[5]) || 0;
                     const test = parseFloat(row[6]) || 0;
@@ -435,6 +446,7 @@
         }
 
         function saveSpreadsheetData() {
+            if (!hot) return;
             const rawData = hot.getData();
             const processedRecords = [];
 
@@ -470,10 +482,14 @@
                 });
             });
 
-            localStorage.setItem('student_results_db_full_v2', JSON.stringify(processedRecords));
-            const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.style.color = '#16a34a';
-            statusDiv.textContent = `Successfully saved and published ${processedRecords.length} records!`;
+            try {
+                localStorage.setItem('student_results_db_full_v2', JSON.stringify(processedRecords));
+                const statusDiv = document.getElementById('uploadStatus');
+                statusDiv.style.color = '#16a34a';
+                statusDiv.textContent = `Successfully saved and published ${processedRecords.length} records!`;
+            } catch (e) {
+                alert('Storage restriction: Unable to save records to this browser session.');
+            }
         }
 
         function handleStudentCheck(event) {
@@ -486,9 +502,16 @@
             errorDiv.textContent = '';
             resultBox.style.display = 'none';
 
-            let rawDb = localStorage.getItem('student_results_db_full_v2');
-            if (!rawDb) {
-                const defaultProcessed = initialDataset.map(row => {
+            let database = [];
+            try {
+                let rawDb = localStorage.getItem('student_results_db_full_v2');
+                if (rawDb) {
+                    database = JSON.parse(rawDb);
+                }
+            } catch (e) {}
+
+            if (database.length === 0) {
+                database = initialDataset.map(row => {
                     const fullName = row[0];
                     const originalMatric = row[1];
                     const ca = parseFloat(row[5]) || 0;
@@ -510,11 +533,7 @@
                         total: ca + test + practical + exam
                     };
                 });
-                localStorage.setItem('student_results_db_full_v2', JSON.stringify(defaultProcessed));
-                rawDb = localStorage.getItem('student_results_db_full_v2');
             }
-
-            const database = JSON.parse(rawDb);
 
             const studentMatch = database.find(item => {
                 const matricMatches = item.matricClean === inputMatric;
