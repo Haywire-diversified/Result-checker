@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Student Result Portal</title>
+    <title>Quantity Surveying - Michael Adeniyi Koleosho Polytechnic, Saki</title>
     <!-- Include Handsontable for full Excel-like spreadsheet copy/paste, row/column addition, deletion, and editing -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
     <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <!-- Include html2canvas for browser-native image/picture downloads without external blocking issues -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Include jsPDF for browser-native PDF downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
+            --primary: #1e3a8a; /* Deep Academic Blue matching official institution photo themes */
+            --primary-hover: #1e40af;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #1e293b;
@@ -22,22 +26,57 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 16px;
-            display: block; /* Allows natural document flow and scrolling on all devices */
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Hero Banner with Welcome Photo Imagery */
+        .hero-banner {
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1600&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary);
+        }
+
+        .hero-banner h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-banner h2 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .hero-banner p {
+            margin: 0;
+            font-size: 15px;
+            color: #e2e8f0;
         }
 
         .portal-wrapper {
             width: 100%;
             max-width: 1000px;
-            margin: 0 auto; /* Centers the portal gracefully on all screens */
+            margin: -30px auto 40px auto; /* Pulls card slightly over banner for modern look */
+            padding: 0 16px;
+            box-sizing: border-box;
+            flex: 1;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 16px;
+            padding: 24px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             position: relative;
+            border-top: 4px solid var(--primary);
         }
 
         .nav-tabs {
@@ -46,7 +85,7 @@
             margin-bottom: 25px;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 10px;
-            overflow-x: auto; /* Enables tab scrolling if screen is too narrow */
+            overflow-x: auto;
         }
 
         .nav-tab {
@@ -67,7 +106,7 @@
             margin-bottom: -12px;
         }
 
-        h2 {
+        h2.section-title {
             margin-top: 0;
             font-size: 22px;
             color: #0f172a;
@@ -93,7 +132,7 @@
             padding: 10px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 16px; /* 16px prevents automatic zoom-in on mobile iOS/Android inputs */
+            font-size: 16px;
             box-sizing: border-box;
             outline: none;
             transition: border-color 0.2s;
@@ -123,7 +162,7 @@
 
         .btn-secondary {
             background: #e2e8f0;
-            color: #334155;
+            color: #1e293b;
             margin-top: 10px;
         }
         .btn-secondary:hover {
@@ -131,21 +170,60 @@
         }
 
         .btn-success {
-            background: #16a34a;
+            background: #15803d;
             margin-top: 10px;
         }
         .btn-success:hover {
-            background: #15803d;
+            background: #166534;
+        }
+
+        .btn-download-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-img {
+            background: #0284c7;
+        }
+        .btn-img:hover {
+            background: #0369a1;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+        }
+        .btn-pdf:hover {
+            background: #b91c1c;
         }
 
         .result-box {
             margin-top: 20px;
-            padding: 20px;
-            background: #f1f5f9;
+            padding: 24px;
+            background: #f8fafc;
             border-radius: 8px;
             display: none;
-            border-left: 4px solid var(--primary);
+            border-left: 6px solid var(--primary);
             word-break: break-word;
+        }
+
+        .result-header-watermark {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .result-header-watermark h3 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        .result-header-watermark p {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: #64748b;
         }
 
         .result-row {
@@ -162,7 +240,7 @@
         }
 
         .result-row span:last-child {
-            color: #0f172a;
+            color: #1e293b;
             text-align: right;
         }
 
@@ -172,7 +250,37 @@
             margin-top: 10px;
             font-weight: bold;
             font-size: 16px;
-            color: #16a34a !important;
+        }
+
+        .performance-banner {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .perf-pass {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .perf-rerun {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .lecturer-signature-stamp {
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #475569;
         }
 
         .error-msg {
@@ -195,9 +303,9 @@
 
         .spreadsheet-hint {
             font-size: 12px;
-            color: #64748b;
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
+            color: #475569;
+            background: #f1f5f9;
+            border: 1px dashed var(--border-color);
             padding: 8px 12px;
             border-radius: 6px;
             margin-bottom: 12px;
@@ -212,9 +320,31 @@
             height: 400px;
             width: 100%;
         }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            background: #f1f5f9;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Professional Header with Institution & Department Theme -->
+    <div class="hero-banner">
+        <h1>Michael Adeniyi Koleosho Polytechnic, Saki</h1>
+        <h2>Department of Quantity Surveying</h2>
+        <p>Official Academic Evaluation & Secure Student Result Portal</p>
+    </div>
 
     <div class="portal-wrapper">
         <div class="card">
@@ -225,7 +355,7 @@
 
             <!-- STUDENT TAB -->
             <div id="studentTab">
-                <h2>Check Student Result</h2>
+                <h2 class="section-title">Check Student Result</h2>
                 <form id="studentForm" onsubmit="handleStudentCheck(event)">
                     <div class="form-group">
                         <label for="inputName">Your Name (e.g., Agboluaje, Mudasiru, or Ahmed)</label>
@@ -240,6 +370,10 @@
                 </form>
 
                 <div id="resultContainer" class="result-box">
+                    <div class="result-header-watermark">
+                        <h3>MICHAEL ADENIYI KOLEOSHO POLYTECHNIC, SAKI</h3>
+                        <p>DEPARTMENT OF QUANTITY SURVEYING — OFFICIAL RESULT SLIP</p>
+                    </div>
                     <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
                     <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
                     <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
@@ -250,12 +384,27 @@
                     <div class="result-row"><span>Practical:</span> <span id="resPractical"></span></div>
                     <div class="result-row"><span>Exam:</span> <span id="resExam"></span></div>
                     <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
+                    
+                    <!-- Performance Feedback Banner -->
+                    <div id="performanceMessage" class="performance-banner"></div>
+
+                    <!-- Institution Information Stamp Visible Everywhere on Slip -->
+                    <div class="lecturer-signature-stamp">
+                        <div><strong>Certified By:</strong> Department of Quantity Surveying, MAKPOLY Saki</div>
+                        <div><strong>Institution:</strong> MAKPOLY</div>
+                    </div>
+
+                    <!-- Download Options -->
+                    <div class="btn-download-container">
+                        <button type="button" class="btn btn-img" onclick="downloadResultImage()">📷 Download as Picture</button>
+                        <button type="button" class="btn btn-pdf" onclick="downloadResultPDF()">📄 Download as PDF</button>
+                    </div>
                 </div>
             </div>
 
             <!-- ADMIN TAB -->
             <div id="adminTab" class="hidden">
-                <h2>Admin Panel</h2>
+                <h2 class="section-title">Admin Panel</h2>
                 
                 <div id="adminLoginBox">
                     <div class="form-group">
@@ -268,9 +417,9 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Full Excel Grid Control:</strong> Columns include <strong>FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL</strong>. You can edit cells, add/remove rows and columns. Totals automatically sum up as you change score values.
+                        📊 <strong>Full Excel Grid Control:</strong> Columns include <strong>FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL, CHECK COUNT</strong>. You can view check counts, edit cells, add/remove rows and columns. Totals automatically sum up as you change score values. Pass mark threshold is set to 40.
                     </div>
-                    
+
                     <div id="spreadsheet-container"></div>
                     
                     <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results</button>
@@ -280,6 +429,11 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        &copy; 2026 Michael Adeniyi Koleosho Polytechnic (MAKPOLY), Saki &bull; Department of Quantity Surveying<br>
+        System Admin Contact: <a href="tel:08163059669">08163059669</a> (Osuntoki Christopher Ayojesu)
+    </footer>
 
     <script>
         function switchTab(tabId, event) {
@@ -296,50 +450,50 @@
         let hot = null;
 
         const initialDataset = [
-            ["1. Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7],
-            ["2. Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8],
-            ["3. Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 0],
-            ["4. Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6],
-            ["5. Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1],
-            ["6. Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32],
-            ["1. Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19],
-            ["2. Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20],
-            ["3. Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8],
-            ["Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 33],
-            ["Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30],
-            ["Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 20],
-            ["Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25],
-            ["Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29],
-            ["Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 27],
-            ["Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29],
-            ["Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25],
-            ["Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 28],
-            ["Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 32],
-            ["Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29],
-            ["Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 11],
-            ["Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30],
-            ["Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 22],
-            ["Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30],
-            ["Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 24],
-            ["Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28],
-            ["Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13],
-            ["Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
-            ["Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9],
-            ["Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
-            ["Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10],
-            ["Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28],
-            ["Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1],
-            ["Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5],
-            ["Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
-            ["Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17],
-            ["Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5],
-            ["Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2],
-            ["Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3],
-            ["Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1],
-            ["Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1],
-            ["Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17],
-            ["Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4],
-            ["Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2]
+            ["1. Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7, 0],
+            ["2. Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
+            ["3. Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 0, 0],
+            ["4. Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6, 0],
+            ["5. Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1, 0],
+            ["6. Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32, 0],
+            ["1. Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19, 0],
+            ["2. Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20, 0],
+            ["3. Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
+            ["Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 33, 0],
+            ["Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
+            ["Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 20, 0],
+            ["Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
+            ["Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
+            ["Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 27, 0],
+            ["Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
+            ["Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
+            ["Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 28, 0],
+            ["Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 32, 0],
+            ["Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
+            ["Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 11, 0],
+            ["Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
+            ["Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 22, 0],
+            ["Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
+            ["Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 24, 0],
+            ["Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
+            ["Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13, 0],
+            ["Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9, 0],
+            ["Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10, 0],
+            ["Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
+            ["Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
+            ["Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
+            ["Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
+            ["Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
+            ["Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0],
+            ["Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3, 0],
+            ["Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
+            ["Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
+            ["Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
+            ["Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0]
         ];
 
         function initSpreadsheet() {
@@ -355,7 +509,7 @@
 
             let savedData = [];
             try {
-                const rawDb = localStorage.getItem('student_results_db_full_v2');
+                const rawDb = localStorage.getItem('makpoly_student_results_db_v5');
                 if (rawDb) {
                     const parsed = JSON.parse(rawDb);
                     savedData = parsed.map(item => [
@@ -368,7 +522,8 @@
                         item.test === 0 ? '' : item.test,
                         item.practical === 0 ? '' : item.practical,
                         item.exam === 0 ? '' : item.exam,
-                        item.total || 0
+                        item.total || 0,
+                        item.checkCount || 0
                     ]);
                 }
             } catch (e) {
@@ -381,13 +536,14 @@
                     const test = parseFloat(row[6]) || 0;
                     const pract = parseFloat(row[7]) || 0;
                     const exam = parseFloat(row[8]) || 0;
-                    return [row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], ca + test + pract + exam];
+                    const checkCount = parseFloat(row[9]) || 0;
+                    return [row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], ca + test + pract + exam, checkCount];
                 });
             }
 
             hot = new Handsontable(container, {
                 data: savedData,
-                colHeaders: ['FULL NAME', 'MATRIC NUMBER', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM', 'TOTAL'],
+                colHeaders: ['FULL NAME', 'MATRIC NUMBER', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM', 'TOTAL', 'CHECK COUNT'],
                 columns: [
                     { data: 0, type: 'text' },
                     { data: 1, type: 'text' },
@@ -398,7 +554,8 @@
                     { data: 6, type: 'numeric' },
                     { data: 7, type: 'numeric' },
                     { data: 8, type: 'numeric' },
-                    { data: 9, type: 'numeric', readOnly: true }
+                    { data: 9, type: 'numeric', readOnly: true },
+                    { data: 10, type: 'numeric', readOnly: true }
                 ],
                 rowHeaders: true,
                 contextMenu: true,
@@ -463,6 +620,7 @@
                 const practical = parseFloat(row[7]) || 0;
                 const exam = parseFloat(row[8]) || 0;
                 const total = ca + test + practical + exam;
+                const checkCount = parseFloat(row[10]) || 0;
 
                 const nameParts = fullName.toLowerCase().split(/\s+/).filter(Boolean);
 
@@ -478,12 +636,13 @@
                     test: test,
                     practical: practical,
                     exam: exam,
-                    total: total
+                    total: total,
+                    checkCount: checkCount
                 });
             });
 
             try {
-                localStorage.setItem('student_results_db_full_v2', JSON.stringify(processedRecords));
+                localStorage.setItem('makpoly_student_results_db_v5', JSON.stringify(processedRecords));
                 const statusDiv = document.getElementById('uploadStatus');
                 statusDiv.style.color = '#16a34a';
                 statusDiv.textContent = `Successfully saved and published ${processedRecords.length} records!`;
@@ -504,7 +663,7 @@
 
             let database = [];
             try {
-                let rawDb = localStorage.getItem('student_results_db_full_v2');
+                let rawDb = localStorage.getItem('makpoly_student_results_db_v5');
                 if (rawDb) {
                     database = JSON.parse(rawDb);
                 }
@@ -518,6 +677,7 @@
                     const test = parseFloat(row[6]) || 0;
                     const practical = parseFloat(row[7]) || 0;
                     const exam = parseFloat(row[8]) || 0;
+                    const checkCount = parseFloat(row[9]) || 0;
                     return {
                         fullName: fullName,
                         nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
@@ -530,7 +690,8 @@
                         test: test,
                         practical: practical,
                         exam: exam,
-                        total: ca + test + practical + exam
+                        total: ca + test + practical + exam,
+                        checkCount: checkCount
                     };
                 });
             }
@@ -542,6 +703,12 @@
             });
 
             if (studentMatch) {
+                studentMatch.checkCount = (studentMatch.checkCount || 0) + 1;
+
+                try {
+                    localStorage.setItem('makpoly_student_results_db_v5', JSON.stringify(database));
+                } catch (e) {}
+
                 document.getElementById('resCourse').textContent = studentMatch.course;
                 document.getElementById('resName').textContent = studentMatch.fullName;
                 document.getElementById('resMatric').textContent = studentMatch.originalMatric;
@@ -553,10 +720,62 @@
                 document.getElementById('resExam').textContent = studentMatch.exam;
                 document.getElementById('resTotal').textContent = studentMatch.total;
                 
+                const perfMsg = document.getElementById('performanceMessage');
+                if (studentMatch.total >= 40) {
+                    perfMsg.className = 'performance-banner perf-pass';
+                    perfMsg.textContent = '🎉 STATUS: PASS (Great Job!)';
+                } else {
+                    perfMsg.className = 'performance-banner perf-rerun';
+                    perfMsg.textContent = '⚠️ STATUS: RERUN / FAIL (Below Pass Threshold of 40) - see you next year for this course again';
+                }
+
                 resultBox.style.display = 'block';
             } else {
-                errorDiv.textContent = 'Result not found. Please verify that both your Matric Number and name are correct.';
+                errorDiv.textContent = 'No matching result found. Please check your spelling and matric number.';
             }
+        }
+
+        function downloadResultImage() {
+            const resultBox = document.getElementById('resultContainer');
+            if (typeof html2canvas === 'undefined') {
+                alert('Image download tool is still loading or unavailable.');
+                return;
+            }
+            html2canvas(resultBox).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'MAKPOLY_Result_Slip.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function downloadResultPDF() {
+            const resultBox = document.getElementById('resultContainer');
+            if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+                alert('PDF download tool is still loading or unavailable.');
+                return;
+            }
+            html2canvas(resultBox).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190; 
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                pdf.save('MAKPOLY_Result_Slip.pdf');
+            });
         }
     </script>
 </body>
