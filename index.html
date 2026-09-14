@@ -363,6 +363,7 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -370,7 +371,6 @@
         <div class="card">
             <!-- Construction Media Display Header with Dynamic Color Extraction -->
             <div class="media-banner" id="mediaBannerContainer">
-                <!-- Using a stable public construction/site engineering image -->
                 <img id="bannerMediaElement" src="https://images.unsplash.com/photo-1541888946425-d0fbb1857966?auto=format&fit=crop&w=1000&q=80" alt="Construction Site Engineering" crossorigin="anonymous">
                 <canvas id="colorExtractCanvas" class="hidden"></canvas>
                 <div class="media-controls">
@@ -478,11 +478,10 @@
     </div>
 
     <script>
-        // Media Switcher & Dynamic Layout Color Extraction
+        // Media Switcher & Dynamic Layout Color Extraction (Autoplay Video enabled)
         let mediaMode = 'image';
         function toggleMediaSource() {
             const container = document.getElementById('mediaBannerContainer');
-            const label = document.getElementById('mediaLabel');
             
             if (mediaMode === 'image') {
                 mediaMode = 'video';
@@ -516,7 +515,6 @@
         function setupDynamicColorExtraction(mediaElement) {
             mediaElement.addEventListener('load', extractColor);
             mediaElement.addEventListener('loadeddata', extractColor);
-            // If already loaded
             if (mediaElement.complete || mediaElement.readyState >= 2) {
                 setTimeout(extractColor, 500);
             }
@@ -532,10 +530,8 @@
                 canvas.height = 50;
                 ctx.drawImage(img, 0, 0, 50, 50);
                 const p = ctx.getImageData(25, 25, 1, 1).data;
-                // Formulate dominant hex color
                 const hex = "#" + ((1 << 24) + (p[0] << 16) + (p[1] << 8) + p[2]).toString(16).slice(1);
                 document.documentElement.style.setProperty('--primary', hex);
-                // Compute darker hover variant
                 const hoverHex = "#" + ((1 << 24) + (Math.max(0, p[0]-30) << 16) + (Math.max(0, p[1]-30) << 8) + Math.max(0, p[2]-30)).toString(16).slice(1);
                 document.documentElement.style.setProperty('--primary-hover', hoverHex);
             } catch (e) {
@@ -659,7 +655,7 @@
         }
 
         function escapeHtml(str) {
-            return str.replace(/"/g, '&quot;');
+            return String(str).replace(/"/g, '&quot;');
         }
 
         function handleAdminLogin() {
@@ -753,67 +749,104 @@
                     level: String(row[2] || '').trim(),
                     program: String(row[3] || '').trim(),
                     course: String(row[4] || '').trim(),
-                    scoreBreakdown: { 'C.A': ca, 'Test': test, 'Practical': practical, 'Exam': exam },
+                    ca: row[5],
+                    test: row[6],
+                    practical: row[7],
+                    exam: row[8],
                     total: total
                 });
             });
 
-            const studentMatch = database.find(item => {
-                return item.matricClean === inputMatric && item.nameParts.some(part => part === inputName);
+            // Find matching record
+            const found = database.find(item => {
+                const matricMatch = item.matricClean === inputMatric;
+                const nameMatch = item.nameParts.some(part => inputName.includes(part)) || inputName.split(/\s+/).every(token => item.nameParts.some(p => p.includes(token)));
+                return matricMatch && nameMatch;
             });
 
-            if (studentMatch) {
-                document.getElementById('resCourse').textContent = studentMatch.course;
-                document.getElementById('resName').textContent = studentMatch.fullName;
-                document.getElementById('resMatric').textContent = studentMatch.originalMatric;
-                document.getElementById('resLevel').textContent = studentMatch.level;
-                document.getElementById('resProgram').textContent = studentMatch.program;
-                
-                const dynamicContainer = document.getElementById('dynamicScoresContainer');
-                dynamicContainer.innerHTML = '';
-                for (const [key, val] of Object.entries(studentMatch.scoreBreakdown)) {
-                    const rowDiv = document.createElement('div');
-                    rowDiv.className = 'result-row';
-                    rowDiv.innerHTML = `<span>${key}:</span> <span>${val}</span>`;
-                    dynamicContainer.appendChild(rowDiv);
-                }
-
-                document.getElementById('resTotal').textContent = studentMatch.total;
-
-                // Handle score threshold requirement (< 40)
-                const msgArea = document.getElementById('scoreMessageArea');
-                if (studentMatch.total < 40) {
-                    msgArea.innerHTML = `<div class="rerun-msg-box">You've rerun this course, register for it again next year and prepare well for it. See again next year.</div>`;
-                } else {
-                    msgArea.innerHTML = '';
-                }
-
-                resultBox.style.display = 'block';
-            } else {
-                errorDiv.textContent = 'Result not found. Please verify that both your Matric Number and name are correct.';
+            if (!found) {
+                errorDiv.textContent = 'No matching result found. Please check your spelling and Matric Number.';
+                return;
             }
+
+            // Populate result slip view
+            document.getElementById('resCourse').textContent = found.course || 'N/A';
+            document.getElementById('resName').textContent = found.fullName;
+            document.getElementById('resMatric').textContent = found.originalMatric;
+            document.getElementById('resLevel').textContent = found.level;
+            document.getElementById('resProgram').textContent = found.program;
+
+            const scoresContainer = document.getElementById('dynamicScoresContainer');
+            scoresContainer.innerHTML = '';
+            
+            if (found.ca !== '') {
+                scoresContainer.innerHTML += `<div class="result-row"><span>C.A Score:</span> <span>${found.ca}</span></div>`;
+            }
+            if (found.test !== '') {
+                scoresContainer.innerHTML += `<div class="result-row"><span>Test Score:</span> <span>${found.test}</span></div>`;
+            }
+            if (found.practical !== '') {
+                scoresContainer.innerHTML += `<div class="result-row"><span>Practical Score:</span> <span>${found.practical}</span></div>`;
+            }
+            if (found.exam !== '') {
+                scoresContainer.innerHTML += `<div class="result-row"><span>Exam Score:</span> <span>${found.exam}</span></div>`;
+            }
+
+            document.getElementById('resTotal').textContent = found.total + ' / 100';
+
+            const msgArea = document.getElementById('scoreMessageArea');
+            if (found.total < 40) {
+                msgArea.innerHTML = `<div class="rerun-msg-box">⚠️ RERUN REQUIRED: Your total score is below 40. You are required to repeat/rerun this course.</div>`;
+            } else {
+                msgArea.innerHTML = `<div class="success-msg" style="margin-top:15px; font-weight:bold;">🎉 Congratulations! You passed this course successfully.</div>`;
+            }
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
         }
 
         function downloadResultImage() {
             const resultBox = document.getElementById('resultContainer');
-            const actionButtons = resultBox.querySelectorAll('.btn-info, .btn-success');
-            actionButtons.forEach(btn => btn.style.display = 'none');
+            // Hide action buttons before capture
+            const buttons = resultBox.querySelectorAll('button');
+            buttons.forEach(b => b.style.display = 'none');
 
-            html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' }).then(canvas => {
-                actionButtons.forEach(btn => btn.style.display = 'block');
+            html2canvas(resultBox, { backgroundColor: '#1c1917', scale: 2 }).then(canvas => {
+                buttons.forEach(b => b.style.display = 'block');
                 const link = document.createElement('a');
-                link.download = document.getElementById('resMatric').textContent + '_Result_Slip.png';
+                link.download = 'MAPKPOLY_Result_Slip.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+            }).catch(err => {
+                buttons.forEach(b => b.style.display = 'block');
+                alert('Could not download image. Try printing instead.');
             });
         }
 
         function downloadResultPDF() {
             const resultBox = document.getElementById('resultContainer');
-            const actionButtons = resultBox.querySelectorAll('.btn-info, .btn-success');
-            actionButtons.forEach(btn => btn.style.display = 'none');
-            window.print();
-            actionButtons.forEach(btn => btn.style.display = 'block');
+            const buttons = resultBox.querySelectorAll('button');
+            buttons.forEach(b => b.style.display = 'none');
+
+            html2canvas(resultBox, { backgroundColor: '#1c1917', scale: 2 }).then(canvas => {
+                buttons.forEach(b => b.style.display = 'block');
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190;
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                pdf.save('MAPKPOLY_Result_Slip.pdf');
+            }).catch(err => {
+                buttons.forEach(b => b.style.display = 'block');
+                window.print();
+            });
         }
     </script>
 </body>
