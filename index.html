@@ -424,7 +424,9 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Full Grid Control:</strong> Columns include <strong>FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL, CHECK COUNT</strong>. Totals update automatically. Pass mark threshold is 40.
+                        📊 <strong>Full Grid Control & Duplication:</strong> Columns include <strong>STATUS (SHOW/HIDE), FULL NAME, MATRIC NUMBER, LEVEL, PROGRAM, COURSE, C.A, TEST, PRACTICAL, EXAM, TOTAL, CHECK COUNT</strong>. <br>
+                        • Set STATUS to <strong>SHOW</strong> for the version you want students to see, or <strong>HIDE</strong> for duplicates/drafts.<br>
+                        • Right-click any row to insert rows or duplicate data. Totals update automatically.
                     </div>
 
                     <div id="spreadsheet-container"></div>
@@ -443,9 +445,8 @@
     </footer>
 
     <script>
-        // CONFIGURATION FOR CLOUD SYNC (Using JSONBin.io free tier structure)
-        // Note: You can create a free bin on jsonbin.io and paste your Bin ID and Master Key here.
-        const CLOUD_BIN_ID = 'YOUR_JSONBIN_ID_HERE'; 
+        // CONFIGURATION FOR CLOUD SYNC (JSONBin.io free tier structure)
+        const CLOUD_BIN_ID = 'YOUR_JSONBIN_ID_HERE';  
         const CLOUD_API_KEY = 'YOUR_JSONBIN_MASTER_KEY_HERE';
 
         function switchTab(tabId, event) {
@@ -462,57 +463,56 @@
         let hot = null;
 
         const initialDataset = [
-            ["1. Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7, 0],
-            ["2. Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
-            ["3. Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 0, 0],
-            ["4. Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6, 0],
-            ["5. Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1, 0],
-            ["6. Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32, 0],
-            ["1. Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19, 0],
-            ["2. Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20, 0],
-            ["3. Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
-            ["Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 33, 0],
-            ["Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 20, 0],
-            ["Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
-            ["Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 27, 0],
-            ["Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
-            ["Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 28, 0],
-            ["Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 32, 0],
-            ["Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
-            ["Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 11, 0],
-            ["Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 22, 0],
-            ["Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
-            ["Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 24, 0],
-            ["Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
-            ["Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13, 0],
-            ["Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9, 0],
-            ["Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10, 0],
-            ["Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
-            ["Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
-            ["Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
-            ["Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
-            ["Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0],
-            ["Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3, 0],
-            ["Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
-            ["Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
-            ["Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
-            ["Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0]
+            ["SHOW", "1. Agboluaje Tijani", "25NQS001", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 7, 0],
+            ["SHOW", "2. Azeez Mutiat", "25NQS002", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
+            ["SHOW", "3. Adetoro Praise", "25NQS003", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 0, 0],
+            ["SHOW", "4. Rabiu Tijani", "25NQS004", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 6, 0],
+            ["SHOW", "5. Ibiyemi Bashit", "25NQS007", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 1, 0],
+            ["SHOW", "6. Egbeleke Segun", "25NQS008", "ND 1", "FULL TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 32, 0],
+            ["SHOW", "1. Adeyeye Samuel", "25PQS001", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 19, 0],
+            ["SHOW", "2. Ayantunde Kehinde", "25PQS002", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 20, 0],
+            ["SHOW", "3. Hassan Ahmad", "25PQS003", "ND 1", "PART TIME", "PRINCIPLE OF LAW OF CONTRACT", "", "", "", 8, 0],
+            ["SHOW", "Mudasiru Maleek", "25HQS001", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 33, 0],
+            ["SHOW", "Gbadegesin", "25HQS002", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
+            ["SHOW", "Ogundele Kaosara", "25HQS003", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 20, 0],
+            ["SHOW", "Ishola Esther", "25HQS004", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
+            ["SHOW", "Owoade Dorcas", "25HQS005", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
+            ["SHOW", "Akeem Mariam", "25HQS007", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 27, 0],
+            ["SHOW", "Issa Abduqowiwu", "25HQS008", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
+            ["SHOW", "Ogungbenro Bose", "25HQS009", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 25, 0],
+            ["SHOW", "Ogunkunle Opeyemi", "25HQS010", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 28, 0],
+            ["SHOW", "Mukaila Kehinde", "25HQS011", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 32, 0],
+            ["SHOW", "Aramide Faith", "25HQS012", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 29, 0],
+            ["SHOW", "Dairo Emmanuel", "25HQS013", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 11, 0],
+            ["SHOW", "Olaniyi Christianah", "25HQS014", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
+            ["SHOW", "Adeleke Olamide", "25HQS015", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 22, 0],
+            ["SHOW", "Lateef Qoyum", "25HQS016", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 30, 0],
+            ["SHOW", "Salami Hakeem", "25HQS017", "HND 1", "FULL TIME", "COMPUTER APPLICATIONS", "", "", "", 24, 0],
+            ["SHOW", "Ahmed Sobur", "24NQS001", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
+            ["SHOW", "Kehinde Simeon", "24NQS004", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 13, 0],
+            ["SHOW", "Olabamiji Fathia", "24NQS005", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["SHOW", "Akinyemi Aishat", "24NQS006", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 9, 0],
+            ["SHOW", "Wasila Qowiyu", "24NQS007", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["SHOW", "Adebisi Qudus", "24NQS009", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 10, 0],
+            ["SHOW", "Popoola Faruq", "24NQS010", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 28, 0],
+            ["SHOW", "Adewale Hamed", "24NQS011", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
+            ["SHOW", "Owolabi Islamiat", "24NQS012", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
+            ["SHOW", "Babalola Victor", "24NQS013", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["SHOW", "Lawal Muhammed", "24NQS014", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
+            ["SHOW", "Afolayan Kamaldeen", "24NQS015", "ND 2", "FULL TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 5, 0],
+            ["SHOW", "Okolo Richard", "24PQS001", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0],
+            ["SHOW", "Adigun Olusola", "24PQS002", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 3, 0],
+            ["SHOW", "Ayinde Samad", "24PQS003", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
+            ["SHOW", "Mustapha Qudus", "24PQS004", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 1, 0],
+            ["SHOW", "Musibau Abdurasheed", "24PQS006", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 17, 0],
+            ["SHOW", "Abdulrasheed Sefiu", "24PQS007", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 4, 0],
+            ["SHOW", "Muhideen Abdhameed", "24PQS009", "ND 2", "PART TIME", "SUSTAINABLE CONSTRUCTION", "", "", "", 2, 0]
         ];
 
         async function fetchCloudDatabase() {
             try {
                 if (CLOUD_BIN_ID === 'YOUR_JSONBIN_ID_HERE') {
-                    // Fallback to local storage if cloud not yet configured
-                    const rawDb = localStorage.getItem('makpoly_student_results_db_v6');
+                    const rawDb = localStorage.getItem('makpoly_student_results_db_v7');
                     return rawDb ? JSON.parse(rawDb) : null;
                 }
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}/latest`, {
@@ -521,7 +521,7 @@
                 const data = await response.json();
                 return data.record;
             } catch (e) {
-                const rawDb = localStorage.getItem('makpoly_student_results_db_v6');
+                const rawDb = localStorage.getItem('makpoly_student_results_db_v7');
                 return rawDb ? JSON.parse(rawDb) : null;
             }
         }
@@ -542,6 +542,7 @@
             
             if (parsed && Array.isArray(parsed)) {
                 savedData = parsed.map(item => [
+                    item.status || 'SHOW',
                     item.fullName || '',
                     item.originalMatric || '',
                     item.level || '',
@@ -558,30 +559,37 @@
 
             if (savedData.length === 0) {
                 savedData = initialDataset.map(row => {
-                    const ca = parseFloat(row[5]) || 0;
-                    const test = parseFloat(row[6]) || 0;
-                    const pract = parseFloat(row[7]) || 0;
-                    const exam = parseFloat(row[8]) || 0;
-                    const checkCount = parseFloat(row[9]) || 0;
-                    return [row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], ca + test + pract + exam, checkCount];
+                    const status = row[0];
+                    const fullName = row[1];
+                    const matric = row[2];
+                    const level = row[3];
+                    const prog = row[4];
+                    const course = row[5];
+                    const ca = parseFloat(row[6]) || 0;
+                    const test = parseFloat(row[7]) || 0;
+                    const pract = parseFloat(row[8]) || 0;
+                    const exam = parseFloat(row[9]) || 0;
+                    const checkCount = parseFloat(row[10]) || 0;
+                    return [status, fullName, matric, level, prog, course, row[6], row[7], row[8], row[9], ca + test + pract + exam, checkCount];
                 });
             }
 
             hot = new Handsontable(container, {
                 data: savedData,
-                colHeaders: ['FULL NAME', 'MATRIC NUMBER', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM', 'TOTAL', 'CHECK COUNT'],
+                colHeaders: ['STATUS', 'FULL NAME', 'MATRIC NUMBER', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM', 'TOTAL', 'CHECK COUNT'],
                 columns: [
-                    { data: 0, type: 'text' },
+                    { data: 0, type: 'dropdown', source: ['SHOW', 'HIDE'] },
                     { data: 1, type: 'text' },
                     { data: 2, type: 'text' },
                     { data: 3, type: 'text' },
                     { data: 4, type: 'text' },
-                    { data: 5, type: 'numeric' },
+                    { data: 5, type: 'text' },
                     { data: 6, type: 'numeric' },
                     { data: 7, type: 'numeric' },
                     { data: 8, type: 'numeric' },
-                    { data: 9, type: 'numeric', readOnly: true },
-                    { data: 10, type: 'numeric', readOnly: true }
+                    { data: 9, type: 'numeric' },
+                    { data: 10, type: 'numeric', readOnly: true },
+                    { data: 11, type: 'numeric', readOnly: true }
                 ],
                 rowHeaders: true,
                 contextMenu: true,
@@ -593,13 +601,13 @@
                     
                     hot.batch(() => {
                         changes.forEach(([row, prop]) => {
-                            if (prop >= 5 && prop <= 8) {
-                                const ca = parseFloat(hot.getDataAtCell(row, 5)) || 0;
-                                const test = parseFloat(hot.getDataAtCell(row, 6)) || 0;
-                                const pract = parseFloat(hot.getDataAtCell(row, 7)) || 0;
-                                const exam = parseFloat(hot.getDataAtCell(row, 8)) || 0;
+                            if (prop >= 6 && prop <= 9) {
+                                const ca = parseFloat(hot.getDataAtCell(row, 6)) || 0;
+                                const test = parseFloat(hot.getDataAtCell(row, 7)) || 0;
+                                const pract = parseFloat(hot.getDataAtCell(row, 8)) || 0;
+                                const exam = parseFloat(hot.getDataAtCell(row, 9)) || 0;
                                 const total = ca + test + pract + exam;
-                                hot.setDataAtCell(row, 9, total, 'sumUpdate');
+                                hot.setDataAtCell(row, 10, total, 'sumUpdate');
                             }
                         });
                     });
@@ -634,23 +642,25 @@
             const processedRecords = [];
 
             rawData.forEach(row => {
-                const fullName = String(row[0] || '').trim();
-                const originalMatric = String(row[1] || '').trim();
+                const status = String(row[0] || 'SHOW').trim().toUpperCase();
+                const fullName = String(row[1] || '').trim();
+                const originalMatric = String(row[2] || '').trim();
                 if (!fullName && !originalMatric) return;
 
-                const level = String(row[2] || '').trim();
-                const program = String(row[3] || '').trim();
-                const course = String(row[4] || '').trim();
-                const ca = parseFloat(row[5]) || 0;
-                const test = parseFloat(row[6]) || 0;
-                const practical = parseFloat(row[7]) || 0;
-                const exam = parseFloat(row[8]) || 0;
+                const level = String(row[3] || '').trim();
+                const program = String(row[4] || '').trim();
+                const course = String(row[5] || '').trim();
+                const ca = parseFloat(row[6]) || 0;
+                const test = parseFloat(row[7]) || 0;
+                const practical = parseFloat(row[8]) || 0;
+                const exam = parseFloat(row[9]) || 0;
                 const total = ca + test + practical + exam;
-                const checkCount = parseFloat(row[10]) || 0;
+                const checkCount = parseFloat(row[11]) || 0;
 
                 const nameParts = fullName.toLowerCase().split(/\s+/).filter(Boolean);
 
                 processedRecords.push({
+                    status: status === 'HIDE' ? 'HIDE' : 'SHOW',
                     fullName: fullName,
                     nameParts: nameParts,
                     matricClean: originalMatric.toLowerCase(),
@@ -672,8 +682,7 @@
             statusDiv.textContent = 'Publishing updates to cloud servers...';
 
             try {
-                // Save locally first as backup
-                localStorage.setItem('makpoly_student_results_db_v6', JSON.stringify(processedRecords));
+                localStorage.setItem('makpoly_student_results_db_v7', JSON.stringify(processedRecords));
 
                 if (CLOUD_BIN_ID !== 'YOUR_JSONBIN_ID_HERE') {
                     await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
@@ -708,21 +717,23 @@
 
             if (!database || database.length === 0) {
                 database = initialDataset.map(row => {
-                    const fullName = row[0];
-                    const originalMatric = row[1];
-                    const ca = parseFloat(row[5]) || 0;
-                    const test = parseFloat(row[6]) || 0;
-                    const practical = parseFloat(row[7]) || 0;
-                    const exam = parseFloat(row[8]) || 0;
-                    const checkCount = parseFloat(row[9]) || 0;
+                    const status = row[0];
+                    const fullName = row[1];
+                    const originalMatric = row[2];
+                    const ca = parseFloat(row[6]) || 0;
+                    const test = parseFloat(row[7]) || 0;
+                    const practical = parseFloat(row[8]) || 0;
+                    const exam = parseFloat(row[9]) || 0;
+                    const checkCount = parseFloat(row[11]) || 0;
                     return {
+                        status: status,
                         fullName: fullName,
                         nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
                         matricClean: originalMatric.toLowerCase(),
                         originalMatric: originalMatric,
-                        level: row[2],
-                        program: row[3],
-                        course: row[4],
+                        level: row[3],
+                        program: row[4],
+                        course: row[5],
                         ca: ca,
                         test: test,
                         practical: practical,
@@ -733,7 +744,9 @@
                 });
             }
 
+            // Only filter results where status is explicitly set to 'SHOW'
             const studentMatch = database.find(item => {
+                if (item.status === 'HIDE') return false;
                 const matricMatches = item.matricClean === inputMatric;
                 const nameMatches = item.nameParts.some(part => part === inputName);
                 return matricMatches && nameMatches;
@@ -752,20 +765,66 @@
                 document.getElementById('resPractical').textContent = studentMatch.practical;
                 document.getElementById('resExam').textContent = studentMatch.exam;
                 document.getElementById('resTotal').textContent = studentMatch.total;
-                
-                const perfMsg = document.getElementById('performanceMessage');
+
+                const passMsg = document.getElementById('performanceMessage');
                 if (studentMatch.total >= 40) {
-                    perfMsg.className = 'performance-banner perf-pass';
-                    perfMsg.textContent = '🎉 STATUS: PASS (Great Job!)';
+                    passMsg.className = 'performance-banner perf-pass';
+                    passMsg.textContent = 'PASSED — EXCELLENT STANDING';
                 } else {
-                    perfMsg.className = 'performance-banner perf-rerun';
-                    perfMsg.textContent = '⚠️ STATUS: RERUN / FAIL (Below Pass Threshold of 40)';
+                    passMsg.className = 'performance-banner perf-rerun';
+                    passMsg.textContent = 'RE-RUN / CARRYOVER REQUIRED';
                 }
 
                 resultBox.style.display = 'block';
+
+                // Attempt to sync incremented check count back to cloud quietly
+                if (CLOUD_BIN_ID !== 'YOUR_JSONBIN_ID_HERE') {
+                    fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_API_KEY },
+                        body: JSON.stringify(database)
+                    }).catch(() => {});
+                } else {
+                    localStorage.setItem('makpoly_student_results_db_v7', JSON.stringify(database));
+                }
             } else {
-                errorDiv.textContent = 'No matching result found. Please check your spelling and matric number.';
+                errorDiv.textContent = 'No matching published result found for this Name and Matric Number combination. Please check your details.';
             }
+        }
+
+        function downloadResultImage() {
+            const resultBox = document.getElementById('resultContainer');
+            html2canvas(resultBox).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'MAKPOLY_Result_Slip.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function downloadResultPDF() {
+            const { jsPDF } = window.jspdf;
+            const resultBox = document.getElementById('resultContainer');
+            html2canvas(resultBox).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190;
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                pdf.save('MAKPOLY_Result_Slip.pdf');
+            });
         }
     </script>
 </body>
