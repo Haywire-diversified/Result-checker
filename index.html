@@ -748,19 +748,19 @@
             document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
             document.getElementById('resLevel').textContent = matchedRecord.level || 'N/A';
             document.getElementById('resProgram').textContent = matchedRecord.program || 'N/A';
-            document.getElementById('resCA').textContent = matchedRecord.ca !== 0 ? matchedRecord.ca : '-';
-            document.getElementById('resTest').textContent = matchedRecord.test !== 0 ? matchedRecord.test : '-';
-            document.getElementById('resPractical').textContent = matchedRecord.practical !== 0 ? matchedRecord.practical : '-';
-            document.getElementById('resExam').textContent = matchedRecord.exam !== 0 ? matchedRecord.exam : '-';
+            document.getElementById('resCA').textContent = matchedRecord.ca;
+            document.getElementById('resTest').textContent = matchedRecord.test;
+            document.getElementById('resPractical').textContent = matchedRecord.practical;
+            document.getElementById('resExam').textContent = matchedRecord.exam;
             document.getElementById('resTotal').textContent = matchedRecord.total;
 
             const perfBanner = document.getElementById('performanceMessage');
             if (matchedRecord.total >= 40) {
                 perfBanner.className = 'performance-banner perf-pass';
-                perfBanner.textContent = '🎉 PASS - Excellent Performance!';
+                perfBanner.textContent = 'STATUS: PASS — Excellent Performance!';
             } else {
                 perfBanner.className = 'performance-banner perf-rerun';
-                perfBanner.textContent = '⚠️ RERUN REQUIRED - Score is below the passing mark.';
+                perfBanner.textContent = 'STATUS: FAIL / RERUN — Supplemental Examination Required';
             }
 
             resultBox.style.display = 'block';
@@ -768,37 +768,35 @@
 
         async function downloadResultImage() {
             const box = document.getElementById('resultContainer');
-            const canvas = await html2canvas(box, { scale: 2 });
-            const link = document.createElement('a');
-            link.download = `MAKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+            try {
+                const canvas = await html2canvas(box, { scale: 2 });
+                const link = document.createElement('a');
+                link.download = 'MAKPOLY_Result_Slip.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (e) {
+                alert('Image download failed. Try taking a screenshot.');
+            }
         }
 
         async function downloadResultPDF() {
-            const { jsPDF } = window.jspdf;
             const box = document.getElementById('resultContainer');
-            const canvas = await html2canvas(box, { scale: 2 });
-            const imgData = canvas.toDataURL('image/png');
-            
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 190;
-            const pageHeight = 295;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 10;
+            try {
+                const canvas = await html2canvas(box, { scale: 2 });
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190;
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
 
-            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                pdf.save('MAKPOLY_Result_Slip.pdf');
+            } catch (e) {
+                alert('PDF generation failed.');
             }
-
-            pdf.save(`MAKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
         }
     </script>
 </body>
