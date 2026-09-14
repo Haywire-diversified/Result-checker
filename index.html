@@ -752,66 +752,60 @@
                 return matricMatch && nameMatch;
             });
 
-            if (!matchedRecord) {
-                errorDiv.textContent = 'No matching record found. Please verify your Name and Matric Number.';
-                return;
-            }
+            if (matchedRecord) {
+                document.getElementById('resCourse').textContent = matchedRecord.course;
+                document.getElementById('resName').textContent = matchedRecord.fullName;
+                document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
+                document.getElementById('resLevel').textContent = matchedRecord.level;
+                document.getElementById('resProgram').textContent = matchedRecord.program;
+                document.getElementById('resTotal').textContent = matchedRecord.total;
 
-            document.getElementById('resCourse').textContent = matchedRecord.course;
-            document.getElementById('resName').textContent = matchedRecord.fullName;
-            document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
-            document.getElementById('resLevel').textContent = matchedRecord.level;
-            document.getElementById('resProgram').textContent = matchedRecord.program;
+                const dynContainer = document.getElementById('dynamicScoresContainer');
+                dynContainer.innerHTML = '';
+                
+                const scoreFields = [
+                    { label: 'C.A Score:', val: matchedRecord.ca },
+                    { label: 'Test Score:', val: matchedRecord.test },
+                    { label: 'Practical Score:', val: matchedRecord.practical },
+                    { label: 'Exam Score:', val: matchedRecord.exam }
+                ];
 
-            const scoresContainer = document.getElementById('dynamicScoresContainer');
-            scoresContainer.innerHTML = '';
+                scoreFields.forEach(f => {
+                    if (f.val !== '' && f.val !== null && f.val !== undefined) {
+                        const rowDiv = document.createElement('div');
+                        rowDiv.className = 'result-row';
+                        rowDiv.innerHTML = `<span>${f.label}</span><span>${f.val}</span>`;
+                        dynContainer.appendChild(rowDiv);
+                    }
+                });
 
-            const scoreFields = [
-                { label: 'C.A Score:', val: matchedRecord.ca },
-                { label: 'Test Score:', val: matchedRecord.test },
-                { label: 'Practical Score:', val: matchedRecord.practical },
-                { label: 'Exam Score:', val: matchedRecord.exam }
-            ];
-
-            scoreFields.forEach(sf => {
-                if (sf.val !== '' && sf.val !== undefined && sf.val !== null && !isNaN(parseFloat(sf.val))) {
-                    const rowDiv = document.createElement('div');
-                    rowDiv.className = 'result-row';
-                    rowDiv.innerHTML = `<span>${sf.label}</span> <span>${sf.val}</span>`;
-                    scoresContainer.appendChild(rowDiv);
+                const msgArea = document.getElementById('scoreMessageArea');
+                if (matchedRecord.total >= 40) {
+                    msgArea.innerHTML = '<div class="success-msg" style="margin-top:15px; font-weight:bold;">Status: PASS 🎉</div>';
+                } else {
+                    msgArea.innerHTML = '<div class="error-msg" style="margin-top:15px; font-weight:bold;">Status: FAIL / CARRY OVER ⚠️</div>';
                 }
-            });
 
-            document.getElementById('resTotal').textContent = matchedRecord.total;
-
-            const msgArea = document.getElementById('scoreMessageArea');
-            if (matchedRecord.total < 45) {
-                msgArea.innerHTML = `<div class="rerun-msg-box">⚠️ Total Score is below pass mark (45). Supplementary or carryover required.</div>`;
+                resultBox.style.display = 'block';
             } else {
-                msgArea.innerHTML = `<div class="success-msg" style="margin-top:15px; font-weight:600;">🎉 Congratulations! You passed this course.</div>`;
+                errorDiv.textContent = 'No matching student record found. Please verify your Name and Matric Number.';
             }
-
-            resultBox.style.display = 'block';
         }
 
-        async function downloadResultImage() {
+        function downloadResultImage() {
             const resultBox = document.getElementById('resultContainer');
-            try {
-                const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
+            html2canvas(resultBox).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
+                link.download = 'MAPKPOLY_Result_Slip.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            } catch (err) {
-                alert('Could not download image. Please try printing or use another browser.');
-            }
+            });
         }
 
-        async function downloadResultPDF() {
+        function downloadResultPDF() {
             const { jsPDF } = window.jspdf;
             const resultBox = document.getElementById('resultContainer');
-            try {
-                const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
+            html2canvas(resultBox).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 190;
@@ -829,11 +823,8 @@
                     pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
                 }
-
-                pdf.save(`MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
-            } catch (err) {
-                alert('Could not generate PDF. Please try again.');
-            }
+                pdf.save('MAPKPOLY_Result_Slip.pdf');
+            });
         }
     </script>
 </body>
