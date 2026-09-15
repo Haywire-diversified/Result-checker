@@ -752,79 +752,82 @@
                 return matricMatch && nameMatch;
             });
 
-            if (matchedRecord) {
-                document.getElementById('resCourse').textContent = matchedRecord.course;
-                document.getElementById('resName').textContent = matchedRecord.fullName;
-                document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
-                document.getElementById('resLevel').textContent = matchedRecord.level;
-                document.getElementById('resProgram').textContent = matchedRecord.program;
-                document.getElementById('resTotal').textContent = matchedRecord.total;
-
-                const dynContainer = document.getElementById('dynamicScoresContainer');
-                dynContainer.innerHTML = '';
-                
-                const scoreFields = [
-                    { label: 'C.A Score:', val: matchedRecord.ca },
-                    { label: 'Test Score:', val: matchedRecord.test },
-                    { label: 'Practical Score:', val: matchedRecord.practical },
-                    { label: 'Exam Score:', val: matchedRecord.exam }
-                ];
-
-                scoreFields.forEach(f => {
-                    if (f.val !== '' && f.val !== null && f.val !== undefined) {
-                        const rowDiv = document.createElement('div');
-                        rowDiv.className = 'result-row';
-                        rowDiv.innerHTML = `<span>${f.label}</span><span>${f.val}</span>`;
-                        dynContainer.appendChild(rowDiv);
-                    }
-                });
-
-                const msgArea = document.getElementById('scoreMessageArea');
-                if (matchedRecord.total >= 40) {
-                    msgArea.innerHTML = '<div class="success-msg" style="margin-top:15px; font-weight:bold;">Status: PASS 🎉</div>';
-                } else {
-                    msgArea.innerHTML = '<div class="error-msg" style="margin-top:15px; font-weight:bold;">Status: FAIL / CARRY OVER ⚠️</div>';
-                }
-
-                resultBox.style.display = 'block';
-            } else {
-                errorDiv.textContent = 'No matching student record found. Please verify your Name and Matric Number.';
+            if (!matchedRecord) {
+                errorDiv.textContent = 'No matching result found. Please check your spelling and Matric Number.';
+                return;
             }
+
+            document.getElementById('resCourse').textContent = matchedRecord.course;
+            document.getElementById('resName').textContent = matchedRecord.fullName;
+            document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
+            document.getElementById('resLevel').textContent = matchedRecord.level;
+            document.getElementById('resProgram').textContent = matchedRecord.program;
+            document.getElementById('resTotal').textContent = matchedRecord.total;
+
+            const dynamicContainer = document.getElementById('dynamicScoresContainer');
+            dynamicContainer.innerHTML = '';
+
+            const components = [
+                { label: 'Continuous Assessment (C.A):', val: matchedRecord.ca },
+                { label: 'Test Score:', val: matchedRecord.test },
+                { label: 'Practical Score:', val: matchedRecord.practical },
+                { label: 'Exam Score:', val: matchedRecord.exam }
+            ];
+
+            components.forEach(comp => {
+                if (comp.val !== '' && comp.val !== undefined && comp.val !== null) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'result-row';
+                    rowDiv.innerHTML = `<span>${comp.label}</span><span>${comp.val}</span>`;
+                    dynamicContainer.appendChild(rowDiv);
+                }
+            });
+
+            const msgArea = document.getElementById('scoreMessageArea');
+            if (matchedRecord.total >= 40) {
+                msgArea.innerHTML = `<div class="success-msg" style="margin-top:12px;">🎉 Congratulations! You passed this course.</div>`;
+            } else {
+                msgArea.innerHTML = `<div class="error-msg" style="margin-top:12px;">⚠️ You scored below the passing grade. Consult your department.</div>`;
+            }
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
         }
 
         function downloadResultImage() {
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox).then(canvas => {
+            const box = document.getElementById('resultContainer');
+            html2canvas(box, { backgroundColor: '#1c1917', scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'MAPKPOLY_Result_Slip.png';
+                link.download = `MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         }
 
-        function downloadResultPDF() {
+        async function downloadResultPDF() {
             const { jsPDF } = window.jspdf;
-            const resultBox = document.getElementById('resultContainer');
-            html2canvas(resultBox).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 190;
-                const pageHeight = 295;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
+            const box = document.getElementById('resultContainer');
+            const canvas = await html2canvas(box, { backgroundColor: '#1c1917', scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+            
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 190;
+            const pageHeight = 295;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 10;
 
+            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
+            }
 
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                pdf.save('MAPKPOLY_Result_Slip.pdf');
-            });
+            pdf.save(`MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
         }
     </script>
 </body>
