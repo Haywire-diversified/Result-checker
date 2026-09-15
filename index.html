@@ -3,220 +3,583 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Management Tables</title>
+    <title>MAKPOLY - Quantity Surveying Result Portal</title>
+    <!-- Include libraries for PDF and Image exports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
+        :root {
+            --primary-color: #003366;
+            --sidebar-bg: #1a1a2e;
+            --sidebar-hover: #16213e;
+            --accent-color: #0f3460;
+            --bg-color: #f4f7f6;
+            --text-dark: #333;
+            --text-light: #fff;
         }
-        h2 {
-            color: #333;
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-color);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 240px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            background-color: var(--accent-color);
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-menu li {
+            padding: 15px 20px;
+            border-bottom: 1px solid #2a2a4a;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .sidebar-menu li:hover, .sidebar-menu li.active {
+            background-color: var(--sidebar-hover);
+            border-left: 4px solid #4e89ae;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            width: 100%;
+        }
+        .top-navbar {
+            height: 60px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .top-navbar h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+        .content-area {
+            padding: 15px;
+            overflow-y: auto;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .app-view { display: none; }
+        .app-view.active-view { display: block; }
+
+        /* Admin Login Overlay Card */
+        .admin-auth-card {
+            background: white;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
         }
-        /* Tab Navigation Styles */
+        .admin-auth-card h3 { margin-top: 0; color: var(--primary-color); }
+
+        /* Tab Navigation Styles (Admin) */
         .tab-container {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
         .tab-button {
-            background-color: #ddd;
+            background-color: transparent;
             border: none;
             outline: none;
-            padding: 12px 24px;
+            padding: 10px 15px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
             transition: 0.3s;
-            margin: 0 5px;
+            margin-right: 5px;
             border-radius: 5px 5px 0 0;
         }
         .tab-button:hover {
-            background-color: #ccc;
+            color: var(--primary-color);
+            background-color: #e9ecef;
         }
         .tab-button.active {
-            background-color: #007bff;
-            color: white;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background-color: #fff;
         }
 
-        /* Tab Content Styles */
         .tab-content {
             display: none;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            max-width: 100%;
+            padding: 15px;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content.active { display: block; }
 
         /* Toolbar Styles */
         .toolbar {
             margin-bottom: 15px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
         }
-        .toolbar button {
-            padding: 8px 14px;
-            font-size: 14px;
+        .toolbar button, .file-upload-label {
+            padding: 8px 12px;
+            font-size: 12px;
             cursor: pointer;
             border: none;
             border-radius: 4px;
-            background-color: #28a745;
+            background-color: #007bff;
             color: white;
             transition: background 0.2s;
+            font-weight: bold;
+            display: inline-block;
         }
-        .toolbar button.delete-col-btn {
-            background-color: #dc3545;
-        }
-        .toolbar button:hover {
-            opacity: 0.9;
-        }
+        .toolbar button.add-btn { background-color: #28a745; }
+        .toolbar button.delete-col-btn { background-color: #dc3545; }
+        .toolbar button.save-btn { background-color: #17a2b8; }
+        .toolbar button:hover, .file-upload-label:hover { opacity: 0.8; }
+        input[type="file"] { display: none; }
 
         /* Table Styles */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            font-size: 13px;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
+            border: 1px solid #dee2e6;
+            padding: 8px 10px;
             text-align: left;
-            min-width: 100px;
+            min-width: 80px;
+            white-space: nowrap;
         }
         th {
-            background-color: #f8f9fa;
-            position: relative;
+            background-color: #e9ecef;
+            color: #495057;
         }
-        td[contenteditable="true"]:focus {
+        td[contenteditable="true"]:focus, th[contenteditable="true"]:focus {
             background-color: #eef9ff;
             outline: 2px solid #007bff;
         }
-        .action-cell {
-            text-align: center;
-            min-width: 60px;
-        }
+        .action-cell { text-align: center; min-width: 50px; }
         .delete-row-btn {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 3px;
             cursor: pointer;
+            font-weight: bold;
         }
-        .delete-row-btn:hover {
-            background: #c82333;
+        .delete-row-btn:hover { background: #c82333; }
+
+        /* Student Portal Styles */
+        .login-card {
+            background: white;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .login-card h3 { margin-top: 0; color: var(--primary-color); text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; }
+        .form-group input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .login-btn:hover { background-color: #002244; }
+
+        /* Result Slip Styling */
+        .result-slip-container {
+            background: white;
+            max-width: 750px;
+            margin: 10px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        .slip-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        .slip-header h2 { margin: 0; color: var(--primary-color); font-size: 16px; text-transform: uppercase; }
+        .slip-header h4 { margin: 4px 0; color: #444; font-size: 13px; }
+        .slip-header p { margin: 2px 0 0; color: #666; font-size: 11px; }
+        
+        .student-bio {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .summary-box {
+            background: #eef9ff;
+            border: 1px solid #b8daff;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+        .notice-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+        .danger-notice {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .support-footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+            font-size: 11px;
+            color: #333;
+            text-align: center;
+        }
+        .whatsapp-link {
+            display: inline-block;
+            background-color: #25d366;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+        .whatsapp-link:hover { background-color: #128c7e; }
+
+        .download-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .dl-btn {
+            padding: 9px 14px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            font-size: 12px;
+        }
+        .dl-pdf { background-color: #dc3545; }
+        .dl-img { background-color: #28a745; }
+        .dl-btn:hover { opacity: 0.9; }
+        .error-msg { color: #dc3545; text-align: center; font-weight: bold; margin-top: 10px; font-size: 12px; }
+
+        /* Responsive Breakpoints for Mobile Phones */
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; min-height: 100vh; }
+            .sidebar { width: 100%; height: auto; }
+            .sidebar-menu { display: flex; overflow-x: auto; }
+            .sidebar-menu li { flex: 1; text-align: center; padding: 10px; border-bottom: none; border-right: 1px solid #2a2a4a; white-space: nowrap; }
+            .main-content { height: auto; overflow: visible; }
         }
     </style>
 </head>
 <body>
 
-    <h2>Course Record Sheets</h2>
-
-    <!-- Tab Buttons -->
-    <div class="tab-container">
-        <button class="tab-button active" onclick="openTab(event, 'course1')">Course 1</button>
-        <button class="tab-button" onclick="openTab(event, 'course2')">Course 2</button>
-        <button class="tab-button" onclick="openTab(event, 'course3')">Course 3</button>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>MAKPOLY QSV</h2>
+            <small>Quantity Surveying Hub</small>
+        </div>
+        <ul class="sidebar-menu">
+            <li id="menu-admin" class="active" onclick="switchAppView('admin')">⚙️ Admin Panel</li>
+            <li id="menu-student" onclick="switchAppView('student')">🎓 Student Portal</li>
+        </ul>
     </div>
 
-    <!-- Course 1 Tab Content -->
-    <div id="course1" class="tab-content active">
-        <h3>Course 1 Management</h3>
-        <div class="toolbar">
-            <button onclick="addRow('table1', 'course1')">➕ Add Row</button>
-            <button onclick="addColumn('table1', 'course1')">➕ Add Column</button>
-            <button class="delete-col-btn" onclick="deleteLastColumn('table1', 'course1')">➖ Delete Last Column</button>
-            <button onclick="saveData('course1', 'table1')" style="background-color: #17a2b8;">💾 Save Changes</button>
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="top-navbar">
+            <h3 id="view-title">Admin Panel - Result Management</h3>
+            <span id="user-role-badge" style="font-weight: bold; color: #555; background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size:11px;">Role: Admin</span>
         </div>
-        <table id="table1">
-            <thead>
-                <tr>
-                    <th contenteditable="true">Matric No</th>
-                    <th contenteditable="true">Student Name</th>
-                    <th contenteditable="true">Score</th>
-                    <th class="action-cell">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows injected dynamically via JS or loaded from storage -->
-            </tbody>
-        </table>
-    </div>
 
-    <!-- Course 2 Tab Content -->
-    <div id="course2" class="tab-content">
-        <h3>Course 2 Management</h3>
-        <div class="toolbar">
-            <button onclick="addRow('table2', 'course2')">➕ Add Row</button>
-            <button onclick="addColumn('table2', 'course2')">➕ Add Column</button>
-            <button class="delete-col-btn" onclick="deleteLastColumn('table2', 'course2')">➖ Delete Last Column</button>
-            <button onclick="saveData('course2', 'table2')" style="background-color: #17a2b8;">💾 Save Changes</button>
-        </div>
-        <table id="table2">
-            <thead>
-                <tr>
-                    <th contenteditable="true">Matric No</th>
-                    <th contenteditable="true">Student Name</th>
-                    <th contenteditable="true">Score</th>
-                    <th class="action-cell">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows injected dynamically -->
-            </tbody>
-        </table>
-    </div>
+        <div class="content-area">
 
-    <!-- Course 3 Tab Content -->
-    <div id="course3" class="tab-content">
-        <h3>Course 3 Management</h3>
-        <div class="toolbar">
-            <button onclick="addRow('table3', 'course3')">➕ Add Row</button>
-            <button onclick="addColumn('table3', 'course3')">➕ Add Column</button>
-            <button class="delete-col-btn" onclick="deleteLastColumn('table3', 'course3')">➖ Delete Last Column</button>
-            <button onclick="saveData('course3', 'table3')" style="background-color: #17a2b8;">💾 Save Changes</button>
+            <!-- ================= ADMIN LOGIN VIEW ================= -->
+            <div id="admin-login-view" class="app-view active-view">
+                <div class="admin-auth-card">
+                    <h3>Admin Authentication</h3>
+                    <p style="font-size: 13px; color: #666;">Enter secure administrator password to manage results.</p>
+                    <div class="form-group" style="text-align: left;">
+                        <label>Password:</label>
+                        <input type="password" id="admin-pass-input" placeholder="Enter administrator password">
+                    </div>
+                    <button class="login-btn" onclick="handleAdminLogin()">Login to Admin Portal</button>
+                    <div id="admin-login-error" class="error-msg"></div>
+                </div>
+            </div>
+
+            <!-- ================= ADMIN DASHBOARD VIEW ================= -->
+            <div id="admin-dashboard-view" class="app-view">
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                    <button class="dl-btn" style="background-color: #6c757d; font-size: 11px; padding: 6px 10px;" onclick="lockAdminSession()">🔒 Lock Session</button>
+                </div>
+                <div class="tab-container">
+                    <button class="tab-button active" onclick="openTab(event, 'course1')">Building Materials</button>
+                    <button class="tab-button" onclick="openTab(event, 'course2')">QS Principles</button>
+                    <button class="tab-button" onclick="openTab(event, 'course3')">Engr Measurement & Valuation</button>
+                </div>
+
+                <!-- Course 1 -->
+                <div id="course1" class="tab-content active">
+                    <div class="toolbar">
+                        <label class="file-upload-label">📂 Upload CSV <input type="file" accept=".csv" onchange="uploadCSV(event, 'table1', 'course1')"></label>
+                        <button class="add-btn" onclick="addRow('table1', 'course1')">➕ Row</button>
+                        <button class="add-btn" onclick="addColumn('table1', 'course1')">➕ Col</button>
+                        <button class="delete-col-btn" onclick="deleteLastColumn('table1', 'course1')">➖ Col</button>
+                        <button class="save-btn" onclick="saveData('course1', 'table1')">💾 Save</button>
+                    </div>
+                    <table id="table1">
+                        <thead>
+                            <tr>
+                                <th contenteditable="true">S/N</th>
+                                <th contenteditable="true">MATRIC NO</th>
+                                <th contenteditable="true">NAMES</th>
+                                <th contenteditable="true">CA (30)</th>
+                                <th contenteditable="true">EXAM (70)</th>
+                                <th contenteditable="true">TOTAL</th>
+                                <th contenteditable="true">GRADE</th>
+                                <th class="action-cell">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Course 2 -->
+                <div id="course2" class="tab-content">
+                    <div class="toolbar">
+                        <label class="file-upload-label">📂 Upload CSV <input type="file" accept=".csv" onchange="uploadCSV(event, 'table2', 'course2')"></label>
+                        <button class="add-btn" onclick="addRow('table2', 'course2')">➕ Row</button>
+                        <button class="add-btn" onclick="addColumn('table2', 'course2')">➕ Col</button>
+                        <button class="delete-col-btn" onclick="deleteLastColumn('table2', 'course2')">➖ Col</button>
+                        <button class="save-btn" onclick="saveData('course2', 'table2')">💾 Save</button>
+                    </div>
+                    <table id="table2">
+                        <thead>
+                            <tr>
+                                <th contenteditable="true">S/N</th>
+                                <th contenteditable="true">MATRIC NO</th>
+                                <th contenteditable="true">NAMES</th>
+                                <th contenteditable="true">CA (30)</th>
+                                <th contenteditable="true">EXAM (70)</th>
+                                <th contenteditable="true">TOTAL</th>
+                                <th contenteditable="true">GRADE</th>
+                                <th class="action-cell">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Course 3 -->
+                <div id="course3" class="tab-content">
+                    <div class="toolbar">
+                        <label class="file-upload-label">📂 Upload CSV <input type="file" accept=".csv" onchange="uploadCSV(event, 'table3', 'course3')"></label>
+                        <button class="add-btn" onclick="addRow('table3', 'course3')">➕ Row</button>
+                        <button class="add-btn" onclick="addColumn('table3', 'course3')">➕ Col</button>
+                        <button class="delete-col-btn" onclick="deleteLastColumn('table3', 'course3')">➖ Col</button>
+                        <button class="save-btn" onclick="saveData('course3', 'table3')">💾 Save</button>
+                    </div>
+                    <table id="table3">
+                        <thead>
+                            <tr>
+                                <th contenteditable="true">S/N</th>
+                                <th contenteditable="true">MATRIC NO</th>
+                                <th contenteditable="true">NAMES</th>
+                                <th contenteditable="true">PRACTICAL</th>
+                                <th contenteditable="true">CA (30)</th>
+                                <th contenteditable="true">EXAM (70)</th>
+                                <th contenteditable="true">TOTAL</th>
+                                <th class="action-cell">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ================= STUDENT VIEW ================= -->
+            <div id="student-view" class="app-view">
+                <div id="login-container" class="login-card">
+                    <h3>Student Result Portal</h3>
+                    <div class="form-group">
+                        <label>Student Name (e.g. Adeyemi John):</label>
+                        <input type="text" id="student-name-input" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label>Matric Number (e.g. 2021/QS/101):</label>
+                        <input type="text" id="student-matric-input" placeholder="Enter matric number">
+                    </div>
+                    <button class="login-btn" onclick="handleStudentLogin()">View All Results</button>
+                    <div id="login-error" class="error-msg"></div>
+                </div>
+
+                <!-- Rendered Result Slip Container -->
+                <div id="result-display-container" style="display: none;">
+                    <div id="printable-slip" class="result-slip-container">
+                        <div class="slip-header">
+                            <h2>Michael Adeniyi Koleosho Polytechnic, Saki</h2>
+                            <h4>Department of Quantity Surveying</h4>
+                            <p>Official Cumulative Semester Academic Result Statement</p>
+                        </div>
+                        <div class="student-bio">
+                            <div><strong>Student Name:</strong> <span id="lbl-student-name">-</span></div>
+                            <div><strong>Matric Number:</strong> <span id="lbl-student-matric">-</span></div>
+                        </div>
+                        <div id="student-courses-table-container" style="overflow-x: auto;">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div id="notifications-area"></div>
+                        <div id="score-summary-area" class="summary-box"></div>
+                        <div class="support-footer">
+                            For any issue or complaint, contact <strong>Mr. Osuntoki Christopher Ayojesu</strong>:<br>
+                            <a class="whatsapp-link" href="https://wa.me/2348163059669?text=Hello%20Mr.%20Osuntoki,%20I%20have%20an%20issue%20with%20my%20MAKPOLY%20Quantity%20Surveying%20result." target="_blank">💬 Chat on WhatsApp (08163059669)</a>
+                        </div>
+                    </div>
+                    <div class="download-actions">
+                        <button class="dl-btn dl-img" onclick="downloadResultImage()">📷 Download Picture</button>
+                        <button class="dl-btn dl-pdf" onclick="downloadResultPDF()">📄 Download PDF</button>
+                        <button class="dl-btn" style="background-color: #6c757d;" onclick="resetStudentLogin()">Back to Login</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <table id="table3">
-            <thead>
-                <tr>
-                    <th contenteditable="true">Matric No</th>
-                    <th contenteditable="true">Student Name</th>
-                    <th contenteditable="true">Score</th>
-                    <th class="action-cell">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows injected dynamically -->
-            </tbody>
-        </table>
     </div>
 
     <script>
-        // Switch between tabs
+        function switchAppView(viewName) {
+            document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active-view'));
+            document.querySelectorAll('.sidebar-menu li').forEach(m => m.classList.remove('active'));
+
+            if (viewName === 'admin') {
+                document.getElementById('menu-admin').classList.add('active');
+                document.getElementById('view-title').innerText = "Admin Panel - Result Management";
+                document.getElementById('user-role-badge').innerText = "Role: Admin";
+                
+                if (sessionStorage.getItem('isAdminAuth') === 'true') {
+                    document.getElementById('admin-dashboard-view').classList.add('active-view');
+                } else {
+                    document.getElementById('admin-login-view').classList.add('active-view');
+                }
+            } else {
+                document.getElementById('student-view').classList.add('active-view');
+                document.getElementById('menu-student').classList.add('active');
+                document.getElementById('view-title').innerText = "Student Result Portal";
+                document.getElementById('user-role-badge').innerText = "Role: Student";
+            }
+        }
+
+        function handleAdminLogin() {
+            const passInput = document.getElementById('admin-pass-input').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('admin-login-error');
+
+            if (passInput === 'admin') {
+                sessionStorage.setItem('isAdminAuth', 'true');
+                errorDiv.innerText = '';
+                document.getElementById('admin-pass-input').value = '';
+                document.getElementById('admin-login-view').classList.remove('active-view');
+                document.getElementById('admin-dashboard-view').classList.add('active-view');
+            } else {
+                errorDiv.innerText = "Invalid password. Access denied.";
+            }
+        }
+
+        function lockAdminSession() {
+            sessionStorage.removeItem('isAdminAuth');
+            document.getElementById('admin-dashboard-view').classList.remove('active-view');
+            document.getElementById('admin-login-view').classList.add('active-view');
+        }
+
         function openTab(evt, courseName) {
-            const contents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < contents.length; i++) {
-                contents[i].classList.remove("active");
-            }
-
-            const buttons = document.getElementsByClassName("tab-button");
-            for (let i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove("active");
-            }
-
+            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
             document.getElementById(courseName).classList.add("active");
             evt.currentTarget.classList.add("active");
         }
 
-        // Add a new row to the specified table
         function addRow(tableId, storageKey, rowData = null) {
             const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
             const headerCount = document.getElementById(tableId).rows[0].cells.length;
@@ -228,7 +591,6 @@
                 newCell.innerText = rowData ? (rowData[i] || "") : "";
             }
 
-            // Action cell with delete button
             const actionCell = newRow.insertCell();
             actionCell.className = "action-cell";
             const deleteBtn = document.createElement("button");
@@ -241,52 +603,79 @@
             actionCell.appendChild(deleteBtn);
         }
 
-        // Add a new column to the specified table
         function addColumn(tableId, storageKey) {
             const table = document.getElementById(tableId);
             const headerRow = table.rows[0];
-            
-            // Insert header before the last column (Action column)
             const newTh = document.createElement("th");
             newTh.contentEditable = "true";
-            newTh.innerText = "New Column";
+            newTh.innerText = "New Col";
             headerRow.insertBefore(newTh, headerRow.cells[headerRow.cells.length - 1]);
 
-            // Insert cells for each row before the action cell
             const tbody = table.getElementsByTagName('tbody')[0];
             for (let i = 0; i < tbody.rows.length; i++) {
                 const row = tbody.rows[i];
                 const newCell = row.insertCell(row.cells.length - 1);
                 newCell.contentEditable = "true";
-                newCell.innerText = "";
             }
             saveData(storageKey, tableId);
         }
 
-        // Delete the last data column
         function deleteLastColumn(tableId, storageKey) {
             const table = document.getElementById(tableId);
             const headerRow = table.rows[0];
-            
-            // Ensure we don't delete essential columns (keep at least Matric No, Name, and Action)
-            if (headerRow.cells.length <= 4) {
+            if (headerRow.cells.length <= 3) {
                 alert("Cannot delete primary columns!");
                 return;
             }
-
-            // Remove header cell just before action cell
             headerRow.deleteCell(headerRow.cells.length - 2);
-
-            // Remove corresponding cells from body rows
             const tbody = table.getElementsByTagName('tbody')[0];
             for (let i = 0; i < tbody.rows.length; i++) {
-                const row = tbody.rows[i];
-                row.deleteCell(row.cells.length - 2);
+                tbody.rows[i].deleteCell(tbody.rows[i].cells.length - 2);
             }
             saveData(storageKey, tableId);
         }
 
-        // Save table data to browser LocalStorage
+        function uploadCSV(event, tableId, storageKey) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const rows = text.split('\n').filter(row => row.trim() !== '');
+                if (rows.length === 0) return;
+
+                const table = document.getElementById(tableId);
+                const headerRow = table.rows[0];
+                const tbody = table.getElementsByTagName('tbody')[0];
+
+                headerRow.innerHTML = '';
+                tbody.innerHTML = '';
+
+                const headers = rows[0].split(',');
+                headers.forEach(headerText => {
+                    const th = document.createElement("th");
+                    th.contentEditable = "true";
+                    th.innerText = headerText.trim();
+                    headerRow.appendChild(th);
+                });
+                
+                const actionTh = document.createElement("th");
+                actionTh.className = "action-cell";
+                actionTh.innerText = "Action";
+                headerRow.appendChild(actionTh);
+
+                for (let i = 1; i < rows.length; i++) {
+                    const rowData = rows[i].split(',').map(item => item.trim());
+                    addRow(tableId, storageKey, rowData);
+                }
+                saveData(storageKey, tableId);
+                alert("Results Uploaded Successfully!");
+            };
+            reader.readAsText(file);
+            event.target.value = ''; 
+        }
+
         function saveData(storageKey, tableId) {
             const table = document.getElementById(tableId);
             const headers = [];
@@ -307,50 +696,269 @@
                 rows.push(rowData);
             }
 
-            const data = { headers, rows };
-            localStorage.setItem(storageKey, JSON.stringify(data));
-            alert("Changes saved successfully!");
+            try {
+                localStorage.setItem(storageKey, JSON.stringify({ headers, rows }));
+                alert("Changes saved successfully!");
+            } catch (err) {
+                alert("Save error: Local storage limit or restriction.");
+            }
         }
 
-        // Load data on page startup
-        function loadData(storageKey, tableId) {
+        function loadData(storageKey, tableId, defaultData = null) {
             const savedData = localStorage.getItem(storageKey);
             const table = document.getElementById(tableId);
             const headerRow = table.rows[0];
             const tbody = table.getElementsByTagName('tbody')[0];
 
             if (savedData) {
-                const data = JSON.parse(savedData);
-                
-                // Rebuild Headers
-                headerRow.innerHTML = "";
-                data.headers.forEach(headerText => {
-                    const th = document.createElement("th");
-                    th.contentEditable = "true";
-                    th.innerText = headerText;
-                    headerRow.appendChild(th);
-                });
-                const actionTh = document.createElement("th");
-                actionTh.className = "action-cell";
-                actionTh.innerText = "Action";
-                headerRow.appendChild(actionTh);
+                try {
+                    const data = JSON.parse(savedData);
+                    headerRow.innerHTML = "";
+                    data.headers.forEach(headerText => {
+                        const th = document.createElement("th");
+                        th.contentEditable = "true";
+                        th.innerText = headerText;
+                        headerRow.appendChild(th);
+                    });
+                    const actionTh = document.createElement("th");
+                    actionTh.className = "action-cell";
+                    actionTh.innerText = "Action";
+                    headerRow.appendChild(actionTh);
 
-                // Rebuild Rows
-                tbody.innerHTML = "";
-                data.rows.forEach(rowData => {
-                    addRow(tableId, storageKey, rowData);
-                });
-            } else {
-                // Default initial row if empty
-                addRow(tableId, storageKey, ["", "", ""]);
+                    tbody.innerHTML = "";
+                    data.rows.forEach(rowData => addRow(tableId, storageKey, rowData));
+                    return;
+                } catch(e) { /* Fallback to default if corrupted */ }
+            }
+            
+            if (defaultData) {
+                defaultData.forEach(rowData => addRow(tableId, storageKey, rowData));
             }
         }
 
-        // Initialize tables on load
+        function getGradeInfo(score) {
+            if (score >= 75) return { gp: 4.00, grade: 'A (Distinction)' };
+            if (score >= 70) return { gp: 3.50, grade: 'AB (Very good)' };
+            if (score >= 65) return { gp: 3.25, grade: 'B (Very good)' };
+            if (score >= 60) return { gp: 3.00, grade: 'BC (Good)' };
+            if (score >= 55) return { gp: 2.75, grade: 'C (Above average)' };
+            if (score >= 50) return { gp: 2.50, grade: 'CD (Average)' };
+            if (score >= 45) return { gp: 2.25, grade: 'D (Fair)' };
+            if (score >= 40) return { gp: 2.00, grade: 'E (Pass)' };
+            return { gp: 0.00, grade: 'F (Failure)' };
+        }
+
+        function handleStudentLogin() {
+            const nameQuery = document.getElementById('student-name-input').value.trim().toLowerCase();
+            const matricQuery = document.getElementById('student-matric-input').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('login-error');
+
+            if (!nameQuery || !matricQuery) {
+                errorDiv.innerText = "Please enter both name and matric number.";
+                return;
+            }
+            errorDiv.innerText = "";
+
+            const courseKeys = ['course1', 'course2', 'course3'];
+            const courseMeta = {
+                'course1': { title: 'Building Materials' },
+                'course2': { title: 'QS Principles' },
+                'course3': { title: 'Engr Measurement & Valuation', isMeasurement: true }
+            };
+
+            let foundStudentName = "";
+            let foundMatricNo = "";
+            let matchedRecords = [];
+            let notificationsHTML = "";
+
+            courseKeys.forEach(cKey => {
+                const dataStr = localStorage.getItem(cKey);
+                if (dataStr) {
+                    try {
+                        const courseData = JSON.parse(dataStr);
+                        const headers = courseData.headers;
+                        let nameIdx = headers.findIndex(h => h.toUpperCase().includes('NAME'));
+                        let matricIdx = headers.findIndex(h => h.toUpperCase().includes('MATRIC') || h.toUpperCase().includes('NO'));
+
+                        if (nameIdx === -1) nameIdx = 2;
+                        if (matricIdx === -1) matricIdx = 1;
+
+                        courseData.rows.forEach(row => {
+                            const rowName = (row[nameIdx] || "").toLowerCase();
+                            const rowMatric = (row[matricIdx] || "").toLowerCase();
+
+                            if (rowName.includes(nameQuery) && rowMatric.includes(matricQuery)) {
+                                foundStudentName = row[nameIdx];
+                                foundMatricNo = row[matricIdx];
+
+                                let totalVal = 0;
+                                let computedComponentTotal = 0;
+
+                                headers.forEach((h, idx) => {
+                                    let hUpper = h.toUpperCase();
+                                    let cellVal = parseFloat(row[idx]) || 0;
+
+                                    if (hUpper.includes('TOTAL') || hUpper.includes('SCORE')) {
+                                        totalVal = parseFloat(row[idx]) || 0;
+                                    }
+
+                                    if (hUpper.includes('CA') || hUpper.includes('TEST') || hUpper.includes('PRACTICAL')) {
+                                        computedComponentTotal += cellVal;
+                                    }
+
+                                    if ((hUpper.includes('CA') || hUpper.includes('TEST')) && parseFloat(row[idx]) === 0) {
+                                        notificationsHTML += `<div class="danger-notice">⚠️ <strong>C.A. Alert (${courseMeta[cKey].title}):</strong> Your C.A. / test score is 0. Contact lecturer immediately.</div>`;
+                                    }
+
+                                    if (courseMeta[cKey].isMeasurement && hUpper.includes('PRACTICAL') && parseFloat(row[idx]) === 5) {
+                                        notificationsHTML += `<div class="notice-box">ℹ️ <strong>Practical Notice (${courseMeta[cKey].title}):</strong> Practical score is 5. Please clear late submission fees.</div>`;
+                                    }
+                                });
+
+                                if (totalVal < 40) {
+                                    notificationsHTML += `<div class="danger-notice">❌ <strong>Rerun Notice (${courseMeta[cKey].title}):</strong> Score is ${totalVal}. Course failed/rerun required.</div>`;
+                                }
+
+                                const gradeInfo = getGradeInfo(totalVal);
+
+                                matchedRecords.push({
+                                    courseTitle: courseMeta[cKey].title,
+                                    headers: headers,
+                                    row: row,
+                                    total: totalVal,
+                                    componentTotal: computedComponentTotal,
+                                    gp: gradeInfo.gp,
+                                    gradeStr: gradeInfo.grade
+                                });
+                            }
+                        });
+                    } catch(e) {}
+                }
+            });
+
+            if (matchedRecords.length === 0) {
+                errorDiv.innerText = "No records found matching that Name and Matric Number.";
+                return;
+            }
+
+            let tableContentHTML = `<table style="width:100%; border-collapse: collapse; margin-top:10px;">
+                <thead>
+                    <tr style="background:#003366; color:white;">
+                        <th>Course Title</th>
+                        <th>Score Breakdown</th>
+                        <th>Component Total</th>
+                        <th>Total</th>
+                        <th>Grade & GP</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            let cumulativeTotal = 0;
+            let totalGP = 0;
+            let courseCount = matchedRecords.length;
+
+            matchedRecords.forEach(rec => {
+                let detailStr = "";
+                rec.headers.forEach((h, idx) => {
+                    if (!h.toUpperCase().includes('NAME') && !h.toUpperCase().includes('MATRIC') && !h.toUpperCase().includes('S/N') && !h.toUpperCase().includes('TOTAL')) {
+                        detailStr += `<strong>${h}:</strong> ${rec.row[idx]} &nbsp;|&nbsp; `;
+                    }
+                });
+                cumulativeTotal += rec.total;
+                totalGP += rec.gp;
+
+                tableContentHTML += `<tr>
+                    <td style="border:1px solid #ddd; padding:8px;"><strong>${rec.courseTitle}</strong></td>
+                    <td style="border:1px solid #ddd; padding:8px;">${detailStr}</td>
+                    <td style="border:1px solid #ddd; padding:8px; text-align:center;">${rec.componentTotal}</td>
+                    <td style="border:1px solid #ddd; padding:8px; text-align:center;"><strong>${rec.total}</strong></td>
+                    <td style="border:1px solid #ddd; padding:8px; text-align:center;">${rec.gradeStr} <br><small><strong>GP: ${rec.gp.toFixed(2)}</strong></small></td>
+                </tr>`;
+            });
+            tableContentHTML += `</tbody></table>`;
+
+            let cgpa = (totalGP / courseCount).toFixed(2);
+            let averageScore = (cumulativeTotal / courseCount).toFixed(1);
+            let summaryHTML = `<strong>Summary:</strong> Total Score = <strong>${cumulativeTotal}</strong> | Courses = <strong>${courseCount}</strong> | Avg = <strong>${averageScore}%</strong> | <strong>CGPA = ${cgpa}</strong>`;
+
+            document.getElementById('lbl-student-name').innerText = foundStudentName;
+            document.getElementById('lbl-student-matric').innerText = foundMatricNo;
+            document.getElementById('student-courses-table-container').innerHTML = tableContentHTML;
+            document.getElementById('score-summary-area').innerHTML = summaryHTML;
+            document.getElementById('notifications-area').innerHTML = notificationsHTML;
+
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('result-display-container').style.display = 'block';
+        }
+
+        function resetStudentLogin() {
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('result-display-container').style.display = 'none';
+            document.getElementById('student-name-input').value = '';
+            document.getElementById('student-matric-input').value = '';
+            document.getElementById('login-error').innerText = '';
+        }
+
+        function downloadResultImage() {
+            const slip = document.getElementById('printable-slip');
+            if (typeof html2canvas === 'undefined') {
+                alert("Library loading. Please ensure you have internet access and try again.");
+                return;
+            }
+            html2canvas(slip, { scale: 2, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'MAKPOLY_QSV_Result.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert("Could not generate image on this mobile browser.");
+            });
+        }
+
+        function downloadResultPDF() {
+            if (typeof window.jspdf === 'undefined') {
+                alert("Library loading. Please ensure you have internet access and try again.");
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const slip = document.getElementById('printable-slip');
+            html2canvas(slip, { scale: 2, useCORS: true }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190; 
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                pdf.save('MAKPOLY_QSV_Result.pdf');
+            }).catch(err => {
+                alert("Could not generate PDF on this mobile browser.");
+            });
+        }
+
         window.onload = function() {
-            loadData('course1', 'table1');
-            loadData('course2', 'table2');
-            loadData('course3', 'table3');
+            const sampleData1 = [
+                ["1", "2021/QS/101", "ADEYEMI JOHN", "25", "60", "85", "A"],
+                ["2", "2021/QS/102", "BELLO FATIMA", "22", "50", "72", "AB"],
+                ["3", "2021/QS/103", "CHUKWU EMEKA", "10", "20", "30", "F"]
+            ];
+            const sampleData3 = [
+                ["1", "2021/QS/101", "ADEYEMI JOHN", "5", "20", "50", "75", "AB"],
+                ["2", "2021/QS/102", "BELLO FATIMA", "15", "0", "45", "60", "B"]
+            ];
+            loadData('course1', 'table1', sampleData1);
+            loadData('course2', 'table2', sampleData1);
+            loadData('course3', 'table3', sampleData3);
         };
     </script>
 </body>
