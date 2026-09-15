@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAPKPOLY - Secure Student Result Portal</title>
+    <title>Secure Student Result Portal</title>
+    <!-- Include Handsontable for full spreadsheet copy/paste functionality -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
     <style>
         :root {
-            --primary: #d97706; /* Earthy Construction Amber primary */
-            --primary-hover: #b45309;
-            --bg-color: #1c1917; /* Slate Dark Construction vibe background */
-            --card-bg: #292524;
-            --text-color: #f5f5f4;
-            --border-color: #44403c;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #cbd5e1;
         }
 
         body {
@@ -19,78 +22,36 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 10px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            box-sizing: border-box;
-            transition: background-color 0.5s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .portal-wrapper {
             width: 100%;
-            max-width: 1000px;
+            max-width: 950px;
+            padding: 20px;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 20px;
+            padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-        }
-
-        /* Construction Media Banner Styles */
-        .media-banner {
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             position: relative;
-            background: #000;
-            max-height: 220px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid var(--border-color);
-        }
-
-        .media-banner img, .media-banner video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            max-height: 200px;
-            display: block;
-        }
-
-        .media-controls {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            color: #fff;
-            display: flex;
-            gap: 6px;
-        }
-
-        .media-controls button {
-            background: var(--primary);
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 10px;
         }
 
         .nav-tabs {
             display: flex;
             justify-content: space-between;
             margin-bottom: 25px;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 2px solid #e2e8f0;
             padding-bottom: 10px;
         }
 
@@ -99,7 +60,7 @@
             border: none;
             font-size: 15px;
             font-weight: 600;
-            color: #a8a29e;
+            color: #64748b;
             cursor: pointer;
             padding: 5px 10px;
             transition: color 0.2s;
@@ -114,7 +75,7 @@
         h2 {
             margin-top: 0;
             font-size: 22px;
-            color: #fafaf9;
+            color: #0f172a;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -128,16 +89,14 @@
             font-size: 14px;
             font-weight: 500;
             margin-bottom: 6px;
-            color: #d6d3d1;
+            color: #475569;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
             padding: 10px 12px;
-            background: #1c1917;
             border: 1px solid var(--border-color);
-            color: #f5f5f4;
             border-radius: 6px;
             font-size: 14px;
             box-sizing: border-box;
@@ -168,74 +127,29 @@
         }
 
         .btn-secondary {
-            background: #44403c;
-            color: #f5f5f4;
+            background: #e2e8f0;
+            color: #334155;
             margin-top: 10px;
         }
-
         .btn-secondary:hover {
-            background: #57534e;
+            background: #cbd5e1;
         }
 
         .btn-success {
             background: #16a34a;
             margin-top: 10px;
         }
-
         .btn-success:hover {
             background: #15803d;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            padding: 6px 10px;
-            font-size: 12px;
-            width: auto;
-            margin-top: 0;
-        }
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .btn-info {
-            background: #0284c7;
-            color: white;
-            margin-top: 8px;
-        }
-        .btn-info:hover {
-            background: #0369a1;
         }
 
         .result-box {
             margin-top: 20px;
             padding: 20px;
-            background: #1c1917;
+            background: #f1f5f9;
             border-radius: 8px;
             display: none;
             border-left: 4px solid var(--primary);
-            color: #f5f5f4;
-        }
-
-        .slip-header {
-            text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-bottom: 15px;
-        }
-
-        .slip-header h3 {
-            margin: 0 0 4px 0;
-            font-size: 16px;
-            color: #fafaf9;
-            text-transform: uppercase;
-        }
-
-        .slip-header p {
-            margin: 2px 0;
-            font-size: 13px;
-            color: #d6d3d1;
-            font-weight: 600;
         }
 
         .result-row {
@@ -247,42 +161,32 @@
 
         .result-row span:first-child {
             font-weight: 600;
-            color: #d6d3d1;
+            color: #475569;
         }
 
         .result-row span:last-child {
-            color: #f5f5f4;
+            color: #0f172a;
             text-align: right;
         }
 
         .total-row {
-            border-top: 1px dashed var(--border-color);
+            border-top: 1px dashed #cbd5e1;
             padding-top: 10px;
             margin-top: 10px;
             font-weight: bold;
             font-size: 16px;
-            color: #4ade80 !important;
-        }
-
-        .admin-help-box {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border-color);
-            font-size: 12px;
-            color: #a8a29e;
-            text-align: center;
-            line-height: 1.4;
+            color: #16a34a !important;
         }
 
         .error-msg {
-            color: #f87171;
+            color: #dc2626;
             font-size: 13px;
             text-align: center;
             margin-top: 10px;
         }
 
         .success-msg {
-            color: #4ade80;
+            color: #16a34a;
             font-size: 13px;
             text-align: center;
             margin-top: 10px;
@@ -294,79 +198,48 @@
 
         .spreadsheet-hint {
             font-size: 12px;
-            color: #a8a29e;
-            background: #1c1917;
-            border: 1px dashed var(--border-color);
+            color: #64748b;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
             padding: 8px 12px;
             border-radius: 6px;
             margin-bottom: 12px;
             line-height: 1.4;
         }
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            max-height: 450px;
+        #spreadsheet-container {
+            margin-bottom: 15px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            margin-bottom: 15px;
+            overflow: hidden;
+            max-height: 420px;
         }
 
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #1c1917;
-            text-align: left;
-            font-size: 13px;
-        }
-
-        .admin-table th, .admin-table td {
-            padding: 8px 10px;
-            border-bottom: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            white-space: nowrap;
-        }
-
-        .admin-table th {
-            background: #292524;
-            color: #f5f5f4;
-            font-weight: 600;
-            position: sticky;
+        #privacy-shield {
+            position: fixed;
             top: 0;
-            z-index: 10;
-        }
-
-        .admin-table input {
-            width: 100px;
-            padding: 6px;
-            background: #292524;
-            color: white;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 13px;
-        }
-        
-        .admin-table input.wide-input {
-            width: 180px;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0f172a;
+            z-index: 99999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: #f8fafc;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
+    <div id="privacy-shield">⚠️ Security Warning: Screen capture or window switching detected. Result content is hidden.</div>
+
     <div class="portal-wrapper">
         <div class="card">
-            <!-- Construction Media Display Header with Dynamic Color Extraction -->
-            <div class="media-banner" id="mediaBannerContainer">
-                <img id="bannerMediaElement" src="https://images.unsplash.com/photo-1541888946425-d0fbb1857966?auto=format&fit=crop&w=1000&q=80" alt="Construction Site Engineering" crossorigin="anonymous">
-                <canvas id="colorExtractCanvas" class="hidden"></canvas>
-                <div class="media-controls">
-                    <span id="mediaLabel">Site View</span>
-                    <button type="button" onclick="toggleMediaSource()">Switch Video/Image</button>
-                </div>
-            </div>
-
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="switchTab('studentTab', event)">Student Portal</button>
                 <button class="nav-tab" onclick="switchTab('adminTab', event)">Admin Panel</button>
@@ -377,39 +250,27 @@
                 <h2>Check Student Result</h2>
                 <form id="studentForm" onsubmit="handleStudentCheck(event)">
                     <div class="form-group">
-                        <label for="inputName">Your Name (e.g., Agboluaje, Azeez)</label>
-                        <input type="text" id="inputName" placeholder="Type any name (case-insensitive)" required autocomplete="off">
+                        <label for="inputName">Your Name</label>
+                        <input type="text" id="inputName" placeholder="Type name (case-insensitive)" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="inputMatric">Matric Number</label>
-                        <input type="text" id="inputMatric" placeholder="e.g., 25NQS001" required autocomplete="off">
+                        <input type="text" id="inputMatric" placeholder="e.g., QS/2026/001" required autocomplete="off">
                     </div>
                     <button type="submit" class="btn">View Result</button>
                     <div id="studentError" class="error-msg"></div>
                 </form>
 
                 <div id="resultContainer" class="result-box">
-                    <div class="slip-header">
-                        <h3>Micheal Adeniyi Koleosho Polytechnic, Saki (MAPKPOLY)</h3>
-                        <p>Quantity Surveying Department</p>
-                        <span style="font-size: 12px; color: #a8a29e;">Official Result Slip</span>
-                    </div>
                     <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
                     <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
                     <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
                     <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
                     <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
-                    <div id="dynamicScoresContainer"></div>
+                    <div class="result-row"><span>C.A. Test:</span> <span id="resCA"></span></div>
+                    <div class="result-row"><span>Practical:</span> <span id="resPractical"></span></div>
+                    <div class="result-row"><span>Exam:</span> <span id="resExam"></span></div>
                     <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
-                    
-                    <div id="scoreMessageArea"></div>
-
-                    <div class="admin-help-box">
-                        Need help or found a discrepancy? WhatsApp or call the admin: <strong>08163059669 (Osuntoki Christopher Ayojesu)</strong>
-                    </div>
-
-                    <button type="button" class="btn btn-info" onclick="downloadResultImage()">📷 Download as Image (PNG)</button>
-                    <button type="button" class="btn btn-success" onclick="downloadResultPDF()">📄 Download as PDF / Print</button>
                 </div>
             </div>
 
@@ -428,36 +289,12 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📱 <strong>Mobile-Friendly Result Manager:</strong> Edit rows directly, change scores, or click <strong>➕ Add Row</strong> to insert a new student. Click <strong>💾 Save & Publish Results</strong> when finished.
+                        📊 <strong>Excel Spreadsheet Grid:</strong> You can select rows/columns directly from Excel and paste them here using <strong>Ctrl + V</strong>. The <strong>Total (Auto)</strong> column automatically recomputes whenever you modify C.A., Practical, or Exam scores!
                     </div>
                     
-                    <div style="margin-bottom: 10px;">
-                        <button type="button" class="btn" style="width: auto; padding: 8px 16px;" onclick="addNewRow()">➕ Add Student Row</button>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="admin-table" id="adminTableElement">
-                            <thead>
-                                <tr id="tableHeaderRow">
-                                    <th>Full Name</th>
-                                    <th>Matric No</th>
-                                    <th>Level</th>
-                                    <th>Program</th>
-                                    <th>Course</th>
-                                    <th>C.A</th>
-                                    <th>Test</th>
-                                    <th>Practical</th>
-                                    <th>Exam</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <div id="spreadsheet-container"></div>
                     
-                    <button type="button" class="btn btn-success" onclick="saveTableData()">💾 Save & Publish Results</button>
+                    <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results</button>
                     <button type="button" class="btn btn-secondary" onclick="handleAdminLogout()">Log Out</button>
                     <div id="uploadStatus" class="success-msg"></div>
                 </div>
@@ -466,69 +303,24 @@
     </div>
 
     <script>
-        // Media Switcher & Dynamic Layout Color Extraction (Autoplay Video enabled)
-        let mediaMode = 'image';
-        function toggleMediaSource() {
-            const container = document.getElementById('mediaBannerContainer');
-            
-            if (mediaMode === 'image') {
-                mediaMode = 'video';
-                container.innerHTML = `
-                    <video id="bannerMediaElement" autoplay muted loop playsinline crossorigin="anonymous">
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-construction-site-with-cranes-and-buildings-42171-large.mp4" type="video/mp4">
-                        Your browser does not support video.
-                    </video>
-                    <canvas id="colorExtractCanvas" class="hidden"></canvas>
-                    <div class="media-controls">
-                        <span id="mediaLabel">Site Video</span>
-                        <button type="button" onclick="toggleMediaSource()">Switch Image</button>
-                    </div>
-                `;
-                setupDynamicColorExtraction(document.getElementById('bannerMediaElement'));
-            } else {
-                mediaMode = 'image';
-                container.innerHTML = `
-                    <img id="bannerMediaElement" src="https://images.unsplash.com/photo-1541888946425-d0fbb1857966?auto=format&fit=crop&w=1000&q=80" crossorigin="anonymous" alt="Construction Site">
-                    <canvas id="colorExtractCanvas" class="hidden"></canvas>
-                    <div class="media-controls">
-                        <span id="mediaLabel">Site View</span>
-                        <button type="button" onclick="toggleMediaSource()">Switch Video</button>
-                    </div>
-                `;
-                setupDynamicColorExtraction(document.getElementById('bannerMediaElement'));
-            }
-        }
+        document.addEventListener('contextmenu', e => e.preventDefault());
 
-        function setupDynamicColorExtraction(mediaElement) {
-            mediaElement.addEventListener('load', extractColor);
-            mediaElement.addEventListener('loadeddata', extractColor);
-            if (mediaElement.complete || mediaElement.readyState >= 2) {
-                setTimeout(extractColor, 500);
+        document.addEventListener('keydown', e => {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+                (e.ctrlKey && ['U', 'S', 'P'].includes(e.key.toUpperCase())) ||
+                e.key === 'PrintScreen'
+            ) {
+                e.preventDefault();
+                alert("Security policy: Action blocked.");
+                return false;
             }
-        }
-
-        function extractColor() {
-            try {
-                const img = document.getElementById('bannerMediaElement');
-                const canvas = document.getElementById('colorExtractCanvas');
-                if (!img || !canvas) return;
-                const ctx = canvas.getContext('2d');
-                canvas.width = 50;
-                canvas.height = 50;
-                ctx.drawImage(img, 0, 0, 50, 50);
-                const p = ctx.getImageData(25, 25, 1, 1).data;
-                const hex = "#" + ((1 << 24) + (p[0] << 16) + (p[1] << 8) + p[2]).toString(16).slice(1);
-                document.documentElement.style.setProperty('--primary', hex);
-                const hoverHex = "#" + ((1 << 24) + (Math.max(0, p[0]-30) << 16) + (Math.max(0, p[1]-30) << 8) + Math.max(0, p[2]-30)).toString(16).slice(1);
-                document.documentElement.style.setProperty('--primary-hover', hoverHex);
-            } catch (e) {
-                console.log("Color extraction restricted due to cross-origin policies or timing.", e);
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setupDynamicColorExtraction(document.getElementById('bannerMediaElement'));
         });
+
+        const shield = document.getElementById('privacy-shield');
+        window.addEventListener('blur', () => { shield.style.display = 'flex'; });
+        window.addEventListener('focus', () => { shield.style.display = 'none'; });
 
         function switchTab(tabId, event) {
             document.getElementById('studentTab').classList.add('hidden');
@@ -536,171 +328,84 @@
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.remove('hidden');
             event.currentTarget.classList.add('active');
+            if(tabId === 'adminTab' && hot) {
+                hot.render();
+            }
         }
 
-        const defaultRecords = [
-            // ND 1 Full Time - Principles of Law of Contract
-            ['Agboluaje Tijani', '25NQS001', 'ND 1', 'FULL TIME', 'PRINCIPLES OF LAW OF CONTRACT', '13', '16', '15', '7'],
-            ['Azeez Mutiat', '25NQS002', 'ND 1', 'FULL TIME', 'PRINCIPLES OF LAW OF CONTRACT', '1', '1', '1', '8'],
-            ['Adetoro Praise', '25NQS003', 'ND 1', 'FULL TIME', 'PRINCIPLES OF LAW OF CONTRACT', '13', '17', '15', '8'],
-            ['Rabiu Tijani', '25NQS004', 'ND 1', 'FULL TIME', 'PRINCIPLES OF LAW OF CONTRACT', '14', '16', '15', '6'],
-            ['Ibiyemi Bashit', '25NQS007', 'ND 1', 'FULL TIME', 'PRINCIPLES OF LAW OF CONTRACT', '1', '1', '1', '1'],
-            ['Egbeleke Segun', '25NQS008', 'ND 1', 'FULL TIME', 'PRINCIPLES OF LAW OF CONTRACT', '1', '1', '1', '32'],
-            ['Adeyeye Samuel', '25PQS001', 'ND 1', 'PART TIME', 'PRINCIPLES OF LAW OF CONTRACT', '15', '16', '15', '19'],
-            ['Ayantunde Kehinde', '25PQS002', 'ND 1', 'PART TIME', 'PRINCIPLES OF LAW OF CONTRACT', '1', '1', '1', '20'],
-            ['Hassan Ahmad', '25PQS003', 'ND 1', 'PART TIME', 'PRINCIPLES OF LAW OF CONTRACT', '1', '1', '1', '8'],
-            
-            // HND 1 Full Time - Computer Applications
-            ['Mudasiru Maleek', '25HQS001', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '', '15', '33'],
-            ['Gbadegesin', '25HQS002', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '30'],
-            ['Ogundele Kaosara', '25HQS003', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '15', '20'],
-            ['Ishola Esther', '25HQS004', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '25'],
-            ['Owoade Dorcas', '25HQS005', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '29'],
-            ['Akeem Mariam', '25HQS007', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '15', '27'],
-            ['Issa Abduqowiwu', '25HQS008', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '15', '29'],
-            ['Ogungbenro Bose', '25HQS009', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '5', '', '15', '25'],
-            ['Ogunkunle Opeyemi', '25HQS010', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '28'],
-            ['Mukaila Kehinde', '25HQS011', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '15', '32'],
-            ['Aramide Faith', '25HQS012', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '8', '29'],
-            ['Dairo Emmanuel', '25HQS013', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '', '5', '11'],
-            ['Olaniyi Christianah', '25HQS014', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '10', '30'],
-            ['Adeleke Olamide', '25HQS015', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '', '8', '22'],
-            ['Lateef Qoyum', '25HQS016', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '10', '30'],
-            ['Salami Hakeem', '25HQS017', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '24'],
-            ['Adewuyi Femi', '25HQS018', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '12', '28'],
-            ['Oladipo Rofiat', '25HQS019', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '14', '26'],
-            ['Afolabi Tobiloba', '25HQS020', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '', '15', '31'],
-            ['Ogunleye Temitope', '25HQS021', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '22'],
-            ['Yusuf Aishat', '25HQS022', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '13', '29'],
-            ['Balogun Ibrahim', '25HQS023', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '11', '25'],
-            ['Olalekan Opeyemi', '25HQS024', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '5', '', '9', '20'],
-            ['Lawal Zainab', '25HQS025', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '14', '30'],
-            ['Bello Ridwan', '25HQS026', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '12', '24'],
-            ['Ojo Tosin', '25HQS027', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '', '15', '33'],
-            ['Aliu Farouk', '25HQS028', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '13', '28'],
-            ['Sanusi Barakat', '25HQS029', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '12', '27'],
-            ['Adebayo Oluwaseun', '25HQS030', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '23'],
+        let hot = null;
 
-            // ND 2 Full Time & Part Time - Sustainable Construction
-            ['Ahmed Sobur', '24NQS001', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '28'],
-            ['Kehinde Simeon', '24NQS004', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
-            ['Olabamiji Fathia', '24NQS005', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Akinyemi Aishat', '24NQS006', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '9'],
-            ['Wasila Qowiyu', '24NQS007', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Adebisi Qudus', '24NQS009', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '10'],
-            ['Popoola Faruq', '24NQS010', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '28'],
-            ['Adewale Hamed', '24NQS011', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
-            ['Owolabi Islamiat', '24NQS012', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '5'],
-            ['Babalola Victor', '24NQS013', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Lawal Muhammed', '24NQS014', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '17'],
-            ['Afolayan Kamaldeen', '24NQS015', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '5'],
-            ['Okolo Richard', '24PQS001', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '2'],
-            ['Adigun Olusola', '24PQS002', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '3'],
-            ['Ayinde Samad', '24PQS003', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
-            ['Mustapha Qudus', '24PQS004', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
-            ['Musibau Abdurasheed', '24PQS006', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '17'],
-            ['Abdulrasheed Sefiu', '24PQS007', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Muhideen Abdhameed', '24PQS009', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '2'],
-            ['Olatunji TAIWO', '24NQS016', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '15'],
-            ['Olatunji KEHINDE', '24NQS017', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '18'],
-            ['Oluwatosin Daniel', '24NQS018', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '12'],
-            ['Adewuyi Samuel', '24NQS019', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '22'],
-            ['Ogunlade Grace', '24NQS020', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '14'],
-            ['Sanni Mariam', '24NQS021', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '25'],
-            ['Aremu Mubarak', '24NQS022', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '19'],
-            ['Bolarinwa Taiwo', '24NQS023', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '16'],
-            ['Bolarinwa Kehinde', '24NQS024', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '17'],
-            ['Badmus Rasheed', '24NQS025', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '11'],
-            ['Oladimeji Abiodun', '24NQS026', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '20'],
-            ['Ajibade Wasiu', '24NQS027', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
-            ['Fashola Opeyemi', '24NQS028', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '21'],
-            ['Gbadamosi Rofiat', '24NQS029', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '15'],
-            ['Ogunbayo Damilare', '24NQS030', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '24'],
-            ['Adetunji Olamide', '24PQS010', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '9'],
-            ['Salako Ganiu', '24PQS011', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '12'],
-            ['Olatunde Wosilat', '24PQS012', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '14'],
-            ['Yakub Olayinka', '24PQS013', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '8'],
-            ['Jimoh Latifat', '24PQS014', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '16'],
-            ['Adeleke Muri', '24PQS015', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '11'],
-            ['Akinola Tunde', '24PQS016', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
-            ['Ogunsola Kehinde', '24PQS017', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '7'],
-            ['Oladele Taiwo', '24PQS018', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '15'],
-            ['Oyekunle Bashir', '24PQS019', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '10'],
-
-            // HND 2 Quantity Surveying Course Records
-            ['Adeleke Jamiu', '23HQS001', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '18', '15', '40'],
-            ['Olatunji Mercy', '23HQS002', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '17', '15', '42'],
-            ['Bello Sulaimon', '23HQS003', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '15', '14', '35'],
-            ['Ogunleye Racheal', '23HQS004', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '16', '15', '38'],
-            ['Lawal Ibrahim', '23HQS005', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '14', '12', '30'],
-            ['Afolabi Deborah', '23HQS006', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '19', '15', '45'],
-            ['Salami Monsuru', '23HQS007', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '9', '13', '10', '28'],
-            ['Olowu Ganiyu', '23HQS008', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '16', '15', '39'],
-            ['Bakare Mariam', '23HQS009', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '18', '15', '41'],
-            ['Adeyemi Paul', '23HQS010', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '15', '13', '32'],
-            ['Ogunwusi Femi', '23HQS011', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '17', '15', '37'],
-            ['Jimoh Aminat', '23HQS012', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '16', '15', '40'],
-            ['Salawu Kazeem', '23HQS013', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '14', '12', '29'],
-            ['Oladejo Opeyemi', '23HQS014', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '19', '15', '44'],
-            ['Akinbode Temitope', '23HQS015', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '16', '14', '36']
-        ];
-
-        const defaultHeaders = ['FULL NAME', 'MATRIC NUM', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM'];
-
-        function loadTableEditor() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            const rawDb = localStorage.getItem('student_results_db_v4');
-            let data = defaultRecords;
-
-            if (rawDb) {
-                const parsed = JSON.parse(rawDb);
-                if (parsed.rows && parsed.rows.length > 0) data = parsed.rows;
+        function initSpreadsheet() {
+            const container = document.getElementById('spreadsheet-container');
+            if (hot) {
+                hot.destroy();
             }
 
-            data.forEach((row) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="text" class="wide-input" value="${escapeHtml(row[0] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[1] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[2] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[3] || '')}"></td>
-                    <td><input type="text" class="wide-input" value="${escapeHtml(row[4] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[5] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[6] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[7] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[8] || '')}"></td>
-                    <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
-                `;
-                tbody.appendChild(tr);
+            let savedData = [];
+            const rawDb = localStorage.getItem('student_results_db');
+            if (rawDb) {
+                const parsed = JSON.parse(rawDb);
+                savedData = parsed.map(item => [
+                    item.fullName || '',
+                    item.originalMatric || '',
+                    item.level || '',
+                    item.program || '',
+                    item.course || '',
+                    item.caTest !== '' ? item.caTest : '',
+                    item.practical !== '' ? item.practical : '',
+                    item.exam !== '' ? item.exam : '',
+                    item.total !== '' ? item.total : ''
+                ]);
+            }
+
+            if (savedData.length === 0) {
+                savedData = [
+                    ['ADELEKE, CHINEDU GRACE', 'QS/2026/001', 'ND 1', 'FULL TIME', 'QSV 411', '12', '4', '42', ''],
+                    ['OLANREWAJU, FATIMA BELLO', 'QS/2026/002', 'ND 1', 'FULL TIME', 'QSV 411', '14', '5', '45', ''],
+                    ['', '', '', '', '', '', '', '', '']
+                ];
+            }
+
+            hot = new Handsontable(container, {
+                data: savedData,
+                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'Course', 'C.A', 'Pract', 'Exam', 'Total (Auto)'],
+                columns: [
+                    { data: 0, type: 'text' },
+                    { data: 1, type: 'text' },
+                    { data: 2, type: 'text' },
+                    { data: 3, type: 'text' },
+                    { data: 4, type: 'text' },
+                    { data: 5, type: 'numeric' },
+                    { data: 6, type: 'numeric' },
+                    { data: 7, type: 'numeric' },
+                    { data: 8, type: 'numeric', readOnly: true } // Auto calculated total column
+                ],
+                rowHeaders: true,
+                contextMenu: true,
+                minRows: 25,
+                licenseKey: 'non-commercial-and-evaluation',
+                afterChange: function(changes, source) {
+                    if (source === 'loadData' || !changes) return;
+                    
+                    let recalculateNeeded = false;
+                    changes.forEach(([row, prop]) => {
+                        if (prop === 5 || prop === 6 || prop === 7) {
+                            recalculateNeeded = true;
+                        }
+                    });
+
+                    if (recalculateNeeded) {
+                        changes.forEach(([row]) => {
+                            const ca = parseFloat(hot.getDataAtCell(row, 5)) || 0;
+                            const pract = parseFloat(hot.getDataAtCell(row, 6)) || 0;
+                            const exam = parseFloat(hot.getDataAtCell(row, 7)) || 0;
+                            const rowTotal = ca + pract + exam;
+                            
+                            hot.setDataAtCell(row, 8, rowTotal, 'autoCalculate');
+                        });
+                    }
+                }
             });
-        }
-
-        function addNewRow() {
-            const tbody = document.getElementById('tableBody');
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><input type="text" class="wide-input" placeholder="Full Name"></td>
-                <td><input type="text" placeholder="Matric No"></td>
-                <td><input type="text" placeholder="Level"></td>
-                <td><input type="text" placeholder="Program"></td>
-                <td><input type="text" class="wide-input" placeholder="Course"></td>
-                <td><input type="text" value="0"></td>
-                <td><input type="text" value="0"></td>
-                <td><input type="text" value="0"></td>
-                <td><input type="text" value="0"></td>
-                <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
-            `;
-            tbody.appendChild(tr);
-        }
-
-        function deleteRow(btn) {
-            btn.closest('tr').remove();
-        }
-
-        function escapeHtml(str) {
-            return String(str).replace(/"/g, '&quot;');
         }
 
         function handleAdminLogin() {
@@ -712,7 +417,7 @@
                 document.getElementById('adminLoginBox').classList.add('hidden');
                 document.getElementById('adminUploadBox').classList.remove('hidden');
                 document.getElementById('adminPassInput').value = '';
-                loadTableEditor();
+                initSpreadsheet();
             } else {
                 errDiv.textContent = 'Incorrect password.';
             }
@@ -724,41 +429,44 @@
             document.getElementById('uploadStatus').textContent = '';
         }
 
-        function saveTableData() {
-            const tbody = document.getElementById('tableBody');
-            const rows = tbody.querySelectorAll('tr');
-            const processedRows = [];
+        function saveSpreadsheetData() {
+            const rawData = hot.getData();
             const processedRecords = [];
 
-            rows.forEach(tr => {
-                const inputs = tr.querySelectorAll('input');
-                if (inputs.length < 9) return;
-
-                const fullName = inputs[0].value.trim();
-                const originalMatric = inputs[1].value.trim();
+            rawData.forEach(row => {
+                const fullName = String(row[0] || '').trim();
+                const originalMatric = String(row[1] || '').trim();
                 if (!fullName && !originalMatric) return;
 
-                const level = inputs[2].value.trim();
-                const program = inputs[3].value.trim();
-                const course = inputs[4].value.trim();
-                
-                const ca = parseFloat(inputs[5].value) || 0;
-                const test = parseFloat(inputs[6].value) || 0;
-                const practical = parseFloat(inputs[7].value) || 0;
-                const exam = parseFloat(inputs[8].value) || 0;
-                
-                const total = ca + test + practical + exam;
+                const level = String(row[2] || '').trim();
+                const program = String(row[3] || '').trim();
+                const course = String(row[4] || '').trim();
+                const caTest = parseFloat(row[5]) || 0;
+                const practical = parseFloat(row[6]) || 0;
+                const exam = parseFloat(row[7]) || 0;
+                const total = caTest + practical + exam;
 
-                processedRows.push([
-                    fullName, originalMatric, level, program, course,
-                    inputs[5].value, inputs[6].value, inputs[7].value, inputs[8].value
-                ]);
+                const nameParts = fullName.toLowerCase().split(/\s+/).filter(Boolean);
 
-                processedRecords.push({ total });
+                processedRecords.push({
+                    fullName: fullName,
+                    nameParts: nameParts,
+                    matricClean: originalMatric.toLowerCase(),
+                    originalMatric: originalMatric,
+                    level: level,
+                    program: program,
+                    course: course,
+                    caTest: caTest,
+                    practical: practical,
+                    exam: exam,
+                    total: total
+                });
             });
 
-            localStorage.setItem('student_results_db_v4', JSON.stringify({ headers: defaultHeaders, rows: processedRows }));
-            document.getElementById('uploadStatus').textContent = `Successfully saved ${processedRecords.length} student records!`;
+            localStorage.setItem('student_results_db', JSON.stringify(processedRecords));
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.style.color = '#16a34a';
+            statusDiv.textContent = `Successfully saved and published ${processedRecords.length} student records!`;
         }
 
         function handleStudentCheck(event) {
@@ -771,108 +479,35 @@
             errorDiv.textContent = '';
             resultBox.style.display = 'none';
 
-            let rawDb = localStorage.getItem('student_results_db_v4');
-            let rowsToSearch = rawDb ? JSON.parse(rawDb).rows : defaultRecords;
-
-            const database = [];
-            rowsToSearch.forEach(row => {
-                const fullName = String(row[0] || '').trim();
-                const originalMatric = String(row[1] || '').trim();
-                if (!fullName && !originalMatric) return;
-
-                const ca = parseFloat(row[5]) || 0;
-                const test = parseFloat(row[6]) || 0;
-                const practical = parseFloat(row[7]) || 0;
-                const exam = parseFloat(row[8]) || 0;
-                const total = ca + test + practical + exam;
-
-                database.push({
-                    fullName: fullName,
-                    nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
-                    matricClean: originalMatric.toLowerCase(),
-                    originalMatric: originalMatric,
-                    level: String(row[2] || '').trim(),
-                    program: String(row[3] || '').trim(),
-                    course: String(row[4] || '').trim(),
-                    ca: row[5],
-                    test: row[6],
-                    practical: row[7],
-                    exam: row[8],
-                    total: total
-                });
-            });
-
-            const matchedRecord = database.find(item => {
-                const matricMatch = item.matricClean === inputMatric;
-                const nameInputParts = inputName.split(/\s+/).filter(Boolean);
-                const nameMatch = nameInputParts.every(part => item.nameParts.some(p => p.includes(part)));
-                return matricMatch && nameMatch;
-            });
-
-            if (!matchedRecord) {
-                errorDiv.textContent = 'No matching result found. Please check your name and matric number.';
+            const rawDb = localStorage.getItem('student_results_db');
+            if (!rawDb) {
+                errorDiv.textContent = 'No database found. Contact admin to add results.';
                 return;
             }
 
-            // Populate Result Slip
-            document.getElementById('resCourse').textContent = matchedRecord.course || 'N/A';
-            document.getElementById('resName').textContent = matchedRecord.fullName;
-            document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
-            document.getElementById('resLevel').textContent = matchedRecord.level;
-            document.getElementById('resProgram').textContent = matchedRecord.program;
+            const database = JSON.parse(rawDb);
 
-            let dynamicHtml = '';
-            if (matchedRecord.ca !== '') dynamicHtml += `<div class="result-row"><span>Continuous Assessment (C.A):</span> <span>${matchedRecord.ca}</span></div>`;
-            if (matchedRecord.test !== '') dynamicHtml += `<div class="result-row"><span>Test Score:</span> <span>${matchedRecord.test}</span></div>`;
-            if (matchedRecord.practical !== '') dynamicHtml += `<div class="result-row"><span>Practical Score:</span> <span>${matchedRecord.practical}</span></div>`;
-            if (matchedRecord.exam !== '') dynamicHtml += `<div class="result-row"><span>Exam Score:</span> <span>${matchedRecord.exam}</span></div>`;
+            const studentMatch = database.find(item => {
+                const matricMatches = item.matricClean === inputMatric;
+                const nameMatches = item.nameParts.some(part => inputName.includes(part) || part.includes(inputName));
+                return matricMatches && nameMatches;
+            });
 
-            document.getElementById('dynamicScoresContainer').innerHTML = dynamicHtml;
-            document.getElementById('resTotal').textContent = matchedRecord.total;
-
-            const scoreMsgArea = document.getElementById('scoreMessageArea');
-            if (matchedRecord.total >= 50) {
-                scoreMsgArea.innerHTML = `<div class="success-msg" style="margin-top:10px;">Status: <strong>PASS</strong> 🎉 Congratulations!</div>`;
+            if (studentMatch) {
+                document.getElementById('resCourse').textContent = studentMatch.course;
+                document.getElementById('resName').textContent = studentMatch.fullName;
+                document.getElementById('resMatric').textContent = studentMatch.originalMatric;
+                document.getElementById('resLevel').textContent = studentMatch.level;
+                document.getElementById('resProgram').textContent = studentMatch.program;
+                document.getElementById('resCA').textContent = studentMatch.caTest;
+                document.getElementById('resPractical').textContent = studentMatch.practical;
+                document.getElementById('resExam').textContent = studentMatch.exam;
+                document.getElementById('resTotal').textContent = studentMatch.total;
+                
+                resultBox.style.display = 'block';
             } else {
-                scoreMsgArea.innerHTML = `<div class="error-msg" style="margin-top:10px;">Status: <strong>FAIL / CARRYOVER</strong> ⚠️ Please see your department adviser.</div>`;
+                errorDiv.textContent = 'Result not found. Please verify your Matric Number and Name are correct.';
             }
-
-            resultBox.style.display = 'block';
-        }
-
-        async function downloadResultImage() {
-            const resultBox = document.getElementById('resultContainer');
-            const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
-            const link = document.createElement('a');
-            link.download = `${document.getElementById('resMatric').textContent}_Result_Slip.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
-
-        async function downloadResultPDF() {
-            const { jsPDF } = window.jspdf;
-            const resultBox = document.getElementById('resultContainer');
-            const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
-            const imgData = canvas.toDataURL('image/png');
-            
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 190;
-            const pageHeight = 295;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 10;
-
-            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
-            pdf.save(`${document.getElementById('resMatric').textContent}_Result_Slip.pdf`);
         }
     </script>
 </body>
