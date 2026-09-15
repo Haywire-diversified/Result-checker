@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Student Result Portal</title>
-    <!-- Include Handsontable for full spreadsheet copy/paste functionality -->
+    <title>Michael Adeniyi Polytechnic, Saki - Quantity Surveying Result Portal</title>
+    <!-- Include Handsontable -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
     <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <!-- Include html2canvas and jsPDF for Image and PDF exports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
+            --primary: #1e3a8a;
+            --primary-hover: #1e40af;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #1e293b;
@@ -22,21 +25,16 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
 
         .portal-wrapper {
             width: 100%;
             max-width: 900px;
-            padding: 20px;
         }
 
         .card {
@@ -45,6 +43,27 @@
             border-radius: 12px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             position: relative;
+        }
+
+        .header-branding {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+
+        .header-branding h1 {
+            font-size: 20px;
+            color: var(--primary);
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+
+        .header-branding p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+            font-weight: 600;
         }
 
         .nav-tabs {
@@ -74,7 +93,7 @@
 
         h2 {
             margin-top: 0;
-            font-size: 22px;
+            font-size: 20px;
             color: #0f172a;
             text-align: center;
             margin-bottom: 20px;
@@ -145,6 +164,12 @@
             background: #15803d;
         }
 
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
         .result-box {
             margin-top: 20px;
             padding: 20px;
@@ -192,6 +217,23 @@
             font-size: 13px;
             text-align: center;
             margin-top: 10px;
+        }
+
+        .help-desk {
+            margin-top: 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #1e3a8a;
+            text-align: center;
+        }
+
+        .help-desk a {
+            color: #1d4ed8;
+            font-weight: bold;
+            text-decoration: none;
         }
 
         .hidden {
@@ -242,6 +284,11 @@
 
     <div class="portal-wrapper">
         <div class="card">
+            <div class="header-branding">
+                <h1>Michael Adeniyi Polytechnic, Saki (MAKPOLY)</h1>
+                <p>Department of Quantity Surveying — Student Result Portal</p>
+            </div>
+
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="switchTab('studentTab', event)">Student Portal</button>
                 <button class="nav-tab" onclick="switchTab('adminTab', event)">Admin Panel</button>
@@ -249,30 +296,44 @@
 
             <!-- STUDENT TAB -->
             <div id="studentTab">
-                <h2>Check Student Result</h2>
+                <h2>Check Semester Result</h2>
                 <form id="studentForm" onsubmit="handleStudentCheck(event)">
                     <div class="form-group">
-                        <label for="inputName">Your Name (e.g., Adeleke, Chinedu, or Grace)</label>
-                        <input type="text" id="inputName" placeholder="Type any name (case-insensitive)" required autocomplete="off">
+                        <label for="inputName">Student Name (Type any of your names)</label>
+                        <input type="text" id="inputName" placeholder="e.g., Adeleke, Chinedu, or Grace" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="inputMatric">Matric Number</label>
-                        <input type="text" id="inputMatric" placeholder="e.g., QS/2023/1234" required autocomplete="off">
+                        <input type="text" id="inputMatric" placeholder="e.g., QS/2023/001" required autocomplete="off">
                     </div>
                     <button type="submit" class="btn">View Result</button>
                     <div id="studentError" class="error-msg"></div>
                 </form>
 
                 <div id="resultContainer" class="result-box">
-                    <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
-                    <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
-                    <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
-                    <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
-                    <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
-                    <div class="result-row"><span>C.A. Test:</span> <span id="resCA"></span></div>
-                    <div class="result-row"><span>Practical:</span> <span id="resPractical"></span></div>
-                    <div class="result-row"><span>Exam:</span> <span id="resExam"></span></div>
-                    <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
+                    <div id="printableResultArea">
+                        <div style="text-align: center; margin-bottom: 15px; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">
+                            <strong>MAKPOLY - Quantity Surveying Result Slip</strong>
+                        </div>
+                        <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
+                        <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
+                        <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
+                        <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
+                        <div class="result-row"><span>C.A. Test (Max 30):</span> <span id="resCA"></span></div>
+                        <div class="result-row"><span>Practical (Max 20):</span> <span id="resPractical"></span></div>
+                        <div class="result-row"><span>Exam (Max 50):</span> <span id="resExam"></span></div>
+                        <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
+                    </div>
+
+                    <div class="export-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="downloadImage()">📥 Download as Image</button>
+                        <button type="button" class="btn btn-success" onclick="downloadPDF()">📄 Download as PDF</button>
+                    </div>
+                </div>
+
+                <div class="help-desk">
+                    Having issues or complaints? Contact the Lecturer in Charge at <br>
+                    📞/💬 <a href="tel:08163059669">08163059669</a> (Call or WhatsApp)
                 </div>
             </div>
 
@@ -283,7 +344,7 @@
                 <div id="adminLoginBox">
                     <div class="form-group">
                         <label for="adminPassInput">Admin Password</label>
-                        <input type="password" id="adminPassInput" placeholder="Enter password (default: admin)" autocomplete="new-password">
+                        <input type="password" id="adminPassInput" placeholder="Enter admin password" autocomplete="new-password">
                     </div>
                     <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
                     <div id="loginError" class="error-msg"></div>
@@ -291,7 +352,7 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Excel Spreadsheet Grid:</strong> Edit results directly below. Changing <strong>C.A</strong>, <strong>Pract</strong>, or <strong>Exam</strong> columns will automatically calculate and update the <strong>Total</strong> column in real-time. Press <strong>Ctrl + V</strong> to paste rows from Excel.
+                        📊 <strong>Live Spreadsheet Grid:</strong> Edit results below. Changing <strong>C.A</strong>, <strong>Pract</strong>, or <strong>Exam</strong> automatically recalculates the <strong>Total</strong> column instantly. Data auto-refreshes for students upon saving.
                     </div>
                     
                     <div id="spreadsheet-container"></div>
@@ -352,7 +413,6 @@
                     item.originalMatric || '',
                     item.level || '',
                     item.program || '',
-                    item.course || '',
                     item.caTest !== undefined ? item.caTest : '',
                     item.practical !== undefined ? item.practical : '',
                     item.exam !== undefined ? item.exam : '',
@@ -360,54 +420,48 @@
                 ]);
             }
 
-            // Fallback default dataset compiled from your uploaded spreadsheet table view
+            // Default dataset from quantity surveying results
             if (savedData.length === 0) {
                 savedData = [
-                    ['ADEWALE SODIQ ADEBAYO', 'QS/2023/001', 'HND-1', 'PART-TIME', 'QS101', 12, 18, 45, 75],
-                    ['OLALEYE HABIBAT OLUWAKEMI', 'QS/2023/002', 'HND-1', 'PART-TIME', 'QS101', 15, 20, 50, 85],
-                    ['OGUNDELE TIMOTHY OLUWAGBENGA', 'QS/2023/003', 'HND-1', 'PART-TIME', 'QS101', 10, 15, 40, 65],
-                    ['ADELEKE CHINEDU GRACE', 'SCI/2026/442', '200', 'Full Time', 'MTH201', 18, 22, 55, 95],
-                    ['OLANREWAJU FATIMA BELLO', 'ENG/2026/109', '300', 'Part Time', 'EEG302', 25, 15, 48, 88]
+                    ['ADEWALE SODIQ ADEBAYO', 'QS/2023/001', 'HND-1', 'PART-TIME', 12, 18, 45, 75],
+                    ['OLALEYE HABIBAT OLUWAKEMI', 'QS/2023/002', 'HND-1', 'PART-TIME', 15, 20, 50, 85],
+                    ['OGUNDELE TIMOTHY OLUWAGBENGA', 'QS/2023/003', 'HND-1', 'PART-TIME', 10, 15, 40, 65]
                 ];
             }
 
             hot = new Handsontable(container, {
                 data: savedData,
-                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'Course', 'C.A', 'Pract', 'Exam', 'Total'],
+                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'C.A', 'Pract', 'Exam', 'Total'],
                 columns: [
                     { data: 0, type: 'text' },
                     { data: 1, type: 'text' },
                     { data: 2, type: 'text' },
                     { data: 3, type: 'text' },
-                    { data: 4, type: 'text' },
+                    { data: 4, type: 'numeric' },
                     { data: 5, type: 'numeric' },
                     { data: 6, type: 'numeric' },
-                    { data: 7, type: 'numeric' },
-                    { data: 8, type: 'numeric', readOnly: true } // Auto calculated total column
+                    { data: 7, type: 'numeric', readOnly: true }
                 ],
                 rowHeaders: true,
                 contextMenu: true,
                 minRows: 15,
                 licenseKey: 'non-commercial-and-evaluation',
-                // Automatically sum totals in real-time when score cells change
                 afterChange: function(changes, source) {
                     if (source === 'loadData' || !changes) return;
                     
                     let rowChanges = new Set();
                     changes.forEach(([row, prop, oldVal, newVal]) => {
-                        if ([5, 6, 7].includes(prop)) {
+                        if ([4, 5, 6].includes(prop)) {
                             rowChanges.add(row);
                         }
                     });
 
                     rowChanges.forEach(row => {
-                        let ca = parseFloat(hot.getDataAtCell(row, 5)) || 0;
-                        let pract = parseFloat(hot.getDataAtCell(row, 6)) || 0;
-                        let exam = parseFloat(hot.getDataAtCell(row, 7)) || 0;
+                        let ca = parseFloat(hot.getDataAtCell(row, 4)) || 0;
+                        let pract = parseFloat(hot.getDataAtCell(row, 5)) || 0;
+                        let exam = parseFloat(hot.getDataAtCell(row, 6)) || 0;
                         let sum = ca + pract + exam;
-                        
-                        // Temporarily disable change tracking to prevent loops
-                        hot.setDataAtCell(row, 8, sum, 'autoCalculate');
+                        hot.setDataAtCell(row, 7, sum, 'autoCalculate');
                     });
                 }
             });
@@ -445,10 +499,9 @@
 
                 const level = String(row[2] || '').trim();
                 const program = String(row[3] || '').trim();
-                const course = String(row[4] || '').trim();
-                const caTest = parseFloat(row[5]) || 0;
-                const practical = parseFloat(row[6]) || 0;
-                const exam = parseFloat(row[7]) || 0;
+                const caTest = parseFloat(row[4]) || 0;
+                const practical = parseFloat(row[5]) || 0;
+                const exam = parseFloat(row[6]) || 0;
                 const total = caTest + practical + exam;
 
                 const nameParts = fullName.toLowerCase().split(/\s+/).filter(Boolean);
@@ -460,7 +513,6 @@
                     originalMatric: originalMatric,
                     level: level,
                     program: program,
-                    course: course,
                     caTest: caTest,
                     practical: practical,
                     exam: exam,
@@ -471,7 +523,7 @@
             localStorage.setItem('student_results_db', JSON.stringify(processedRecords));
             const statusDiv = document.getElementById('uploadStatus');
             statusDiv.style.color = '#16a34a';
-            statusDiv.textContent = `Successfully saved ${processedRecords.length} records!`;
+            statusDiv.textContent = `Successfully saved ${processedRecords.length} records! Auto-refreshed.`;
         }
 
         function handleStudentCheck(event) {
@@ -499,7 +551,6 @@
             });
 
             if (studentMatch) {
-                document.getElementById('resCourse').textContent = studentMatch.course;
                 document.getElementById('resName').textContent = studentMatch.fullName;
                 document.getElementById('resMatric').textContent = studentMatch.originalMatric;
                 document.getElementById('resLevel').textContent = studentMatch.level;
@@ -511,8 +562,35 @@
                 
                 resultBox.style.display = 'block';
             } else {
-                errorDiv.textContent = 'Result not found. Please verify that both your Matric Number and name are correct.';
+                errorDiv.textContent = 'Result not found. Please verify your matric number and any of your names.';
             }
+        }
+
+        function downloadImage() {
+            const element = document.getElementById('printableResultArea');
+            html2canvas(element).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'MAKPOLY_QS_Result.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('printableResultArea');
+            html2canvas(element).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190; 
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                pdf.save('MAKPOLY_QS_Result.pdf');
+            });
         }
     </script>
 </body>
