@@ -281,7 +281,7 @@
                 <div id="adminLoginBox">
                     <div class="form-group">
                         <label for="adminPassInput">Admin Password</label>
-                        <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="new-password">
+                        <input type="password" id="adminPassInput" placeholder="Enter password (default: admin)" autocomplete="new-password">
                     </div>
                     <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
                     <div id="loginError" class="error-msg"></div>
@@ -289,7 +289,7 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Excel Spreadsheet Grid:</strong> You can select rows/columns directly from Excel and paste them here using <strong>Ctrl + V</strong>. The <strong>Total (Auto)</strong> column automatically recomputes whenever you modify C.A., Practical, or Exam scores!
+                        📊 <strong>Excel Spreadsheet Grid:</strong> Edit records directly or paste rows using <strong>Ctrl + V</strong>. The <strong>Total (Auto)</strong> column automatically recomputes whenever you modify C.A., Practical, or Exam scores!
                     </div>
                     
                     <div id="spreadsheet-container"></div>
@@ -359,9 +359,20 @@
             }
 
             if (savedData.length === 0) {
+                // Preloaded dataset matching student results template
                 savedData = [
                     ['ADELEKE, CHINEDU GRACE', 'QS/2026/001', 'ND 1', 'FULL TIME', 'QSV 411', '12', '4', '42', ''],
                     ['OLANREWAJU, FATIMA BELLO', 'QS/2026/002', 'ND 1', 'FULL TIME', 'QSV 411', '14', '5', '45', ''],
+                    ['ADAMS, OLUWASEUN EMMANUEL', 'QS/2026/003', 'ND 1', 'FULL TIME', 'QSV 411', '10', '3', '38', ''],
+                    ['BALOGUN, KEHINDE MARY', 'QS/2026/004', 'ND 1', 'FULL TIME', 'QSV 411', '15', '5', '50', ''],
+                    ['CHUKWU, EMEKA DESTINY', 'QS/2026/005', 'ND 1', 'FULL TIME', 'QSV 411', '11', '4', '40', ''],
+                    ['ABDULLAHI, ZAINAB OCHUWA', 'QS/2026/006', 'ND 1', 'FULL TIME', 'QSV 411', '13', '4', '44', ''],
+                    ['AFOLABI, TAYO SAMUEL', 'QS/2026/007', 'ND 1', 'FULL TIME', 'QSV 411', '12', '3', '41', ''],
+                    ['AGBAJE, BLESSING OLUWAFUNMILAYO', 'QS/2026/008', 'ND 1', 'FULL TIME', 'QSV 411', '14', '5', '46', ''],
+                    ['ALIYU, IBRAHIM MUSA', 'QS/2026/009', 'ND 1', 'FULL TIME', 'QSV 411', '10', '4', '35', ''],
+                    ['BAKO, RUTH NGBEDE', 'QS/2026/010', 'ND 1', 'FULL TIME', 'QSV 411', '15', '5', '48', ''],
+                    ['BELLO, OLUWAKEMI ESTHER', 'QS/2026/011', 'ND 2', 'PART TIME', 'QSV 412', '13', '4', '42', ''],
+                    ['DANIEL, VICTORIA OLUWASEUN', 'QS/2026/012', 'ND 2', 'PART TIME', 'QSV 412', '12', '5', '40', ''],
                     ['', '', '', '', '', '', '', '', '']
                 ];
             }
@@ -378,11 +389,11 @@
                     { data: 5, type: 'numeric' },
                     { data: 6, type: 'numeric' },
                     { data: 7, type: 'numeric' },
-                    { data: 8, type: 'numeric', readOnly: true } // Auto calculated total column
+                    { data: 8, type: 'numeric', readOnly: true }
                 ],
                 rowHeaders: true,
                 contextMenu: true,
-                minRows: 25,
+                minRows: 30,
                 licenseKey: 'non-commercial-and-evaluation',
                 afterChange: function(changes, source) {
                     if (source === 'loadData' || !changes) return;
