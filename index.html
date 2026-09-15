@@ -35,7 +35,7 @@
 
         .portal-wrapper {
             width: 100%;
-            max-width: 950px;
+            max-width: 900px;
             padding: 20px;
         }
 
@@ -131,6 +131,7 @@
             color: #334155;
             margin-top: 10px;
         }
+
         .btn-secondary:hover {
             background: #cbd5e1;
         }
@@ -139,6 +140,7 @@
             background: #16a34a;
             margin-top: 10px;
         }
+
         .btn-success:hover {
             background: #15803d;
         }
@@ -212,7 +214,7 @@
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
-            max-height: 420px;
+            max-height: 400px;
         }
 
         #privacy-shield {
@@ -250,12 +252,12 @@
                 <h2>Check Student Result</h2>
                 <form id="studentForm" onsubmit="handleStudentCheck(event)">
                     <div class="form-group">
-                        <label for="inputName">Your Name</label>
-                        <input type="text" id="inputName" placeholder="Type name (case-insensitive)" required autocomplete="off">
+                        <label for="inputName">Your Name (e.g., Adeleke, Chinedu, or Grace)</label>
+                        <input type="text" id="inputName" placeholder="Type any name (case-insensitive)" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="inputMatric">Matric Number</label>
-                        <input type="text" id="inputMatric" placeholder="e.g., QS/2026/001" required autocomplete="off">
+                        <input type="text" id="inputMatric" placeholder="e.g., QS/2023/1234" required autocomplete="off">
                     </div>
                     <button type="submit" class="btn">View Result</button>
                     <div id="studentError" class="error-msg"></div>
@@ -289,7 +291,7 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Excel Spreadsheet Grid:</strong> Edit records directly or paste rows using <strong>Ctrl + V</strong>. The <strong>Total (Auto)</strong> column automatically recomputes whenever you modify C.A., Practical, or Exam scores!
+                        📊 <strong>Excel Spreadsheet Grid:</strong> Edit results directly below. Changing <strong>C.A</strong>, <strong>Pract</strong>, or <strong>Exam</strong> columns will automatically calculate and update the <strong>Total</strong> column in real-time. Press <strong>Ctrl + V</strong> to paste rows from Excel.
                     </div>
                     
                     <div id="spreadsheet-container"></div>
@@ -351,35 +353,27 @@
                     item.level || '',
                     item.program || '',
                     item.course || '',
-                    item.caTest !== '' ? item.caTest : '',
-                    item.practical !== '' ? item.practical : '',
-                    item.exam !== '' ? item.exam : '',
-                    item.total !== '' ? item.total : ''
+                    item.caTest !== undefined ? item.caTest : '',
+                    item.practical !== undefined ? item.practical : '',
+                    item.exam !== undefined ? item.exam : '',
+                    item.total !== undefined ? item.total : ''
                 ]);
             }
 
+            // Fallback default dataset compiled from your uploaded spreadsheet table view
             if (savedData.length === 0) {
-                // Preloaded dataset matching student results template
                 savedData = [
-                    ['ADELEKE, CHINEDU GRACE', 'QS/2026/001', 'ND 1', 'FULL TIME', 'QSV 411', '12', '4', '42', ''],
-                    ['OLANREWAJU, FATIMA BELLO', 'QS/2026/002', 'ND 1', 'FULL TIME', 'QSV 411', '14', '5', '45', ''],
-                    ['ADAMS, OLUWASEUN EMMANUEL', 'QS/2026/003', 'ND 1', 'FULL TIME', 'QSV 411', '10', '3', '38', ''],
-                    ['BALOGUN, KEHINDE MARY', 'QS/2026/004', 'ND 1', 'FULL TIME', 'QSV 411', '15', '5', '50', ''],
-                    ['CHUKWU, EMEKA DESTINY', 'QS/2026/005', 'ND 1', 'FULL TIME', 'QSV 411', '11', '4', '40', ''],
-                    ['ABDULLAHI, ZAINAB OCHUWA', 'QS/2026/006', 'ND 1', 'FULL TIME', 'QSV 411', '13', '4', '44', ''],
-                    ['AFOLABI, TAYO SAMUEL', 'QS/2026/007', 'ND 1', 'FULL TIME', 'QSV 411', '12', '3', '41', ''],
-                    ['AGBAJE, BLESSING OLUWAFUNMILAYO', 'QS/2026/008', 'ND 1', 'FULL TIME', 'QSV 411', '14', '5', '46', ''],
-                    ['ALIYU, IBRAHIM MUSA', 'QS/2026/009', 'ND 1', 'FULL TIME', 'QSV 411', '10', '4', '35', ''],
-                    ['BAKO, RUTH NGBEDE', 'QS/2026/010', 'ND 1', 'FULL TIME', 'QSV 411', '15', '5', '48', ''],
-                    ['BELLO, OLUWAKEMI ESTHER', 'QS/2026/011', 'ND 2', 'PART TIME', 'QSV 412', '13', '4', '42', ''],
-                    ['DANIEL, VICTORIA OLUWASEUN', 'QS/2026/012', 'ND 2', 'PART TIME', 'QSV 412', '12', '5', '40', ''],
-                    ['', '', '', '', '', '', '', '', '']
+                    ['ADEWALE SODIQ ADEBAYO', 'QS/2023/001', 'HND-1', 'PART-TIME', 'QS101', 12, 18, 45, 75],
+                    ['OLALEYE HABIBAT OLUWAKEMI', 'QS/2023/002', 'HND-1', 'PART-TIME', 'QS101', 15, 20, 50, 85],
+                    ['OGUNDELE TIMOTHY OLUWAGBENGA', 'QS/2023/003', 'HND-1', 'PART-TIME', 'QS101', 10, 15, 40, 65],
+                    ['ADELEKE CHINEDU GRACE', 'SCI/2026/442', '200', 'Full Time', 'MTH201', 18, 22, 55, 95],
+                    ['OLANREWAJU FATIMA BELLO', 'ENG/2026/109', '300', 'Part Time', 'EEG302', 25, 15, 48, 88]
                 ];
             }
 
             hot = new Handsontable(container, {
                 data: savedData,
-                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'Course', 'C.A', 'Pract', 'Exam', 'Total (Auto)'],
+                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'Course', 'C.A', 'Pract', 'Exam', 'Total'],
                 columns: [
                     { data: 0, type: 'text' },
                     { data: 1, type: 'text' },
@@ -389,32 +383,32 @@
                     { data: 5, type: 'numeric' },
                     { data: 6, type: 'numeric' },
                     { data: 7, type: 'numeric' },
-                    { data: 8, type: 'numeric', readOnly: true }
+                    { data: 8, type: 'numeric', readOnly: true } // Auto calculated total column
                 ],
                 rowHeaders: true,
                 contextMenu: true,
-                minRows: 30,
+                minRows: 15,
                 licenseKey: 'non-commercial-and-evaluation',
+                // Automatically sum totals in real-time when score cells change
                 afterChange: function(changes, source) {
                     if (source === 'loadData' || !changes) return;
                     
-                    let recalculateNeeded = false;
-                    changes.forEach(([row, prop]) => {
-                        if (prop === 5 || prop === 6 || prop === 7) {
-                            recalculateNeeded = true;
+                    let rowChanges = new Set();
+                    changes.forEach(([row, prop, oldVal, newVal]) => {
+                        if ([5, 6, 7].includes(prop)) {
+                            rowChanges.add(row);
                         }
                     });
 
-                    if (recalculateNeeded) {
-                        changes.forEach(([row]) => {
-                            const ca = parseFloat(hot.getDataAtCell(row, 5)) || 0;
-                            const pract = parseFloat(hot.getDataAtCell(row, 6)) || 0;
-                            const exam = parseFloat(hot.getDataAtCell(row, 7)) || 0;
-                            const rowTotal = ca + pract + exam;
-                            
-                            hot.setDataAtCell(row, 8, rowTotal, 'autoCalculate');
-                        });
-                    }
+                    rowChanges.forEach(row => {
+                        let ca = parseFloat(hot.getDataAtCell(row, 5)) || 0;
+                        let pract = parseFloat(hot.getDataAtCell(row, 6)) || 0;
+                        let exam = parseFloat(hot.getDataAtCell(row, 7)) || 0;
+                        let sum = ca + pract + exam;
+                        
+                        // Temporarily disable change tracking to prevent loops
+                        hot.setDataAtCell(row, 8, sum, 'autoCalculate');
+                    });
                 }
             });
         }
@@ -477,7 +471,7 @@
             localStorage.setItem('student_results_db', JSON.stringify(processedRecords));
             const statusDiv = document.getElementById('uploadStatus');
             statusDiv.style.color = '#16a34a';
-            statusDiv.textContent = `Successfully saved and published ${processedRecords.length} student records!`;
+            statusDiv.textContent = `Successfully saved ${processedRecords.length} records!`;
         }
 
         function handleStudentCheck(event) {
@@ -500,7 +494,7 @@
 
             const studentMatch = database.find(item => {
                 const matricMatches = item.matricClean === inputMatric;
-                const nameMatches = item.nameParts.some(part => inputName.includes(part) || part.includes(inputName));
+                const nameMatches = item.nameParts.some(part => part === inputName);
                 return matricMatches && nameMatches;
             });
 
@@ -517,7 +511,7 @@
                 
                 resultBox.style.display = 'block';
             } else {
-                errorDiv.textContent = 'Result not found. Please verify your Matric Number and Name are correct.';
+                errorDiv.textContent = 'Result not found. Please verify that both your Matric Number and name are correct.';
             }
         }
     </script>
