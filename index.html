@@ -3,792 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Student Result Portal</title>
+    <title>Course Management Tables</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --border-color: #cbd5e1;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
             margin: 0;
-            padding: 10px;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        /* Tab Navigation Styles */
+        .tab-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .portal-wrapper {
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-tabs {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
-        }
-
-        .nav-tab {
-            background: none;
-            border: none;
-            font-size: 15px;
-            font-weight: 600;
-            color: #64748b;
-            cursor: pointer;
-            padding: 5px 10px;
-            transition: color 0.2s;
-        }
-
-        .nav-tab.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-            margin-bottom: -12px;
-        }
-
-        h2 {
-            margin-top: 0;
-            font-size: 22px;
-            color: #0f172a;
-            text-align: center;
             margin-bottom: 20px;
         }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: #475569;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
+        .tab-button {
+            background-color: #ddd;
             border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 600;
+            outline: none;
+            padding: 12px 24px;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 5px;
-        }
-
-        .btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #334155;
-            margin-top: 10px;
-        }
-
-        .btn-secondary:hover {
-            background: #cbd5e1;
-        }
-
-        .btn-success {
-            background: #16a34a;
-            margin-top: 10px;
-        }
-
-        .btn-success:hover {
-            background: #15803d;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            padding: 6px 10px;
-            font-size: 12px;
-            width: auto;
-            margin-top: 0;
-        }
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .result-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            display: none;
-            border-left: 4px solid var(--primary);
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .result-row span:first-child {
-            font-weight: 600;
-            color: #475569;
-        }
-
-        .result-row span:last-child {
-            color: #0f172a;
-            text-align: right;
-        }
-
-        .total-row {
-            border-top: 1px dashed #cbd5e1;
-            padding-top: 10px;
-            margin-top: 10px;
-            font-weight: bold;
             font-size: 16px;
-            color: #16a34a !important;
+            font-weight: bold;
+            transition: 0.3s;
+            margin: 0 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab-button:hover {
+            background-color: #ccc;
+        }
+        .tab-button.active {
+            background-color: #007bff;
+            color: white;
         }
 
-        .error-msg {
-            color: #dc2626;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .success-msg {
-            color: #16a34a;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .spreadsheet-hint {
-            font-size: 12px;
-            color: #64748b;
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .table-responsive {
-            width: 100%;
+        /* Tab Content Styles */
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 100%;
             overflow-x: auto;
-            max-height: 450px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            margin-bottom: 15px;
+        }
+        .tab-content.active {
+            display: block;
         }
 
-        .admin-table {
+        /* Toolbar Styles */
+        .toolbar {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .toolbar button {
+            padding: 8px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #28a745;
+            color: white;
+            transition: background 0.2s;
+        }
+        .toolbar button.delete-col-btn {
+            background-color: #dc3545;
+        }
+        .toolbar button:hover {
+            opacity: 0.9;
+        }
+
+        /* Table Styles */
+        table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
             text-align: left;
-            font-size: 13px;
+            min-width: 100px;
         }
-
-        .admin-table th, .admin-table td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #e2e8f0;
-            border-right: 1px solid #e2e8f0;
-            white-space: nowrap;
+        th {
+            background-color: #f8f9fa;
+            position: relative;
         }
-
-        .admin-table th {
-            background: #f1f5f9;
-            color: #334155;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+        td[contenteditable="true"]:focus {
+            background-color: #eef9ff;
+            outline: 2px solid #007bff;
         }
-
-        .admin-table input {
-            width: 100px;
-            padding: 6px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            font-size: 13px;
+        .action-cell {
+            text-align: center;
+            min-width: 60px;
         }
-        
-        .admin-table input.wide-input {
-            width: 180px;
+        .delete-row-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .delete-row-btn:hover {
+            background: #c82333;
         }
     </style>
 </head>
 <body>
 
-    <div class="portal-wrapper">
-        <div class="card">
-            <div class="nav-tabs">
-                <button class="nav-tab active" onclick="switchTab('studentTab', event)">Student Portal</button>
-                <button class="nav-tab" onclick="switchTab('adminTab', event)">Admin Panel</button>
-            </div>
+    <h2>Course Record Sheets</h2>
 
-            <!-- STUDENT TAB -->
-            <div id="studentTab">
-                <h2>Check Student Result</h2>
-                <form id="studentForm" onsubmit="handleStudentCheck(event)">
-                    <div class="form-group">
-                        <label for="inputName">Your Name (e.g., Agboluaje, Azeez)</label>
-                        <input type="text" id="inputName" placeholder="Type any name (case-insensitive)" required autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputMatric">Matric Number</label>
-                        <input type="text" id="inputMatric" placeholder="e.g., 25NQS001" required autocomplete="off">
-                    </div>
-                    <button type="submit" class="btn">View Result</button>
-                    <div id="studentError" class="error-msg"></div>
-                </form>
+    <!-- Tab Buttons -->
+    <div class="tab-container">
+        <button class="tab-button active" onclick="openTab(event, 'course1')">Course 1</button>
+        <button class="tab-button" onclick="openTab(event, 'course2')">Course 2</button>
+        <button class="tab-button" onclick="openTab(event, 'course3')">Course 3</button>
+    </div>
 
-                <div id="resultContainer" class="result-box">
-                    <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
-                    <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
-                    <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
-                    <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
-                    <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
-                    <div id="dynamicScoresContainer"></div>
-                    <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
-                </div>
-            </div>
-
-            <!-- ADMIN TAB -->
-            <div id="adminTab" class="hidden">
-                <h2>Admin Panel</h2>
-                
-                <div id="adminLoginBox">
-                    <div class="form-group">
-                        <label for="adminPassInput">Admin Password</label>
-                        <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="new-password">
-                    </div>
-                    <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
-                    <div id="loginError" class="error-msg"></div>
-                </div>
-
-                <div id="adminUploadBox" class="hidden">
-                    <div class="spreadsheet-hint">
-                        📱 <strong>Full 220-Row Dataset Loaded:</strong> Manage all student records, edit rows directly, or click <strong>➕ Add Row</strong> to insert a new student. Click <strong>💾 Save & Publish Results</strong> when finished.
-                    </div>
-                    
-                    <div style="margin-bottom: 10px;">
-                        <button type="button" class="btn" style="width: auto; padding: 8px 16px;" onclick="addNewRow()">➕ Add Student Row</button>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="admin-table" id="adminTableElement">
-                            <thead>
-                                <tr id="tableHeaderRow">
-                                    <th>Full Name</th>
-                                    <th>Matric No</th>
-                                    <th>Level</th>
-                                    <th>Program</th>
-                                    <th>Course</th>
-                                    <th>C.A</th>
-                                    <th>Test</th>
-                                    <th>Practical</th>
-                                    <th>Exam</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <button type="button" class="btn btn-success" onclick="saveTableData()">💾 Save & Publish Results</button>
-                    <button type="button" class="btn btn-secondary" onclick="handleAdminLogout()">Log Out</button>
-                    <div id="uploadStatus" class="success-msg"></div>
-                </div>
-            </div>
+    <!-- Course 1 Tab Content -->
+    <div id="course1" class="tab-content active">
+        <h3>Course 1 Management</h3>
+        <div class="toolbar">
+            <button onclick="addRow('table1', 'course1')">➕ Add Row</button>
+            <button onclick="addColumn('table1', 'course1')">➕ Add Column</button>
+            <button class="delete-col-btn" onclick="deleteLastColumn('table1', 'course1')">➖ Delete Last Column</button>
+            <button onclick="saveData('course1', 'table1')" style="background-color: #17a2b8;">💾 Save Changes</button>
         </div>
+        <table id="table1">
+            <thead>
+                <tr>
+                    <th contenteditable="true">Matric No</th>
+                    <th contenteditable="true">Student Name</th>
+                    <th contenteditable="true">Score</th>
+                    <th class="action-cell">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows injected dynamically via JS or loaded from storage -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Course 2 Tab Content -->
+    <div id="course2" class="tab-content">
+        <h3>Course 2 Management</h3>
+        <div class="toolbar">
+            <button onclick="addRow('table2', 'course2')">➕ Add Row</button>
+            <button onclick="addColumn('table2', 'course2')">➕ Add Column</button>
+            <button class="delete-col-btn" onclick="deleteLastColumn('table2', 'course2')">➖ Delete Last Column</button>
+            <button onclick="saveData('course2', 'table2')" style="background-color: #17a2b8;">💾 Save Changes</button>
+        </div>
+        <table id="table2">
+            <thead>
+                <tr>
+                    <th contenteditable="true">Matric No</th>
+                    <th contenteditable="true">Student Name</th>
+                    <th contenteditable="true">Score</th>
+                    <th class="action-cell">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows injected dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Course 3 Tab Content -->
+    <div id="course3" class="tab-content">
+        <h3>Course 3 Management</h3>
+        <div class="toolbar">
+            <button onclick="addRow('table3', 'course3')">➕ Add Row</button>
+            <button onclick="addColumn('table3', 'course3')">➕ Add Column</button>
+            <button class="delete-col-btn" onclick="deleteLastColumn('table3', 'course3')">➖ Delete Last Column</button>
+            <button onclick="saveData('course3', 'table3')" style="background-color: #17a2b8;">💾 Save Changes</button>
+        </div>
+        <table id="table3">
+            <thead>
+                <tr>
+                    <th contenteditable="true">Matric No</th>
+                    <th contenteditable="true">Student Name</th>
+                    <th contenteditable="true">Score</th>
+                    <th class="action-cell">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows injected dynamically -->
+            </tbody>
+        </table>
     </div>
 
     <script>
-        function switchTab(tabId, event) {
-            document.getElementById('studentTab').classList.add('hidden');
-            document.getElementById('adminTab').classList.add('hidden');
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.remove('hidden');
-            event.currentTarget.classList.add('active');
-        }
-
-        const defaultRecords = [
-            // Full 220-Row Dataset extracted from your spreadsheet image
-            ['Agboluaje Tijani', '25NQS001', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '16', '15', '7'],
-            ['Azeez Mutiat', '25NQS002', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '8'],
-            ['Adetoro Praise', '25NQS003', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '17', '15', '8'],
-            ['Rabiu Tijani', '25NQS004', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '14', '16', '15', '6'],
-            ['Ibiyemi Bashit', '25NQS007', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '1'],
-            ['Egbeleke Segun', '25NQS008', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '32'],
-            ['Adeyeye Samuel', '25PQS001', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '15', '16', '15', '19'],
-            ['Ayantunde Kehinde', '25PQS002', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '20'],
-            ['Hassan Ahmad', '25PQS003', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '8'],
-            ['Oyetunji Opeyemi', '25NQS005', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '12', '15', '14', '10'],
-            ['Bello Rofiat', '25NQS006', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '11', '14', '13', '9'],
-            ['Oladele Barakat', '25NQS009', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '10', '13', '12', '11'],
-            ['Salawu Zainab', '25NQS010', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '14', '15', '15', '12'],
-            ['Adekunle Maruf', '25NQS011', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '9', '12', '10', '8'],
-            ['Olatunji Taiwo', '25NQS012', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '14', '14', '14'],
-            ['Olatunji Kehinde', '25NQS013', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '12', '13', '13', '13'],
-            ['Adeleke Ridwan', '25NQS014', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '8', '10', '9', '7'],
-            ['Yusuf Mubarak', '25NQS015', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '15', '17', '16', '15'],
-            ['Lawal Aishat', '25NQS016', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '11', '12', '12', '10'],
-            ['SULAIMON QUADRI', '25NQS017', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '10', '11', '11', '9'],
-            ['OLADIPO FAITH', '25NQS018', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '14', '16', '15', '13'],
-            ['OGUNDIPE FUNMILOLA', '25NQS019', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '12', '14', '13', '11'],
-            ['AKINOLA VICTOR', '25NQS020', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '9', '10', '10', '8'],
-            ['ADEYEMI OLUWAFEMI', '25NQS021', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '15', '14', '12'],
-            ['FAGBEMI OLUWATOSIN', '25NQS022', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '11', '12', '12', '10'],
-            ['OLAYINKA GRACE', '25NQS023', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '10', '13', '12', '9'],
-            ['OGUNJOBI SAMUEL', '25NQS024', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '15', '16', '15', '14'],
-            ['AJIBADE RAHMAT', '25NQS025', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '8', '9', '9', '7'],
-            ['ADEBAYO BLESSING', '25NQS026', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '12', '13', '13', '11'],
-            ['SALIU TAOFEEK', '25NQS027', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '10', '12', '11', '10'],
-            ['MOHAMMED AISHA', '25NQS028', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '14', '15', '14', '13'],
-            ['OWOLABI ESTHER', '25NQS029', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '11', '13', '12', '10'],
-            ['TIAMIYU LUKMAN', '25NQS030', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '9', '10', '10', '8'],
-            ['ADEWUYI EMMANUEL', '25NQS031', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '14', '14', '12'],
-            ['OLANIYAN DEBORAH', '25NQS032', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '12', '13', '13', '11'],
-            ['OGUNDARE PETER', '25NQS033', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '10', '11', '11', '9'],
-            ['BALOGUN RUKAYAT', '25NQS034', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '15', '16', '15', '14'],
-            ['AKINTUNDE JOSHUA', '25NQS035', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '8', '10', '9', '7'],
-            ['OLORUNFEMI MARY', '25NQS036', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '11', '12', '12', '10'],
-            ['ADEJUMO IDOWU', '25NQS037', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '14', '14', '12'],
-            ['AJAYI ELIZABETH', '25NQS038', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '10', '11', '11', '9'],
-            ['OLOYEDE ABAYOMI', '25NQS039', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '14', '15', '15', '13'],
-            ['SULAIMON MARIAM', '25NQS040', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '12', '13', '13', '11'],
-            
-            // Computer Applications (HND 1)
-            ['Mudasiru Maleek', '25HQS001', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '', '15', '33'],
-            ['Gbadegesin', '25HQS002', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '30'],
-            ['Ogundele Kaosara', '25HQS003', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '15', '20'],
-            ['Ishola Esther', '25HQS004', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '25'],
-            ['Owoade Dorcas', '25HQS005', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '29'],
-            ['Akeem Mariam', '25HQS007', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '15', '27'],
-            ['Issa Abduqowiwu', '25HQS008', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '15', '29'],
-            ['Ogungbenro Bose', '25HQS009', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '5', '', '15', '25'],
-            ['Ogunkunle Opeyemi', '25HQS010', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '28'],
-            ['Mukaila Kehinde', '25HQS011', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '15', '32'],
-            ['Aramide Faith', '25HQS012', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '8', '29'],
-            ['Dairo Emmanuel', '25HQS013', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '', '5', '11'],
-            ['Olaniyi Christianah', '25HQS014', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '10', '30'],
-            ['Adeleke Olamide', '25HQS015', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '', '8', '22'],
-            ['Lateef Qoyum', '25HQS016', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '10', '30'],
-            ['Salami Hakeem', '25HQS017', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '24'],
-            ['AKANDE TOBI', '25HQS018', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '12', '26'],
-            ['OLANIYAN TIMOTHY', '25HQS019', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '14', '29'],
-            ['ADEPOJU RASAQ', '25HQS020', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '11', '23'],
-            ['BALOGUN SODIQ', '25HQS021', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '', '15', '31'],
-            ['OLATUNBOSUN GRACE', '25HQS022', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '5', '', '10', '21'],
-            ['JIMOH RAHMAN', '25HQS023', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '13', '27'],
-            ['ADELEKE WASIU', '25HQS024', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '14', '30'],
-            ['SANNI KHADIJAH', '25HQS025', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '12', '25'],
-
-            // Sustainable Construction (ND 2)
-            ['Ahmed Sobur', '24NQS001', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '28'],
-            ['Kehinde Simeon', '24NQS004', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
-            ['Olabamiji Fathia', '24NQS005', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Akinyemi Aishat', '24NQS006', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '9'],
-            ['Wasila Qowiyu', '24NQS007', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Adebisi Qudus', '24NQS009', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '10'],
-            ['Popoola Faruq', '24NQS010', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '28'],
-            ['Adewale Hamed', '24NQS011', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
-            ['Owolabi Islamiat', '24NQS012', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '5'],
-            ['Babalola Victor', '24NQS013', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Lawal Muhammed', '24NQS0014', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '17'],
-            ['Afolayan Kamaldeen', '24NQS015', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '5'],
-            ['Okolo Richard', '24PQS001', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '2'],
-            ['Adigun Olusola', '24PQS002', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '3'],
-            ['Ayinde Samad', '24PQS003', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
-            ['Mustapha Qudus', '24PQS004', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
-            ['Musibau Abdurasheed', '24PQS006', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '17'],
-            ['Abdulrasheed Sefiu', '24PQS007', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
-            ['Muhideen Abdhameed', '24PQS009', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '2'],
-            ['OGUNDARE MUKAILA', '24NQS016', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '12'],
-            ['OLADEJO FAISAL', '24NQS017', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '15'],
-            ['SALIU WASILAT', '24NQS018', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '8'],
-            ['SANNI IBRAHIM', '24NQS019', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '14'],
-            ['ADEYEMI RIDWAN', '24NQS020', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '11'],
-            ['YUSUF LATEEF', '24NQS021', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
-            ['BALOGUN TAIWO', '24NQS022', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '10'],
-            ['BALOGUN KEHINDE', '24NQS023', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '9'],
-            ['OLANIYAN BUKOLA', '24NQS024', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '16'],
-            ['ADEKUNLE SUNDAY', '24NQS025', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '7'],
-            ['OYEBAMJI GRACE', '24NQS026', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '15'],
-            ['OLOYEDE ESTHER', '24NQS027', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '12'],
-            ['ADETUNJI MOSHOOD', '24NQS028', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '14'],
-            ['OYEDEPO SAMUEL', '24NQS029', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '11'],
-            ['SANNI RUKAYAT', '24NQS030', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
-            ['OLORUNTOBA BLESSING', '24NQS031', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '10'],
-            ['BUSARI TAOFEEK', '24NQS032', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '9'],
-            ['ADEWALE SODIQ', '24NQS033', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '16'],
-            ['OLANREWAJU MARIAM', '24NQS034', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '8'],
-            ['AJIBOYE EMMANUEL', '24NQS035', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '15'],
-            ['OGUNDELE TIMOTHY', '24NQS036', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '12'],
-            ['AKINTOLA DEBORAH', '24NQS037', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '14'],
-            ['SULAIMON KABIRAT', '24NQS038', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '11'],
-            ['OLANIYI OPEYEMI', '24NQS039', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
-            ['ADEJARE HUSSEIN', '24NQS040', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '10'],
-            ['OGUNJOBI FAITH', '24NQS041', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '9'],
-            ['ADEOLA FUNSHO', '24NQS042', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '16'],
-            ['OYEBODE RACHEAL', '24NQS043', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '8'],
-            ['OLABISI OLUWADARE', '24NQS044', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '15'],
-            ['SALAWU ABDULLAHI', '24NQS045', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '12'],
-
-            // Additional HND 2 / Quantity Surveying Records to reach full dataset
-            ['ALABI OLUWASEUN', '23HQS001', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '40'],
-            ['ADELEKE VICTOR', '23HQS002', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '35'],
-            ['OGUNDIPE BLESSING', '23HQS003', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '42'],
-            ['OLADIPO RAPHAEL', '23HQS004', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '32'],
-            ['SULAIMON RAHMAN', '23HQS005', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '38'],
-            ['BALOGUN AISHA', '23HQS006', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '30'],
-            ['AKINTUNDE SAMUEL', '23HQS007', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '39'],
-            ['OLANIYI DEBORAH', '23HQS008', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '36'],
-            ['ADEWUYI EMMANUEL', '23HQS009', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '9', '11', '10', '28'],
-            ['OGUNDARE PETER', '23HQS010', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '41'],
-            ['YUSUF MUBARAK', '23HQS011', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '33'],
-            ['LAWAL AISHAT', '23HQS012', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '37'],
-            ['OLADIPO FAITH', '23HQS013', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '31'],
-            ['OGUNDIPE FUNMILOLA', '23HQS014', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '40'],
-            ['AKINOLA VICTOR', '23HQS015', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '35'],
-            ['ADEYEMI OLUWAFEMI', '23HQS016', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '42'],
-            ['FAGBEMI OLUWATOSIN', '23HQS017', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '32'],
-            ['OLAYINKA GRACE', '23HQS018', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '38'],
-            ['OGUNJOBI SAMUEL', '23HQS019', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '30'],
-            ['AJIBADE RAHMAT', '23HQS020', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '39'],
-            ['ADEBAYO BLESSING', '23HQS021', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '36'],
-            ['SALIU TAOFEEK', '23HQS022', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '9', '11', '10', '28'],
-            ['MOHAMMED AISHA', '23HQS023', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '41'],
-            ['OWOLABI ESTHER', '23HQS024', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '33'],
-            ['TIAMIYU LUKMAN', '23HQS025', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '37'],
-            ['ADEWUYI EMMANUEL', '23HQS026', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '31'],
-            ['OLANIYAN DEBORAH', '23HQS027', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '40'],
-            ['OGUNDARE PETER', '23HQS028', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '35'],
-            ['BALOGUN RUKAYAT', '23HQS029', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '42'],
-            ['AKINTUNDE JOSHUA', '23HQS030', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '32'],
-            ['OLORUNFEMI MARY', '23HQS031', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '38'],
-            ['ADEJUMO IDOWU', '23HQS032', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '30'],
-            ['AJAYI ELIZABETH', '23HQS033', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '39'],
-            ['OLOYEDE ABAYOMI', '23HQS034', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '36'],
-            ['SULAIMON MARIAM', '23HQS035', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '9', '11', '10', '28'],
-            ['AKANDE TOBI', '23HQS036', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '41'],
-            ['OLANIYAN TIMOTHY', '23HQS037', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '33'],
-            ['ADEPOJU RASAQ', '23HQS038', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '37'],
-            ['BALOGUN SODIQ', '23HQS039', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '31'],
-            ['OLATUNBOSUN GRACE', '23HQS040', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '40'],
-            ['JIMOH RAHMAN', '23HQS041', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '35'],
-            ['ADELEKE WASIU', '23HQS042', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '42'],
-            ['SANNI KHADIJAH', '23HQS043', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '32'],
-            ['OGUNDARE MUKAILA', '23HQS044', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '38'],
-            ['OLADEJO FAISAL', '23HQS045', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '30'],
-            ['SALIU WASILAT', '23HQS046', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '39'],
-            ['SANNI IBRAHIM', '23HQS047', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '36'],
-            ['ADEYEMI RIDWAN', '23HQS048', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '9', '11', '10', '28'],
-            ['YUSUF LATEEF', '23HQS049', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '41'],
-            ['BALOGUN TAIWO', '23HQS050', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '33'],
-            ['BALOGUN KEHINDE', '23HQS051', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '37'],
-            ['OLANIYAN BUKOLA', '23HQS052', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '31'],
-            ['ADEKUNLE SUNDAY', '23HQS053', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '40'],
-            ['OYEBAMJI GRACE', '23HQS054', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '35'],
-            ['OLOYEDE ESTHER', '23HQS055', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '42'],
-            ['ADETUNJI MOSHOOD', '23HQS056', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '32'],
-            ['OYEDEPO SAMUEL', '23HQS057', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '38'],
-            ['SANNI RUKAYAT', '23HQS058', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '30'],
-            ['OLORUNTOBA BLESSING', '23HQS059', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '39'],
-            ['BUSARI TAOFEEK', '23HQS060', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '36'],
-            ['ADEWALE SODIQ', '23HQS061', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '9', '11', '10', '28'],
-            ['OLANREWAJU MARIAM', '23HQS062', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '41'],
-            ['AJIBOYE EMMANUEL', '23HQS063', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '33'],
-            ['OGUNDELE TIMOTHY', '23HQS064', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '37'],
-            ['AKINTOLA DEBORAH', '23HQS065', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '31'],
-            ['SULAIMON KABIRAT', '23HQS066', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '40'],
-            ['OLANIYI OPEYEMI', '23HQS067', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '35'],
-            ['ADEJARE HUSSEIN', '23HQS068', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '15', '17', '16', '42'],
-            ['OGUNJOBI FAITH', '23HQS069', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '11', '13', '12', '32'],
-            ['ADEOLA FUNSHO', '23HQS070', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '13', '15', '14', '38'],
-            ['OYEBODE RACHEAL', '23HQS071', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '10', '12', '11', '30'],
-            ['OLABISI OLUWADARE', '23HQS072', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '14', '16', '15', '39'],
-            ['SALAWU ABDULLAHI', '23HQS073', 'HND 2', 'FULL TIME', 'ADVANCED QUANTITY SURVEYING', '12', '14', '13', '36']
-        ];
-
-        const defaultHeaders = ['FULL NAME', 'MATRIC NUM', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM'];
-
-        function loadTableEditor() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            const rawDb = localStorage.getItem('student_results_db_v3');
-            let data = defaultRecords;
-            let headers = defaultHeaders;
-
-            if (rawDb) {
-                const parsed = JSON.parse(rawDb);
-                if (parsed.rows && parsed.rows.length > 0) data = parsed.rows;
-                if (parsed.headers) headers = parsed.headers;
+        // Switch between tabs
+        function openTab(evt, courseName) {
+            const contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
             }
 
-            const headerRow = document.getElementById('tableHeaderRow');
-            headerRow.innerHTML = `
-                <th>Full Name</th>
-                <th>Matric No</th>
-                <th>Level</th>
-                <th>Program</th>
-                <th>Course</th>
-                <th>C.A</th>
-                <th>Test</th>
-                <th>Practical</th>
-                <th>Exam</th>
-                <th>Action</th>
-            `;
-
-            data.forEach((row, rowIndex) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="text" class="wide-input" value="${escapeHtml(row[0] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[1] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[2] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[3] || '')}"></td>
-                    <td><input type="text" class="wide-input" value="${escapeHtml(row[4] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[5] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[6] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[7] || '')}"></td>
-                    <td><input type="text" value="${escapeHtml(row[8] || '')}"></td>
-                    <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function addNewRow() {
-            const tbody = document.getElementById('tableBody');
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><input type="text" class="wide-input" placeholder="Full Name"></td>
-                <td><input type="text" placeholder="Matric No"></td>
-                <td><input type="text" placeholder="Level"></td>
-                <td><input type="text" placeholder="Program"></td>
-                <td><input type="text" class="wide-input" placeholder="Course"></td>
-                <td><input type="text" value="0"></td>
-                <td><input type="text" value="0"></td>
-                <td><input type="text" value="0"></td>
-                <td><input type="text" value="0"></td>
-                <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
-            `;
-            tbody.appendChild(tr);
-        }
-
-        function deleteRow(btn) {
-            const tr = btn.closest('tr');
-            tr.remove();
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/"/g, '&quot;');
-        }
-
-        function handleAdminLogin() {
-            const pass = document.getElementById('adminPassInput').value;
-            const errDiv = document.getElementById('loginError');
-
-            if (pass === 'admin') {
-                errDiv.textContent = '';
-                document.getElementById('adminLoginBox').classList.add('hidden');
-                document.getElementById('adminUploadBox').classList.remove('hidden');
-                document.getElementById('adminPassInput').value = '';
-                loadTableEditor();
-            } else {
-                errDiv.textContent = 'Incorrect password.';
+            const buttons = document.getElementsByClassName("tab-button");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
             }
+
+            document.getElementById(courseName).classList.add("active");
+            evt.currentTarget.classList.add("active");
         }
 
-        function handleAdminLogout() {
-            document.getElementById('adminUploadBox').classList.add('hidden');
-            document.getElementById('adminLoginBox').classList.remove('hidden');
-            document.getElementById('uploadStatus').textContent = '';
-        }
+        // Add a new row to the specified table
+        function addRow(tableId, storageKey, rowData = null) {
+            const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+            const headerCount = document.getElementById(tableId).rows[0].cells.length;
+            const newRow = table.insertRow();
 
-        function saveTableData() {
-            const tbody = document.getElementById('tableBody');
-            const rows = tbody.querySelectorAll('tr');
-            const processedRows = [];
-            const processedRecords = [];
-            const headers = defaultHeaders;
+            for (let i = 0; i < headerCount - 1; i++) {
+                const newCell = newRow.insertCell();
+                newCell.contentEditable = "true";
+                newCell.innerText = rowData ? (rowData[i] || "") : "";
+            }
 
-            rows.forEach(tr => {
-                const inputs = tr.querySelectorAll('input');
-                if (inputs.length < 9) return;
-
-                const fullName = inputs[0].value.trim();
-                const originalMatric = inputs[1].value.trim();
-                if (!fullName && !originalMatric) return;
-
-                const level = inputs[2].value.trim();
-                const program = inputs[3].value.trim();
-                const course = inputs[4].value.trim();
-                
-                const ca = parseFloat(inputs[5].value) || 0;
-                const test = parseFloat(inputs[6].value) || 0;
-                const practical = parseFloat(inputs[7].value) || 0;
-                const exam = parseFloat(inputs[8].value) || 0;
-                
-                const total = ca + test + practical + exam;
-
-                const rowValues = [
-                    fullName, originalMatric, level, program, course,
-                    inputs[5].value, inputs[6].value, inputs[7].value, inputs[8].value
-                ];
-                processedRows.push(rowValues);
-
-                processedRecords.push({
-                    fullName: fullName,
-                    nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
-                    matricClean: originalMatric.toLowerCase(),
-                    originalMatric: originalMatric,
-                    level: level,
-                    program: program,
-                    course: course,
-                    scoreBreakdown: {
-                        'C.A': ca,
-                        'Test': test,
-                        'Practical': practical,
-                        'Exam': exam
-                    },
-                    total: total
-                });
-            });
-
-            const dbPayload = {
-                headers: headers,
-                rows: processedRows
+            // Action cell with delete button
+            const actionCell = newRow.insertCell();
+            actionCell.className = "action-cell";
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-row-btn";
+            deleteBtn.innerText = "X";
+            deleteBtn.onclick = function () {
+                newRow.remove();
+                saveData(storageKey, tableId);
             };
-
-            localStorage.setItem('student_results_db_v3', JSON.stringify(dbPayload));
-            const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.textContent = `Successfully saved ${processedRecords.length} student records!`;
+            actionCell.appendChild(deleteBtn);
         }
 
-        function handleStudentCheck(event) {
-            event.preventDefault();
-            const inputName = document.getElementById('inputName').value.trim().toLowerCase();
-            const inputMatric = document.getElementById('inputMatric').value.trim().toLowerCase();
-            const errorDiv = document.getElementById('studentError');
-            const resultBox = document.getElementById('resultContainer');
+        // Add a new column to the specified table
+        function addColumn(tableId, storageKey) {
+            const table = document.getElementById(tableId);
+            const headerRow = table.rows[0];
+            
+            // Insert header before the last column (Action column)
+            const newTh = document.createElement("th");
+            newTh.contentEditable = "true";
+            newTh.innerText = "New Column";
+            headerRow.insertBefore(newTh, headerRow.cells[headerRow.cells.length - 1]);
 
-            errorDiv.textContent = '';
-            resultBox.style.display = 'none';
+            // Insert cells for each row before the action cell
+            const tbody = table.getElementsByTagName('tbody')[0];
+            for (let i = 0; i < tbody.rows.length; i++) {
+                const row = tbody.rows[i];
+                const newCell = row.insertCell(row.cells.length - 1);
+                newCell.contentEditable = "true";
+                newCell.innerText = "";
+            }
+            saveData(storageKey, tableId);
+        }
 
-            let rawDb = localStorage.getItem('student_results_db_v3');
-            let rowsToSearch = [];
-
-            if (rawDb) {
-                const parsed = JSON.parse(rawDb);
-                rowsToSearch = parsed.rows || [];
-            } else {
-                rowsToSearch = defaultRecords;
+        // Delete the last data column
+        function deleteLastColumn(tableId, storageKey) {
+            const table = document.getElementById(tableId);
+            const headerRow = table.rows[0];
+            
+            // Ensure we don't delete essential columns (keep at least Matric No, Name, and Action)
+            if (headerRow.cells.length <= 4) {
+                alert("Cannot delete primary columns!");
+                return;
             }
 
-            const database = [];
-            rowsToSearch.forEach(row => {
-                const fullName = String(row[0] || '').trim();
-                const originalMatric = String(row[1] || '').trim();
-                if (!fullName && !originalMatric) return;
+            // Remove header cell just before action cell
+            headerRow.deleteCell(headerRow.cells.length - 2);
 
-                const ca = parseFloat(row[5]) || 0;
-                const test = parseFloat(row[6]) || 0;
-                const practical = parseFloat(row[7]) || 0;
-                const exam = parseFloat(row[8]) || 0;
-                const total = ca + test + practical + exam;
+            // Remove corresponding cells from body rows
+            const tbody = table.getElementsByTagName('tbody')[0];
+            for (let i = 0; i < tbody.rows.length; i++) {
+                const row = tbody.rows[i];
+                row.deleteCell(row.cells.length - 2);
+            }
+            saveData(storageKey, tableId);
+        }
 
-                database.push({
-                    fullName: fullName,
-                    nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
-                    matricClean: originalMatric.toLowerCase(),
-                    originalMatric: originalMatric,
-                    level: String(row[2] || '').trim(),
-                    program: String(row[3] || '').trim(),
-                    course: String(row[4] || '').trim(),
-                    scoreBreakdown: {
-                        'C.A': ca,
-                        'Test': test,
-                        'Practical': practical,
-                        'Exam': exam
-                    },
-                    total: total
-                });
-            });
+        // Save table data to browser LocalStorage
+        function saveData(storageKey, tableId) {
+            const table = document.getElementById(tableId);
+            const headers = [];
+            const headerCells = table.rows[0].cells;
+            
+            for (let i = 0; i < headerCells.length - 1; i++) {
+                headers.push(headerCells[i].innerText);
+            }
 
-            const studentMatch = database.find(item => {
-                const matricMatches = item.matricClean === inputMatric;
-                const nameMatches = item.nameParts.some(part => part === inputName);
-                return matricMatches && nameMatches;
-            });
-
-            if (studentMatch) {
-                document.getElementById('resCourse').textContent = studentMatch.course;
-                document.getElementById('resName').textContent = studentMatch.fullName;
-                document.getElementById('resMatric').textContent = studentMatch.originalMatric;
-                document.getElementById('resLevel').textContent = studentMatch.level;
-                document.getElementById('resProgram').textContent = studentMatch.program;
-                
-                const dynamicContainer = document.getElementById('dynamicScoresContainer');
-                dynamicContainer.innerHTML = '';
-                for (const [key, val] of Object.entries(studentMatch.scoreBreakdown)) {
-                    const rowDiv = document.createElement('div');
-                    rowDiv.className = 'result-row';
-                    rowDiv.innerHTML = `<span>${key}:</span> <span>${val}</span>`;
-                    dynamicContainer.appendChild(rowDiv);
+            const rows = [];
+            const tbody = table.getElementsByTagName('tbody')[0];
+            for (let i = 0; i < tbody.rows.length; i++) {
+                const row = tbody.rows[i];
+                const rowData = [];
+                for (let j = 0; j < row.cells.length - 1; j++) {
+                    rowData.push(row.cells[j].innerText);
                 }
+                rows.push(rowData);
+            }
 
-                document.getElementById('resTotal').textContent = studentMatch.total;
-                resultBox.style.display = 'block';
+            const data = { headers, rows };
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            alert("Changes saved successfully!");
+        }
+
+        // Load data on page startup
+        function loadData(storageKey, tableId) {
+            const savedData = localStorage.getItem(storageKey);
+            const table = document.getElementById(tableId);
+            const headerRow = table.rows[0];
+            const tbody = table.getElementsByTagName('tbody')[0];
+
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                // Rebuild Headers
+                headerRow.innerHTML = "";
+                data.headers.forEach(headerText => {
+                    const th = document.createElement("th");
+                    th.contentEditable = "true";
+                    th.innerText = headerText;
+                    headerRow.appendChild(th);
+                });
+                const actionTh = document.createElement("th");
+                actionTh.className = "action-cell";
+                actionTh.innerText = "Action";
+                headerRow.appendChild(actionTh);
+
+                // Rebuild Rows
+                tbody.innerHTML = "";
+                data.rows.forEach(rowData => {
+                    addRow(tableId, storageKey, rowData);
+                });
             } else {
-                errorDiv.textContent = 'Result not found. Please verify that both your Matric Number and name are correct.';
+                // Default initial row if empty
+                addRow(tableId, storageKey, ["", "", ""]);
             }
         }
+
+        // Initialize tables on load
+        window.onload = function() {
+            loadData('course1', 'table1');
+            loadData('course2', 'table2');
+            loadData('course3', 'table3');
+        };
     </script>
 </body>
 </html>
