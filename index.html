@@ -3,17 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michael Adeniyi Polytechnic, Saki - Quantity Surveying Result Portal</title>
-    <!-- Include Handsontable -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-    <!-- Include html2canvas and jsPDF for Image and PDF exports -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Secure Student Result Portal</title>
     <style>
         :root {
-            --primary: #1e3a8a;
-            --primary-hover: #1e40af;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #1e293b;
@@ -25,45 +19,24 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .portal-wrapper {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 30px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            position: relative;
-        }
-
-        .header-branding {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 15px;
-        }
-
-        .header-branding h1 {
-            font-size: 20px;
-            color: var(--primary);
-            margin: 0 0 5px 0;
-            text-transform: uppercase;
-        }
-
-        .header-branding p {
-            font-size: 14px;
-            color: #64748b;
-            margin: 0;
-            font-weight: 600;
         }
 
         .nav-tabs {
@@ -93,7 +66,7 @@
 
         h2 {
             margin-top: 0;
-            font-size: 20px;
+            font-size: 22px;
             color: #0f172a;
             text-align: center;
             margin-bottom: 20px;
@@ -164,10 +137,16 @@
             background: #15803d;
         }
 
-        .export-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            padding: 6px 10px;
+            font-size: 12px;
+            width: auto;
+            margin-top: 0;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
         }
 
         .result-box {
@@ -219,23 +198,6 @@
             margin-top: 10px;
         }
 
-        .help-desk {
-            margin-top: 20px;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #1e3a8a;
-            text-align: center;
-        }
-
-        .help-desk a {
-            color: #1d4ed8;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
         .hidden {
             display: none !important;
         }
@@ -251,44 +213,57 @@
             line-height: 1.4;
         }
 
-        #spreadsheet-container {
-            margin-bottom: 15px;
+        /* Responsive Mobile Table Wrapper */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 450px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            overflow: hidden;
-            max-height: 400px;
+            margin-bottom: 15px;
         }
 
-        #privacy-shield {
-            position: fixed;
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .admin-table th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #0f172a;
-            z-index: 99999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            color: #f8fafc;
-            font-size: 22px;
-            font-weight: bold;
-            text-align: center;
-            padding: 20px;
+            z-index: 10;
+        }
+
+        .admin-table input {
+            width: 100px;
+            padding: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .admin-table input.wide-input {
+            width: 180px;
         }
     </style>
 </head>
 <body>
 
-    <div id="privacy-shield">⚠️ Security Warning: Screen capture or window switching detected. Result content is hidden.</div>
-
     <div class="portal-wrapper">
         <div class="card">
-            <div class="header-branding">
-                <h1>Michael Adeniyi Polytechnic, Saki (MAKPOLY)</h1>
-                <p>Department of Quantity Surveying — Student Result Portal</p>
-            </div>
-
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="switchTab('studentTab', event)">Student Portal</button>
                 <button class="nav-tab" onclick="switchTab('adminTab', event)">Admin Panel</button>
@@ -296,44 +271,28 @@
 
             <!-- STUDENT TAB -->
             <div id="studentTab">
-                <h2>Check Semester Result</h2>
+                <h2>Check Student Result</h2>
                 <form id="studentForm" onsubmit="handleStudentCheck(event)">
                     <div class="form-group">
-                        <label for="inputName">Student Name (Type any of your names)</label>
-                        <input type="text" id="inputName" placeholder="e.g., Adeleke, Chinedu, or Grace" required autocomplete="off">
+                        <label for="inputName">Your Name (e.g., Agboluaje, Azeez)</label>
+                        <input type="text" id="inputName" placeholder="Type any name (case-insensitive)" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="inputMatric">Matric Number</label>
-                        <input type="text" id="inputMatric" placeholder="e.g., QS/2023/001" required autocomplete="off">
+                        <input type="text" id="inputMatric" placeholder="e.g., 25NQS001" required autocomplete="off">
                     </div>
                     <button type="submit" class="btn">View Result</button>
                     <div id="studentError" class="error-msg"></div>
                 </form>
 
                 <div id="resultContainer" class="result-box">
-                    <div id="printableResultArea">
-                        <div style="text-align: center; margin-bottom: 15px; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">
-                            <strong>MAKPOLY - Quantity Surveying Result Slip</strong>
-                        </div>
-                        <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
-                        <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
-                        <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
-                        <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
-                        <div class="result-row"><span>C.A. Test (Max 30):</span> <span id="resCA"></span></div>
-                        <div class="result-row"><span>Practical (Max 20):</span> <span id="resPractical"></span></div>
-                        <div class="result-row"><span>Exam (Max 50):</span> <span id="resExam"></span></div>
-                        <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
-                    </div>
-
-                    <div class="export-buttons">
-                        <button type="button" class="btn btn-secondary" onclick="downloadImage()">📥 Download as Image</button>
-                        <button type="button" class="btn btn-success" onclick="downloadPDF()">📄 Download as PDF</button>
-                    </div>
-                </div>
-
-                <div class="help-desk">
-                    Having issues or complaints? Contact the Lecturer in Charge at <br>
-                    📞/💬 <a href="tel:08163059669">08163059669</a> (Call or WhatsApp)
+                    <div class="result-row"><span>Course Name:</span> <span id="resCourse" style="font-weight:bold; color:var(--primary);"></span></div>
+                    <div class="result-row"><span>Full Name:</span> <span id="resName"></span></div>
+                    <div class="result-row"><span>Matric Number:</span> <span id="resMatric"></span></div>
+                    <div class="result-row"><span>Level:</span> <span id="resLevel"></span></div>
+                    <div class="result-row"><span>Program:</span> <span id="resProgram"></span></div>
+                    <div id="dynamicScoresContainer"></div>
+                    <div class="result-row total-row"><span>Total Score:</span> <span id="resTotal"></span></div>
                 </div>
             </div>
 
@@ -344,7 +303,7 @@
                 <div id="adminLoginBox">
                     <div class="form-group">
                         <label for="adminPassInput">Admin Password</label>
-                        <input type="password" id="adminPassInput" placeholder="Enter admin password" autocomplete="new-password">
+                        <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="new-password">
                     </div>
                     <button type="button" class="btn" onclick="handleAdminLogin()">Login</button>
                     <div id="loginError" class="error-msg"></div>
@@ -352,12 +311,36 @@
 
                 <div id="adminUploadBox" class="hidden">
                     <div class="spreadsheet-hint">
-                        📊 <strong>Live Spreadsheet Grid:</strong> Edit results below. Changing <strong>C.A</strong>, <strong>Pract</strong>, or <strong>Exam</strong> automatically recalculates the <strong>Total</strong> column instantly. Data auto-refreshes for students upon saving.
+                        📱 <strong>Mobile-Friendly Result Manager:</strong> Edit rows directly, change scores, or click <strong>➕ Add Row</strong> to insert a new student. Click <strong>💾 Save & Publish Results</strong> when finished.
                     </div>
                     
-                    <div id="spreadsheet-container"></div>
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn" style="width: auto; padding: 8px 16px;" onclick="addNewRow()">➕ Add Student Row</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="admin-table" id="adminTableElement">
+                            <thead>
+                                <tr id="tableHeaderRow">
+                                    <th>Full Name</th>
+                                    <th>Matric No</th>
+                                    <th>Level</th>
+                                    <th>Program</th>
+                                    <th>Course</th>
+                                    <th>C.A</th>
+                                    <th>Test</th>
+                                    <th>Practical</th>
+                                    <th>Exam</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                     
-                    <button type="button" class="btn btn-success" onclick="saveSpreadsheetData()">💾 Save & Publish Results</button>
+                    <button type="button" class="btn btn-success" onclick="saveTableData()">💾 Save & Publish Results</button>
                     <button type="button" class="btn btn-secondary" onclick="handleAdminLogout()">Log Out</button>
                     <div id="uploadStatus" class="success-msg"></div>
                 </div>
@@ -366,105 +349,140 @@
     </div>
 
     <script>
-        document.addEventListener('contextmenu', e => e.preventDefault());
-
-        document.addEventListener('keydown', e => {
-            if (
-                e.key === 'F12' ||
-                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
-                (e.ctrlKey && ['U', 'S', 'P'].includes(e.key.toUpperCase())) ||
-                e.key === 'PrintScreen'
-            ) {
-                e.preventDefault();
-                alert("Security policy: Action blocked.");
-                return false;
-            }
-        });
-
-        const shield = document.getElementById('privacy-shield');
-        window.addEventListener('blur', () => { shield.style.display = 'flex'; });
-        window.addEventListener('focus', () => { shield.style.display = 'none'; });
-
         function switchTab(tabId, event) {
             document.getElementById('studentTab').classList.add('hidden');
             document.getElementById('adminTab').classList.add('hidden');
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.remove('hidden');
             event.currentTarget.classList.add('active');
-            if(tabId === 'adminTab' && hot) {
-                hot.render();
-            }
         }
 
-        let hot = null;
+        const defaultRecords = [
+            // Principle of Law of Contract
+            ['Agboluaje Tijani', '25NQS001', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '16', '15', '7'],
+            ['Azeez Mutiat', '25NQS002', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '8'],
+            ['Adetoro Praise', '25NQS003', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '13', '17', '15', '8'],
+            ['Rabiu Tijani', '25NQS004', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '14', '16', '15', '6'],
+            ['Ibiyemi Bashit', '25NQS007', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '1'],
+            ['Egbeleke Segun', '25NQS008', 'ND 1', 'FULL TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '32'],
+            ['Adeyeye Samuel', '25PQS001', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '15', '16', '15', '19'],
+            ['Ayantunde Kehinde', '25PQS002', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '20'],
+            ['Hassan Ahmad', '25PQS003', 'ND 1', 'PART TIME', 'PRINCIPLE OF LAW OF CONTRACT', '1', '1', '1', '8'],
+            
+            // Computer Applications
+            ['Mudasiru Maleek', '25HQS001', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '9', '', '15', '33'],
+            ['Gbadegesin', '25HQS002', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '30'],
+            ['Ogundele Kaosara', '25HQS003', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '15', '20'],
+            ['Ishola Esther', '25HQS004', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '25'],
+            ['Owoade Dorcas', '25HQS005', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '7', '', '15', '29'],
+            ['Akeem Mariam', '25HQS007', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '15', '27'],
+            ['Issa Abduqowiwu', '25HQS008', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '15', '29'],
+            ['Ogungbenro Bose', '25HQS009', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '5', '', '15', '25'],
+            ['Ogunkunle Opeyemi', '25HQS010', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '28'],
+            ['Mukaila Kehinde', '25HQS011', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '15', '32'],
+            ['Aramide Faith', '25HQS012', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '8', '29'],
+            ['Dairo Emmanuel', '25HQS013', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '', '5', '11'],
+            ['Olaniyi Christianah', '25HQS014', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '10', '30'],
+            ['Adeleke Olamide', '25HQS015', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '1', '', '8', '22'],
+            ['Lateef Qoyum', '25HQS016', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '8', '', '10', '30'],
+            ['Salami Hakeem', '25HQS017', 'HND 1', 'FULL TIME', 'COMPUTER APPLICATIONS', '6', '', '10', '24'],
 
-        function initSpreadsheet() {
-            const container = document.getElementById('spreadsheet-container');
-            if (hot) {
-                hot.destroy();
-            }
+            // Sustainable Construction
+            ['Ahmed Sobur', '24NQS001', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '28'],
+            ['Kehinde Simeon', '24NQS004', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '13'],
+            ['Olabamiji Fathia', '24NQS005', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
+            ['Akinyemi Aishat', '24NQS006', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '9'],
+            ['Wasila Qowiyu', '24NQS007', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
+            ['Adebisi Qudus', '24NQS009', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '10'],
+            ['Popoola Faruq', '24NQS010', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '28'],
+            ['Adewale Hamed', '24NQS011', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
+            ['Owolabi Islamiat', '24NQS012', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '5'],
+            ['Babalola Victor', '24NQS013', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
+            ['Lawal Muhammed', '24NQS0014', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '17'],
+            ['Afolayan Kamaldeen', '24NQS015', 'ND 2', 'FULL TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '5'],
+            ['Okolo Richard', '24PQS001', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '2'],
+            ['Adigun Olusola', '24PQS002', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '3'],
+            ['Ayinde Samad', '24PQS003', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
+            ['Mustapha Qudus', '24PQS004', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '1'],
+            ['Musibau Abdurasheed', '24PQS006', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '17'],
+            ['Abdulrasheed Sefiu', '24PQS007', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '4'],
+            ['Muhideen Abdhameed', '24PQS009', 'ND 2', 'PART TIME', 'SUSTAINABLE CONSTRUCTION', '', '', '', '2']
+        ];
 
-            let savedData = [];
-            const rawDb = localStorage.getItem('student_results_db');
+        const defaultHeaders = ['FULL NAME', 'MATRIC NUM', 'LEVEL', 'PROGRAM', 'COURSE', 'C.A', 'TEST', 'PRACTICAL', 'EXAM'];
+
+        function loadTableEditor() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            const rawDb = localStorage.getItem('student_results_db_v3');
+            let data = defaultRecords;
+            let headers = defaultHeaders;
+
             if (rawDb) {
                 const parsed = JSON.parse(rawDb);
-                savedData = parsed.map(item => [
-                    item.fullName || '',
-                    item.originalMatric || '',
-                    item.level || '',
-                    item.program || '',
-                    item.caTest !== undefined ? item.caTest : '',
-                    item.practical !== undefined ? item.practical : '',
-                    item.exam !== undefined ? item.exam : '',
-                    item.total !== undefined ? item.total : ''
-                ]);
+                if (parsed.rows && parsed.rows.length > 0) data = parsed.rows;
+                if (parsed.headers) headers = parsed.headers;
             }
 
-            // Default dataset from quantity surveying results
-            if (savedData.length === 0) {
-                savedData = [
-                    ['ADEWALE SODIQ ADEBAYO', 'QS/2023/001', 'HND-1', 'PART-TIME', 12, 18, 45, 75],
-                    ['OLALEYE HABIBAT OLUWAKEMI', 'QS/2023/002', 'HND-1', 'PART-TIME', 15, 20, 50, 85],
-                    ['OGUNDELE TIMOTHY OLUWAGBENGA', 'QS/2023/003', 'HND-1', 'PART-TIME', 10, 15, 40, 65]
-                ];
-            }
+            // Set headers
+            const headerRow = document.getElementById('tableHeaderRow');
+            headerRow.innerHTML = `
+                <th>Full Name</th>
+                <th>Matric No</th>
+                <th>Level</th>
+                <th>Program</th>
+                <th>Course</th>
+                <th>C.A</th>
+                <th>Test</th>
+                <th>Practical</th>
+                <th>Exam</th>
+                <th>Action</th>
+            `;
 
-            hot = new Handsontable(container, {
-                data: savedData,
-                colHeaders: ['Full Name', 'Matric No', 'Level', 'Program', 'C.A', 'Pract', 'Exam', 'Total'],
-                columns: [
-                    { data: 0, type: 'text' },
-                    { data: 1, type: 'text' },
-                    { data: 2, type: 'text' },
-                    { data: 3, type: 'text' },
-                    { data: 4, type: 'numeric' },
-                    { data: 5, type: 'numeric' },
-                    { data: 6, type: 'numeric' },
-                    { data: 7, type: 'numeric', readOnly: true }
-                ],
-                rowHeaders: true,
-                contextMenu: true,
-                minRows: 15,
-                licenseKey: 'non-commercial-and-evaluation',
-                afterChange: function(changes, source) {
-                    if (source === 'loadData' || !changes) return;
-                    
-                    let rowChanges = new Set();
-                    changes.forEach(([row, prop, oldVal, newVal]) => {
-                        if ([4, 5, 6].includes(prop)) {
-                            rowChanges.add(row);
-                        }
-                    });
-
-                    rowChanges.forEach(row => {
-                        let ca = parseFloat(hot.getDataAtCell(row, 4)) || 0;
-                        let pract = parseFloat(hot.getDataAtCell(row, 5)) || 0;
-                        let exam = parseFloat(hot.getDataAtCell(row, 6)) || 0;
-                        let sum = ca + pract + exam;
-                        hot.setDataAtCell(row, 7, sum, 'autoCalculate');
-                    });
-                }
+            data.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="wide-input" value="${escapeHtml(row[0] || '')}"></td>
+                    <td><input type="text" value="${escapeHtml(row[1] || '')}"></td>
+                    <td><input type="text" value="${escapeHtml(row[2] || '')}"></td>
+                    <td><input type="text" value="${escapeHtml(row[3] || '')}"></td>
+                    <td><input type="text" class="wide-input" value="${escapeHtml(row[4] || '')}"></td>
+                    <td><input type="text" value="${escapeHtml(row[5] || '')}"></td>
+                    <td><input type="text" value="${escapeHtml(row[6] || '')}"></td>
+                    <td><input type="text" value="${escapeHtml(row[7] || '')}"></td>
+                    <td><input type="text" value="${escapeHtml(row[8] || '')}"></td>
+                    <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
+                `;
+                tbody.appendChild(tr);
             });
+        }
+
+        function addNewRow() {
+            const tbody = document.getElementById('tableBody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="wide-input" placeholder="Full Name"></td>
+                <td><input type="text" placeholder="Matric No"></td>
+                <td><input type="text" placeholder="Level"></td>
+                <td><input type="text" placeholder="Program"></td>
+                <td><input type="text" class="wide-input" placeholder="Course"></td>
+                <td><input type="text" value="0"></td>
+                <td><input type="text" value="0"></td>
+                <td><input type="text" value="0"></td>
+                <td><input type="text" value="0"></td>
+                <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function deleteRow(btn) {
+            const tr = btn.closest('tr');
+            tr.remove();
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/"/g, '&quot;');
         }
 
         function handleAdminLogin() {
@@ -476,7 +494,7 @@
                 document.getElementById('adminLoginBox').classList.add('hidden');
                 document.getElementById('adminUploadBox').classList.remove('hidden');
                 document.getElementById('adminPassInput').value = '';
-                initSpreadsheet();
+                loadTableEditor();
             } else {
                 errDiv.textContent = 'Incorrect password.';
             }
@@ -488,42 +506,64 @@
             document.getElementById('uploadStatus').textContent = '';
         }
 
-        function saveSpreadsheetData() {
-            const rawData = hot.getData();
+        function saveTableData() {
+            const tbody = document.getElementById('tableBody');
+            const rows = tbody.querySelectorAll('tr');
+            const processedRows = [];
             const processedRecords = [];
+            const headers = defaultHeaders;
 
-            rawData.forEach(row => {
-                const fullName = String(row[0] || '').trim();
-                const originalMatric = String(row[1] || '').trim();
+            rows.forEach(tr => {
+                const inputs = tr.querySelectorAll('input');
+                if (inputs.length < 9) return;
+
+                const fullName = inputs[0].value.trim();
+                const originalMatric = inputs[1].value.trim();
                 if (!fullName && !originalMatric) return;
 
-                const level = String(row[2] || '').trim();
-                const program = String(row[3] || '').trim();
-                const caTest = parseFloat(row[4]) || 0;
-                const practical = parseFloat(row[5]) || 0;
-                const exam = parseFloat(row[6]) || 0;
-                const total = caTest + practical + exam;
+                const level = inputs[2].value.trim();
+                const program = inputs[3].value.trim();
+                const course = inputs[4].value.trim();
+                
+                const ca = parseFloat(inputs[5].value) || 0;
+                const test = parseFloat(inputs[6].value) || 0;
+                const practical = parseFloat(inputs[7].value) || 0;
+                const exam = parseFloat(inputs[8].value) || 0;
+                
+                const total = ca + test + practical + exam;
 
-                const nameParts = fullName.toLowerCase().split(/\s+/).filter(Boolean);
+                const rowValues = [
+                    fullName, originalMatric, level, program, course,
+                    inputs[5].value, inputs[6].value, inputs[7].value, inputs[8].value
+                ];
+                processedRows.push(rowValues);
 
                 processedRecords.push({
                     fullName: fullName,
-                    nameParts: nameParts,
+                    nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
                     matricClean: originalMatric.toLowerCase(),
                     originalMatric: originalMatric,
                     level: level,
                     program: program,
-                    caTest: caTest,
-                    practical: practical,
-                    exam: exam,
+                    course: course,
+                    scoreBreakdown: {
+                        'C.A': ca,
+                        'Test': test,
+                        'Practical': practical,
+                        'Exam': exam
+                    },
                     total: total
                 });
             });
 
-            localStorage.setItem('student_results_db', JSON.stringify(processedRecords));
+            const dbPayload = {
+                headers: headers,
+                rows: processedRows
+            };
+
+            localStorage.setItem('student_results_db_v3', JSON.stringify(dbPayload));
             const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.style.color = '#16a34a';
-            statusDiv.textContent = `Successfully saved ${processedRecords.length} records! Auto-refreshed.`;
+            statusDiv.textContent = `Successfully saved ${processedRecords.length} student records!`;
         }
 
         function handleStudentCheck(event) {
@@ -536,13 +576,45 @@
             errorDiv.textContent = '';
             resultBox.style.display = 'none';
 
-            const rawDb = localStorage.getItem('student_results_db');
-            if (!rawDb) {
-                errorDiv.textContent = 'No database found. Contact admin to add results.';
-                return;
+            let rawDb = localStorage.getItem('student_results_db_v3');
+            let rowsToSearch = [];
+
+            if (rawDb) {
+                const parsed = JSON.parse(rawDb);
+                rowsToSearch = parsed.rows || [];
+            } else {
+                rowsToSearch = defaultRecords;
             }
 
-            const database = JSON.parse(rawDb);
+            const database = [];
+            rowsToSearch.forEach(row => {
+                const fullName = String(row[0] || '').trim();
+                const originalMatric = String(row[1] || '').trim();
+                if (!fullName && !originalMatric) return;
+
+                const ca = parseFloat(row[5]) || 0;
+                const test = parseFloat(row[6]) || 0;
+                const practical = parseFloat(row[7]) || 0;
+                const exam = parseFloat(row[8]) || 0;
+                const total = ca + test + practical + exam;
+
+                database.push({
+                    fullName: fullName,
+                    nameParts: fullName.toLowerCase().split(/\s+/).filter(Boolean),
+                    matricClean: originalMatric.toLowerCase(),
+                    originalMatric: originalMatric,
+                    level: String(row[2] || '').trim(),
+                    program: String(row[3] || '').trim(),
+                    course: String(row[4] || '').trim(),
+                    scoreBreakdown: {
+                        'C.A': ca,
+                        'Test': test,
+                        'Practical': practical,
+                        'Exam': exam
+                    },
+                    total: total
+                });
+            });
 
             const studentMatch = database.find(item => {
                 const matricMatches = item.matricClean === inputMatric;
@@ -551,46 +623,26 @@
             });
 
             if (studentMatch) {
+                document.getElementById('resCourse').textContent = studentMatch.course;
                 document.getElementById('resName').textContent = studentMatch.fullName;
                 document.getElementById('resMatric').textContent = studentMatch.originalMatric;
                 document.getElementById('resLevel').textContent = studentMatch.level;
                 document.getElementById('resProgram').textContent = studentMatch.program;
-                document.getElementById('resCA').textContent = studentMatch.caTest;
-                document.getElementById('resPractical').textContent = studentMatch.practical;
-                document.getElementById('resExam').textContent = studentMatch.exam;
-                document.getElementById('resTotal').textContent = studentMatch.total;
                 
+                const dynamicContainer = document.getElementById('dynamicScoresContainer');
+                dynamicContainer.innerHTML = '';
+                for (const [key, val] of Object.entries(studentMatch.scoreBreakdown)) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'result-row';
+                    rowDiv.innerHTML = `<span>${key}:</span> <span>${val}</span>`;
+                    dynamicContainer.appendChild(rowDiv);
+                }
+
+                document.getElementById('resTotal').textContent = studentMatch.total;
                 resultBox.style.display = 'block';
             } else {
-                errorDiv.textContent = 'Result not found. Please verify your matric number and any of your names.';
+                errorDiv.textContent = 'Result not found. Please verify that both your Matric Number and name are correct.';
             }
-        }
-
-        function downloadImage() {
-            const element = document.getElementById('printableResultArea');
-            html2canvas(element).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'MAKPOLY_QS_Result.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        }
-
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const element = document.getElementById('printableResultArea');
-            html2canvas(element).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 190; 
-                const pageHeight = 295;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
-
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                pdf.save('MAKPOLY_QS_Result.pdf');
-            });
         }
     </script>
 </body>
