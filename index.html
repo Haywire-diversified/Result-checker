@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAYWIRE DIVERSIFIED TEST HUB - Student Portal</title>
+    <title>MAKPOLY - Quantity Surveying Result Portal</title>
     <style>
         :root {
-            --primary-color: #1b4332;
-            --secondary-color: #2d6a4f;
-            --accent-color: #52b788;
-            --bg-color: #f4f6f8;
+            --primary-color: #0b5ed7;
+            --secondary-color: #198754;
+            --bg-color: #f8f9fa;
             --card-bg: #ffffff;
-            --text-color: #2b2b2b;
+            --text-color: #212529;
         }
 
         body {
@@ -19,486 +18,2606 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-        }
-
-        header p {
-            margin: 0.5rem 0 0;
-            opacity: 0.9;
-            font-size: 0.95rem;
+            padding: 20px;
         }
 
         .container {
-            max-width: 700px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .search-card {
+            max-width: 800px;
+            margin: 0 auto;
             background: var(--card-bg);
-            padding: 2rem;
+            padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .search-card h2 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 1.4rem;
+        header {
             text-align: center;
-            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin: 5px 0;
+        }
+
+        header h2 {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .instructions {
+            background: #e7f1ff;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .login-box, .result-box {
+            margin-bottom: 20px;
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
+            margin-bottom: 5px;
             font-weight: 600;
-            margin-bottom: 0.4rem;
-            font-size: 0.9rem;
-            color: #444;
         }
 
         input {
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
             font-size: 1rem;
             box-sizing: border-box;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
         }
 
         button {
-            width: 100%;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 0.85rem;
+            padding: 12px 20px;
             font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            margin-top: 0.5rem;
+            width: 100%;
+            font-weight: bold;
         }
 
         button:hover {
-            background-color: var(--secondary-color);
+            background-color: #0b5ed7;
         }
 
-        button:active {
-            transform: scale(0.98);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
         }
 
-        #result-container {
-            margin-top: 2rem;
-        }
-
-        .result-box {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            border-left: 5px solid var(--accent-color);
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .result-header h3 {
-            margin: 0;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-        }
-
-        .result-header p {
-            margin: 0.3rem 0 0;
-            color: #666;
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
             font-size: 0.9rem;
         }
 
-        .score-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.2rem;
+        th {
+            background-color: #f1f3f5;
         }
 
-        .score-item {
+        .student-info {
             background: #f8f9fa;
-            padding: 0.75rem;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
         }
 
-        .score-item span {
-            display: block;
-            font-size: 0.8rem;
-            color: #6c75d7;
-            color: #666;
-            text-transform: uppercase;
+        .error {
+            color: #dc3545;
+            margin-top: 10px;
             font-weight: 600;
-        }
-
-        .score-item strong {
-            font-size: 1.3rem;
-            color: var(--primary-color);
-        }
-
-        .total-score {
-            background: #e8f5e9;
-            border-color: var(--accent-color);
-        }
-
-        .total-score strong {
-            color: var(--secondary-color);
-        }
-
-        .error-msg {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 1rem;
-            border-radius: 8px;
             text-align: center;
-            border: 1px solid #f5c6cb;
         }
 
         footer {
             text-align: center;
-            margin-top: 3rem;
-            padding: 1rem;
+            margin-top: 30px;
             font-size: 0.85rem;
-            color: #777;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
         }
     </style>
 </head>
 <body>
 
+<div class="container">
     <header>
-        <h1>HAYWIRE DIVERSIFIED TEST HUB</h1>
-        <p>The Oke-Ogun Polytechnic, Saki - Student Result Portal</p>
+        <h1>Michael Adeniyi Koleosho Polytechnic, Saki (MAKPOLY)</h1>
+        <h2>Department of Quantity Surveying - Semester Result Portal</h2>
     </header>
 
-    <div class="container">
-        <div class="search-card">
-            <h2>Check Semester Result</h2>
-            <form id="resultForm" onsubmit="searchResult(event)">
-                <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" placeholder="e.g. Agboluaje Tijani" required>
-                </div>
-                <div class="form-group">
-                    <label for="matricNumber">Matric Number</label>
-                    <input type="text" id="matricNumber" placeholder="e.g. 25NQS001" required>
-                </div>
-                <button type="submit">Search Result</button>
-            </form>
-        </div>
+    <div class="instructions">
+        <strong>Student Instructions:</strong>
+        <ul>
+            <li>You can use <strong>any of your names</strong> (e.g., for <em>Agboluaje Tijani</em>, you can type <em>agboluaje</em> or <em>tijani</em>). Search is case-insensitive.</li>
+            <li>Your password is your <strong>Matric Number</strong> (e.g., <em>25NQS001</em>).</li>
+            <li>For assistance, contact <strong>Mr. Osuntoki Christopher Ayojesu</strong> via WhatsApp or call at <strong>08163059669</strong>.</li>
+        </ul>
+    </div>
 
-        <div id="result-container"></div>
+    <div id="loginSection" class="login-box">
+        <div class="form-group">
+            <label for="studentName">Student Name (Any part of your name):</label>
+            <input type="text" id="studentName" placeholder="e.g. Tijani, Praise, or Mutiat">
+        </div>
+        <div class="form-group">
+            <label for="studentPassword">Password (Matric Number):</label>
+            <input type="password" id="studentPassword" placeholder="e.g. 25NQS001">
+        </div>
+        <button onclick="checkResult()">Check Result</button>
+        <div id="errorMessage" class="error"></div>
+    </div>
+
+    <div id="resultSection" class="result-box" style="display: none;">
+        <div class="student-info" id="studentDetails"></div>
+        
+        <h3>Course Breakdown</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Course Title</th>
+                    <th>Total Score</th>
+                    <th>Grade & Remark</th>
+                    <th>Point</th>
+                </tr>
+            </thead>
+            <tbody id="resultTableBody">
+                <!-- Dynamic Content -->
+            </tbody>
+        </table>
+        
+        <button onclick="logout()" style="margin-top: 20px; background-color: #6c757d;">Back to Login</button>
     </div>
 
     <footer>
-        &copy; 2026 HAYWIRE DIVERSIFIED TEST HUB. All Rights Reserved.
+        &copy; 2026 MAKPOLY Quantity Surveying Portal. Developed for Academic Administration.
     </footer>
+</div>
 
-    <script>
-        // Embedded cleaned dataset from Result 1.csv
-        const resultsDatabase = [
-            { name: "Agboluaje Tijani", matric: "25NQS001", level: "ND 1", program: "FULL TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "13.0", test: "16.0", practical: "15.0", exam: "7", total: "51" },
-            { name: "Azeez Mutiat", matric: "25NQS002", level: "ND 1", program: "FULL TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "1.0", test: "1.0", practical: "1.0", exam: "8", total: "11" },
-            { name: "Adetoro Praise", matric: "25NQS003", level: "ND 1", program: "FULL TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "13.0", test: "17.0", practical: "15.0", exam: "8", total: "53" },
-            { name: "Rabiu Tijani", matric: "25NQS004", level: "ND 1", program: "FULL TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "14.0", test: "16.0", practical: "15.0", exam: "6", total: "51" },
-            { name: "Ibiyemi Bashit", matric: "25NQS007", level: "ND 1", program: "FULL TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "1.0", test: "1.0", practical: "1.0", exam: "1", total: "4" },
-            { name: "Egbeleke Segun", matric: "25NQS008", level: "ND 1", program: "FULL TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "1.0", test: "1.0", practical: "1.0", exam: "32", total: "35" },
-            { name: "Adeyeye Samuel", matric: "25PQS001", level: "ND 1", program: "PART TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "15.0", test: "16.0", practical: "15.0", exam: "19", total: "65" },
-            { name: "Ayantunde Kehinde", matric: "25PQS002", level: "ND 1", program: "PART TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "1.0", test: "1.0", practical: "1.0", exam: "20", total: "23" },
-            { name: "Hassan Ahmad", matric: "25PQS003", level: "ND 1", program: "PART TIME", course: "PRINCIPLE OF LAW OF CONTRACT", ca: "1.0", test: "1.0", practical: "1.0", exam: "8", total: "11" },
-            { name: "Mudasiru Maleek", matric: "25HQS001", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "9.0", test: "-", practical: "15.0", exam: "33", total: "57" },
-            { name: "Gbadegesin", matric: "25HQS002", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "7.0", test: "-", practical: "15.0", exam: "30", total: "52" },
-            { name: "Ogundele Kaosara", matric: "25HQS003", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "6.0", test: "-", practical: "15.0", exam: "20", total: "41" },
-            { name: "Ishola Esther", matric: "25HQS004", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "7.0", test: "-", practical: "15.0", exam: "25", total: "47" },
-            { name: "Owoade Dorcas", matric: "25HQS005", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "7.0", test: "-", practical: "15.0", exam: "29", total: "51" },
-            { name: "Akeem Mariam", matric: "25HQS007", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "8.0", test: "-", practical: "15.0", exam: "27", total: "50" },
-            { name: "Issa Abduqowiwu", matric: "25HQS008", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "6.0", test: "-", practical: "15.0", exam: "29", total: "50" },
-            { name: "Ogungbenro Bose", matric: "25HQS009", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "5.0", test: "-", practical: "15.0", exam: "25", total: "45" },
-            { name: "Ogunkunle Opeyemi", matric: "25HQS010", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "6.0", test: "-", practical: "10.0", exam: "28", total: "44" },
-            { name: "Mukaila Kehinde", matric: "25HQS011", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "8.0", test: "-", practical: "15.0", exam: "32", total: "55" },
-            { name: "Aramide Faith", matric: "25HQS012", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "8.0", test: "-", practical: "8.0", exam: "29", total: "45" },
-            { name: "Dairo Emmanuel", matric: "25HQS013", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "1.0", test: "-", practical: "5.0", exam: "11", total: "17" },
-            { name: "Olaniyi Christianah", matric: "25HQS014", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "8.0", test: "-", practical: "10.0", exam: "30", total: "48" },
-            { name: "Adeleke Olamide", matric: "25HQS015", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "1.0", test: "-", practical: "8.0", exam: "22", total: "31" },
-            { name: "Lateef Qoyum", matric: "25HQS016", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "8.0", test: "-", practical: "10.0", exam: "30", total: "48" },
-            { name: "Salami Hakeem", matric: "25HQS017", level: "HND 1", program: "FULL TIME", course: "COMPUTER APPLICATIONS", ca: "6.0", test: "-", practical: "10.0", exam: "24", total: "40" },
-            { name: "Ahmed Sobur", matric: "24NQS001", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "28", total: "28" },
-            { name: "Kehinde Simeon", matric: "24NQS004", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "13", total: "13" },
-            { name: "Olabamiji Fathia", matric: "24NQS005", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "Akinyemi Aishat", matric: "24NQS006", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "9", total: "9" },
-            { name: "Wasila Qowiyu", matric: "24NQS007", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "Adebisi Qudus", matric: "24NQS009", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "10", total: "10" },
-            { name: "Popoola Faruq", matric: "24NQS010", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "28", total: "28" },
-            { name: "Adewale Hamed", matric: "24NQS011", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "1", total: "1" },
-            { name: "Owolabi Islamiat", matric: "24NQS012", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "Babalola Victor", matric: "24NQS013", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "Lawal Muhammed", matric: "24NQS0014", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "17", total: "17" },
-            { name: "Afolayan Kamaldeen", matric: "24NQS015", level: "ND 2", program: "FULL TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "Okolo Richard", matric: "24PQS001", level: "ND 2", program: "PART TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "Adigun Olusola", matric: "24PQS002", level: "ND 2", program: "PART TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "Ayinde Samad", matric: "24PQS003", level: "ND 2", program: "PART TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "1", total: "1" },
-            { name: "Mustapha Qudus", matric: "24PQS004", level: "ND 2", program: "PART TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "1", total: "1" },
-            { name: "Musibau Abdurasheed", matric: "24PQS006", level: "ND 2", program: "PART TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "17", total: "17" },
-            { name: "Abdulrasheed Sefiu", matric: "24PQS007", level: "ND 2", program: "PART TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "Muhideen Abdhameed", matric: "24PQS009", level: "ND 2", program: "PART TIME", course: "SUSTAINABLE CONSTRUCTION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "ADEMOLA ROQEEB OLALEKAN", matric: "24NCE001", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "4", total: "19" },
-            { name: "TIAMIYU QUYUM ADEGOKE", matric: "24NCE002", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "AKINOSUN DAMILARE AMOS", matric: "24NCE003", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "AJILA SAMOD OLAWALE", matric: "24NCE004", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "3", total: "18" },
-            { name: "OGUNYEMI ISRAEL OLUWATIMILEYIN", matric: "24NCE005", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "15.0", practical: "5.0", exam: "2", total: "34" },
-            { name: "ABDULLAHI MAJEED ADEKUNLE", matric: "24NCE006", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "13.0", practical: "5.0", exam: "17", total: "35" },
-            { name: "ABOGUN NUMAN A", matric: "24NCE007", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "6", total: "6" },
-            { name: "SEFIU BILAL", matric: "24NCE008", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "4", total: "9" },
-            { name: "OLANREWAJU ABDULBAKI ISHOLA", matric: "24NCE009", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "3", total: "8" },
-            { name: "OLUSHOLA SUNDAY TEMITOPE", matric: "24NCE010", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "ALIMI HARUNA AYINDE", matric: "24NCE011", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "SALAWU IBRAHIM OLAMILEKAN", matric: "24NCE012", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "3", total: "8" },
-            { name: "BANKOLE QOYUM AYOMIDE", matric: "24NCE013", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "7", total: "7" },
-            { name: "OJO OPEYEMI ELIJAH", matric: "24NCE014", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "4", total: "9" },
-            { name: "ABDULWAHHED IBRAHIM ISHOLA", matric: "24NCE015", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "2", total: "7" },
-            { name: "AZEEZ USMAN OLADOMEJI", matric: "24NCE016", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "12.0", practical: "5.0", exam: "9", total: "26" },
-            { name: "FATAI ABDULSALAM OLAMIDE", matric: "24NCE017", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "TOGUN SEGUN SAMUEL", matric: "24NCE018", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "3", total: "8" },
-            { name: "ADEDEJI ABDULBAAQI ADEBIYI", matric: "24NCE019", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "14.0", test: "15.0", practical: "5.0", exam: "4", total: "38" },
-            { name: "JACOB EMMANUEL BOLUWATIFE", matric: "24NCE020", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "4", total: "19" },
-            { name: "AYUBA WAKEEL OLANREWAJU", matric: "24NCE021", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "2", total: "17" },
-            { name: "ABDHAKEEM ABDROQEEB OLAWALE", matric: "24NCE022", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "16.0", test: "0.0", practical: "5.0", exam: "6", total: "27" },
-            { name: "AKOREDE QUDUS OLOLADE", matric: "24NCE023", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "7", total: "7" },
-            { name: "AWE PRECIOUS SAMUEL", matric: "24NCE024", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "7", total: "7" },
-            { name: "oladejo roqeeb abiodun", matric: "24NCE025", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "0.0", practical: "15.0", exam: "6", total: "33" },
-            { name: "TAIWO MOJEED AYOMIDE", matric: "24NCE026", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "ADEJUNJI MUBARAK ADEYEMI", matric: "24NCE027", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "8", total: "8" },
-            { name: "WASIU MALEEK ADEKUNLE", matric: "24NCE028", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "8", total: "23" },
-            { name: "OLATUNJI LATEEF ADEKUNLE", matric: "24NCE029", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "ADEPOJU JOSHUA AKANDE", matric: "24NCE030", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "30.0", exam: "5", total: "35" },
-            { name: "OSINOWO OLUWADAMILOLA HEZEKIAH", matric: "24NCE031", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "13.0", practical: "5.0", exam: "3", total: "21" },
-            { name: "TIAMIYU LAWAL OLASUNKANMI", matric: "24NCE032", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "9", total: "24" },
-            { name: "SULAIMAN BASIT ABIDEMI", matric: "24NCE033", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "6", total: "11" },
-            { name: "KAZEEM QUADRI OPEYEMI", matric: "24NCE034", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "6", total: "11" },
-            { name: "ADEMOLA VICTOR ADEBAYO", matric: "24NCE035", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "ABDULKABIR SODIQ SOLA", matric: "24NCE036", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "10", total: "10" },
-            { name: "JIMOH MUSTAPHA OLALEKAN", matric: "24NCE037", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "8", total: "13" },
-            { name: "MUFUTAU ROQEEB OLAYIWOLA", matric: "24NCE038", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "2", total: "30" },
-            { name: "AGBOOLA TIMILEYIN FATHEW", matric: "24NCE039", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "4", total: "19" },
-            { name: "YUSUFF QUWIYU BAMIDELE", matric: "24NCE040", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "6", total: "6" },
-            { name: "OLOWOOKERE LEKAN JOSHUA", matric: "24NCE041", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "2", total: "17" },
-            { name: "ADEBAYO ESTHER ADEJOKE", matric: "24NCE042", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "5.0", exam: "7", total: "25" },
-            { name: "YUSHAU ABDULSEMIU", matric: "24NCE043", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "12", total: "27" },
-            { name: "HAMZAT JAMIU ADEKUNLE", matric: "24NCE044", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "KUNLE BLESSING O", matric: "24NCE045", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "5", total: "10" },
-            { name: "GAFARI MUSA AYANWALE", matric: "24NCE046", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "5", total: "33" },
-            { name: "KAREEM ADNAN ADEKUNLE", matric: "24NCE047", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "12", total: "17" },
-            { name: "OLALEYE OLADAPO AREMU", matric: "24NCE048", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "3", total: "8" },
-            { name: "BASHIR HAMAD ADEGOKE", matric: "24NCE049", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "10", total: "10" },
-            { name: "BAMIDELE ROQEEB OPEYEMI", matric: "24NCE050", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "8", total: "36" },
-            { name: "TOLASE MOSES OLUWAPELUMI", matric: "24NCE051", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "9", total: "9" },
-            { name: "ABDULAZEEZ QOZEEM ADENIOLA", matric: "24NCE052", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "OYEGOKE ABDULSALAM ISHOLA", matric: "24NCE053", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "3", total: "18" },
-            { name: "RAFIU SEFIU OLAMILEKAN", matric: "24NCE054", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "JOHNSON SAMUEL", matric: "24NCE055", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "AKINDELE BIODUN ISAIAH", matric: "24NCE056", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "soliu fawas ayomide", matric: "24NCE057", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "0.0", practical: "15.0", exam: "12", total: "39" },
-            { name: "ABANISE HAMMED OLATILEWA", matric: "24NCE058", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "7", total: "12" },
-            { name: "SULAIMAN SAMAD", matric: "24NCE059", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "OMOTOSHO FELICIA", matric: "24NCE060", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "14.0", test: "14.0", practical: "15.0", exam: "14", total: "57" },
-            { name: "SHOBIYE DOLAPO AYOOLA", matric: "24NCE061", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "5", total: "20" },
-            { name: "OLADOJA OLUWABUKOLA RQCHAEL", matric: "24NCE062", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "13.0", practical: "15.0", exam: "7", total: "47" },
-            { name: "HASSAN ANASS OPEYEMI", matric: "24NCE063", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "12.0", practical: "15.0", exam: "18", total: "45" },
-            { name: "ADEYEMO SAMUEL TIMILEYIN", matric: "24NCE064", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "-", exam: "4", total: "4" },
-            { name: "OLADELE BILIAMINU AYOMIDE", matric: "24NCE065", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "6", total: "34" },
-            { name: "OHAH WILLIAMS UGWUMSIMACHI", matric: "24NCE066", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "MALEEK MARTIN AJIBADE", matric: "24NCE067", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "6", total: "21" },
-            { name: "OLANREWAJU MARY OMOLARA", matric: "24NCE068", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "0.0", practical: "15.0", exam: "10", total: "37" },
-            { name: "OGUNDARE MUMEEN ADEKUNLE", matric: "24NCE069", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "8", total: "23" },
-            { name: "TAOFEEK ABDULROHEEM ADEMOLA", matric: "24NCE070", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "LAWAL KAFAYAT ADENIKE", matric: "24NCE071", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "14.0", test: "12.0", practical: "5.0", exam: "15", total: "46" },
-            { name: "MOYOSADE CHRISTIANAH KEHINDE", matric: "24NCE072", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "14.0", test: "12.0", practical: "15.0", exam: "8", total: "49" },
-            { name: "OGUNDARE GIDEON S", matric: "24NCE073", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "15.0", practical: "-", exam: "10", total: "37" },
-            { name: "IYIOLA WAREEZ ADIGUN", matric: "24NCE074", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "HAMMED ROQEEB AYOMIDE", matric: "24NCE075", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "ADEWALE OBALOLUWA ISAIAH", matric: "24NCE076", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "16", total: "16" },
-            { name: "ABDULGAFAR ABDULMUJEEB", matric: "24NCE077", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "5", total: "20" },
-            { name: "OLAYIWOLA OLOLADE ABEL", matric: "24NCE078", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "7", total: "7" },
-            { name: "RAJI KHALEED AKINKUNMI", matric: "24NCE079", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "3", total: "8" },
-            { name: "RAJI MUBARAK OLAWALE", matric: "24NCE080", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "OMOTOSHO MAYOWA AYOMIDE", matric: "24NCE081", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "1", total: "16" },
-            { name: "OLAYINKA ENIOLA JOHN", matric: "24NCE083", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "3", total: "18" },
-            { name: "OLANIREGUN PROMISE ISREAL", matric: "24NCE084", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "6", total: "6" },
-            { name: "ODESOLA SAMUEL DAMILOLA", matric: "24NCE085", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "RAJI ROQEEB TEMIOLUWA", matric: "24NCE086", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "0.0", practical: "15.0", exam: "4", total: "31" },
-            { name: "JAI AMIDAH ADEBOLA", matric: "24NCE087", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "ABDULJELIL ABDULBASIT OLASUNKANMI", matric: "24NCE089", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "BADMUS WARIS DAMILARE", matric: "24NCE090", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "9", total: "14" },
-            { name: "BABALOLA MUBARAK AYOOLA", matric: "24NCE091", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "6", total: "34" },
-            { name: "AYOOLA EMMANUEL AYOKUNLE", matric: "24NCE092", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "0.0", practical: "15.0", exam: "10", total: "37" },
-            { name: "ISMAIL AFEEZ OLAMIDE", matric: "24NCE093", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "6", total: "6" },
-            { name: "tijani Sadiq olalekan", matric: "24NCE094", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "9", total: "37" },
-            { name: "RASHEED WASIU AYINDE", matric: "24NCE095", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "ABDULRAFIU ROFIYAT", matric: "24NCE096", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "5", total: "10" },
-            { name: "ODEBUNMI ISAAC BLESSING", matric: "24NCE097", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "10", total: "38" },
-            { name: "YEKINNI WARIS AKANDE", matric: "24NCE098", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "1", total: "1" },
-            { name: "ABIODUN AYOMIDE OPEYEMI", matric: "24NCE099", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "OPAREMI ABDULMALIK ISHOLA", matric: "24NCE100", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "AKOMOLEDE AYOMILESI PRECIOUS", matric: "24NCE101", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "ABDULAKEEM QODRI", matric: "24NCE102", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "13.0", practical: "15.0", exam: "4", total: "32" },
-            { name: "ADEBAYO OPEYEMI AYOMIDE", matric: "24NCE103", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "2", total: "7" },
-            { name: "NURUDEEN MUSAH ALAYAKI", matric: "24NCE104", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "6", total: "21" },
-            { name: "OLAGOKE QUYUM ADEMOLA", matric: "24NCE105", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "AKINOLA ABDULQUDUS AKINKUNMI", matric: "24NCE106", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "7", total: "22" },
-            { name: "OLOTU EMMANUEL PELUMI", matric: "24NCE107", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "ADEGBITE SAMUEL BOLAJI", matric: "24NCE108", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "13.0", practical: "15.0", exam: "6", total: "34" },
-            { name: "OLUTADE EMMANUEL FAVOUR", matric: "24NCE109", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "5", total: "5" },
-            { name: "ADENIJI QUYUM PELUMI", matric: "24NCE111", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "5", total: "10" },
-            { name: "GIWA ABDULSALAM ADEKUNLE", matric: "24NCE112", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "ODEREMI ISAIAH KAYODE", matric: "24NCE115", level: "ND2", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "4", total: "9" },
-            { name: "AZEEZ SELIM OLAMILEKAN", matric: "22NCE003", level: "RERUNNER (ND2)", program: "FULL TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "AFOLABI KAMAL OPEYEMI", matric: "24PCE001", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" },
-            { name: "OSHO SAMUEL AYODELE", matric: "24PCE002", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "4", total: "9" },
-            { name: "OLANREWAJU SHUAIB AKANDE", matric: "24PCE003", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "12.0", test: "0.0", practical: "15.0", exam: "12", total: "39" },
-            { name: "ADEBISI DAMILARE DANIEL", matric: "24PCE004", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "5", total: "10" },
-            { name: "OLALERE WASIU BABATUNDE", matric: "24PCE006", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "10", total: "38" },
-            { name: "OJO OLUWAFEMI THEOPHLIUS", matric: "24PCE007", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "7", total: "12" },
-            { name: "ADEGOKE KHALIFA ADEYEMI", matric: "24PCE008", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "9", total: "9" },
-            { name: "OYEDEPO TAOFIK OLAMIDE", matric: "24PCE009", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "4", total: "19" },
-            { name: "OLANREWAJU MUIDUDEEN BUKOLA", matric: "24PCE011", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "4", total: "9" },
-            { name: "OJO SAMUEL OLAMIDE", matric: "24PCE012", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "3", total: "3" },
-            { name: "OGUNNIRAN SAMUEL OLUWATOBI", matric: "24PCE013", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "TIJANI SOLIU ISHOLA", matric: "24PCE014", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "7", total: "7" },
-            { name: "AZEEZ ADEMOLA AZEEZ", matric: "24PCE015", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "6", total: "6" },
-            { name: "DAUDA AYUBA OPEYEMI", matric: "24PCE016", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "10", total: "10" },
-            { name: "ADENIYI QUMAR ISHOLA", matric: "24PCE017", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "13", total: "13" },
-            { name: "AZEEZ IDRIS TOBI", matric: "24PCE018", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "8", total: "13" },
-            { name: "ALIU ENIOLA SAMUEL", matric: "24PCE019", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "11", total: "11" },
-            { name: "MUKAILA SODIQ AYOMIDE", matric: "24PCE021", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "9", total: "14" },
-            { name: "SULAIMAN AHMED TEMITOPE", matric: "24PCE022", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "21", total: "26" },
-            { name: "OGUNWOLE OLAMILEKAN OLAMIDE", matric: "24PCE023", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "3", total: "8" },
-            { name: "OKEDIJI SUNDAY ELIJAH", matric: "24PCE024", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "3", total: "18" },
-            { name: "HASSAN VICTOR OJOCHOKOBI", matric: "24PCE025", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "25", total: "30" },
-            { name: "OLADEJI JOSHUA OLAMIDE", matric: "24PCE026", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "6", total: "21" },
-            { name: "OYELADUN LYDIA DAMILOLA", matric: "24PCE027", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "5.0", exam: "8", total: "26" },
-            { name: "ADELEKE ABDULALEEM ADEBIYI", matric: "24PCE028", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "15.0", exam: "10", total: "25" },
-            { name: "SAMUEL TIMILEYIN CALEEB", matric: "24PCE030", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "6", total: "11" },
-            { name: "OKEYALE LYDIA ADESEWA", matric: "24PCE032", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "6", total: "6" },
-            { name: "OLUWAGBENGA BOLUWATIFE MARVELOUS", matric: "24PCE033", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "11", total: "11" },
-            { name: "ADEGBENLE QUADRI KAYODE", matric: "24PCE034", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "10", total: "10" },
-            { name: "OLALERE ISAIAH ADEYEMI", matric: "24PCE035", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "10", total: "38" },
-            { name: "AZEEZ HAWAL ADENIYI", matric: "24PCE036", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "8", total: "8" },
-            { name: "PHILLIP BASIT OLALEKAN", matric: "24PCE037", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "15", total: "15" },
-            { name: "OLUJIMI EMMANUEL AYOMIDE", matric: "24PCE038", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "RASHEED QUDUS OLAMIDE", matric: "24PCE039", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "9", total: "9" },
-            { name: "AZEEZ USMAN OLADIMEJI", matric: "24PCE040", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "7", total: "7" },
-            { name: "TAOFEEQ HAMEED OLABISI", matric: "24PCE041", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "13.0", test: "0.0", practical: "15.0", exam: "3", total: "31" },
-            { name: "MUSLIMDEEN ABDULRASAQ OLAITAN", matric: "24PCE043", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "7", total: "12" },
-            { name: "SIKIRU MUHAMMED OLAMILEKAN", matric: "24PCE046", level: "ND2", program: "PART TIME", course: "ENGINEERINGMEASUREMENT & VALUATION", ca: "0.0", test: "0.0", practical: "5.0", exam: "0", total: "5" },
-            { name: "KOMOLAFE PETER KOREDE", matric: "24PCE048", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "4", total: "4" },
-            { name: "ARIYIBI RAHMAN FOLARANMI", matric: "24PCE050", level: "ND2", program: "PART TIME", course: "ENGINEERING MEASUREMENT & VALUATION", ca: "-", test: "-", practical: "-", exam: "2", total: "2" }
-        ];
-
-        function searchResult(event) {
-            event.preventDefault();
-
-            const inputName = document.getElementById('fullName').value.trim().toLowerCase();
-            const inputMatric = document.getElementById('matricNumber').value.trim().toLowerCase();
-            const container = document.getElementById('result-container');
-
-            // Find matching student records
-            const matches = resultsDatabase.filter(student => {
-                const dbName = student.name.toLowerCase();
-                const dbMatric = student.matric.toLowerCase();
-                
-                // Match matric strictly or partially, and check name inclusion
-                const matricMatch = dbMatric === inputMatric;
-                const nameMatch = dbName.includes(inputName) || inputName.includes(dbName);
-
-                return matricMatch && nameMatch;
-            });
-
-            if (matches.length > 0) {
-                let htmlContent = '';
-                matches.forEach(student => {
-                    htmlContent += `
-                        <div class="result-box">
-                            <div class="result-header">
-                                <h3>${student.name}</h3>
-                                <p><strong>Matric Number:</strong> ${student.matric} | <strong>Level:</strong> ${student.level} (${student.program})</p>
-                                <p><strong>Course:</strong> ${student.course}</p>
-                            </div>
-                            <div class="score-grid">
-                                <div class="score-item">
-                                    <span>C.A</span>
-                                    <strong>${student.ca}</strong>
-                                </div>
-                                <div class="score-item">
-                                    <span>Test</span>
-                                    <strong>${student.test}</strong>
-                                </div>
-                                <div class="score-item">
-                                    <span>Practical</span>
-                                    <strong>${student.practical}</strong>
-                                </div>
-                                <div class="score-item">
-                                    <span>Exam</span>
-                                    <strong>${student.exam}</strong>
-                                </div>
-                                <div class="score-item total-score">
-                                    <span>Total Score</span>
-                                    <strong>${student.total}</strong>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                    `;
-                });
-                container.innerHTML = htmlContent;
-            } else {
-                container.innerHTML = `
-                    <div class="error-msg">
-                        <strong>No records found</strong> matching that name and matric number. Please check your spelling and matric number and try again.
-                    </div>
-                `;
+<script>
+    // Complete student database loaded from uploaded result records
+    const studentDatabase = [
+    {
+        "name": "Agboluaje Tijani",
+        "matric": "25NQS001",
+        "level": "ND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 51
             }
+        ]
+    },
+    {
+        "name": "Azeez Mutiat",
+        "matric": "25NQS002",
+        "level": "ND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 11
+            }
+        ]
+    },
+    {
+        "name": "Adetoro Praise",
+        "matric": "25NQS003",
+        "level": "ND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 53
+            }
+        ]
+    },
+    {
+        "name": "Rabiu Tijani",
+        "matric": "25NQS004",
+        "level": "ND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 51
+            }
+        ]
+    },
+    {
+        "name": "Ibiyemi Bashit",
+        "matric": "25NQS007",
+        "level": "ND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "Egbeleke Segun",
+        "matric": "25NQS008",
+        "level": "ND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 35
+            }
+        ]
+    },
+    {
+        "name": "Adeyeye Samuel",
+        "matric": "25PQS001",
+        "level": "ND 1",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 65
+            }
+        ]
+    },
+    {
+        "name": "Ayantunde Kehinde",
+        "matric": "25PQS002",
+        "level": "ND 1",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 23
+            }
+        ]
+    },
+    {
+        "name": "Hassan Ahmad",
+        "matric": "25PQS003",
+        "level": "ND 1",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "PRINCIPLE OF LAW OF CONTRACT",
+                "score": 11
+            }
+        ]
+    },
+    {
+        "name": "Mudasiru Maleek",
+        "matric": "25HQS001",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 57
+            }
+        ]
+    },
+    {
+        "name": "Gbadegesin",
+        "matric": "25HQS002",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 52
+            }
+        ]
+    },
+    {
+        "name": "Ogundele Kaosara",
+        "matric": "25HQS003",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 41
+            }
+        ]
+    },
+    {
+        "name": "Ishola Esther",
+        "matric": "25HQS004",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 47
+            }
+        ]
+    },
+    {
+        "name": "Owoade Dorcas",
+        "matric": "25HQS005",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 51
+            }
+        ]
+    },
+    {
+        "name": "Akeem Mariam",
+        "matric": "25HQS007",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 50
+            }
+        ]
+    },
+    {
+        "name": "Issa Abduqowiwu",
+        "matric": "25HQS008",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 50
+            }
+        ]
+    },
+    {
+        "name": "Ogungbenro Bose",
+        "matric": "25HQS009",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 45
+            }
+        ]
+    },
+    {
+        "name": "Ogunkunle Opeyemi",
+        "matric": "25HQS010",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 44
+            }
+        ]
+    },
+    {
+        "name": "Mukaila Kehinde",
+        "matric": "25HQS011",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 55
+            }
+        ]
+    },
+    {
+        "name": "Aramide Faith",
+        "matric": "25HQS012",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 45
+            }
+        ]
+    },
+    {
+        "name": "Dairo Emmanuel",
+        "matric": "25HQS013",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 17
+            }
+        ]
+    },
+    {
+        "name": "Olaniyi Christianah",
+        "matric": "25HQS014",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 48
+            }
+        ]
+    },
+    {
+        "name": "Adeleke Olamide",
+        "matric": "25HQS015",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 31
+            }
+        ]
+    },
+    {
+        "name": "Lateef Qoyum",
+        "matric": "25HQS016",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 48
+            }
+        ]
+    },
+    {
+        "name": "Salami Hakeem",
+        "matric": "25HQS017",
+        "level": "HND 1",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "COMPUTER APPLICATIONS",
+                "score": 40
+            }
+        ]
+    },
+    {
+        "name": "Ahmed Sobur",
+        "matric": "24NQS001",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 75
+            }
+        ]
+    },
+    {
+        "name": "Kehinde Simeon",
+        "matric": "24NQS004",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 56
+            }
+        ]
+    },
+    {
+        "name": "Olabamiji Fathia",
+        "matric": "24NQS005",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 39
+            }
+        ]
+    },
+    {
+        "name": "Akinyemi Aishat",
+        "matric": "24NQS006",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 49
+            }
+        ]
+    },
+    {
+        "name": "Wasiu Qowiyu",
+        "matric": "24NQS007",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 44
+            }
+        ]
+    },
+    {
+        "name": "Adebisi Qudus",
+        "matric": "24NQS009",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 52
+            }
+        ]
+    },
+    {
+        "name": "Popoola Faruq",
+        "matric": "24NQS010",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 75
+            }
+        ]
+    },
+    {
+        "name": "Adewale Hamed",
+        "matric": "24NQS011",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 18
+            }
+        ]
+    },
+    {
+        "name": "Owolabi Islamiat",
+        "matric": "24NQS012",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 22
+            }
+        ]
+    },
+    {
+        "name": "Babalola Victor",
+        "matric": "24NQS013",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 21
+            }
+        ]
+    },
+    {
+        "name": "Lawal Muhammed",
+        "matric": "24NQS0014",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 58
+            }
+        ]
+    },
+    {
+        "name": "Afolayan Kamaldeen",
+        "matric": "24NQS015",
+        "level": "ND 2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 46
+            }
+        ]
+    },
+    {
+        "name": "Okolo Richard",
+        "matric": "24PQS001",
+        "level": "ND 2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "Adigun Olusola",
+        "matric": "24PQS002",
+        "level": "ND 2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "Ayinde Samad",
+        "matric": "24PQS003",
+        "level": "ND 2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 1
+            }
+        ]
+    },
+    {
+        "name": "Mustapha Qudus",
+        "matric": "24PQS004",
+        "level": "ND 2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 43
+            }
+        ]
+    },
+    {
+        "name": "Musibau Abdurasheed",
+        "matric": "24PQS006",
+        "level": "ND 2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 53
+            }
+        ]
+    },
+    {
+        "name": "Abdulrasheed Sefiu",
+        "matric": "24PQS007",
+        "level": "ND 2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 40
+            }
+        ]
+    },
+    {
+        "name": "Muhideen Abdhameed",
+        "matric": "24PQS009",
+        "level": "ND 2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "SUSTAINABLE CONSTRUCTION",
+                "score": 41
+            }
+        ]
+    },
+    {
+        "name": "ADEMOLA ROQEEB OLALEKAN",
+        "matric": "24NCE001",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 29
+            }
+        ]
+    },
+    {
+        "name": "TIAMIYU QUYUM ADEGOKE",
+        "matric": "24NCE002",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "AKINOSUN DAMILARE AMOS",
+        "matric": "24NCE003",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "AJILA SAMOD OLAWALE",
+        "matric": "24NCE004",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 28
+            }
+        ]
+    },
+    {
+        "name": "OGUNYEMI ISRAEL OLUWATIMILEYIN",
+        "matric": "24NCE005",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 34
+            }
+        ]
+    },
+    {
+        "name": "ABDULLAHI MAJEED ADEKUNLE",
+        "matric": "24NCE006",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 35
+            }
+        ]
+    },
+    {
+        "name": "ABOGUN NUMAN A",
+        "matric": "24NCE007",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 6
+            }
+        ]
+    },
+    {
+        "name": "SEFIU BILAL",
+        "matric": "24NCE008",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "OLANREWAJU ABDULBAKI ISHOLA",
+        "matric": "24NCE009",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "OLUSHOLA SUNDAY TEMITOPE",
+        "matric": "24NCE010",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "ALIMI HARUNA AYINDE",
+        "matric": "24NCE011",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "SALAWU IBRAHIM OLAMILEKAN",
+        "matric": "24NCE012",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "BANKOLE QOYUM AYOMIDE",
+        "matric": "24NCE013",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "name": "OJO OPEYEMI ELIJAH",
+        "matric": "24NCE014",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "ABDULWAHHED IBRAHIM ISHOLA",
+        "matric": "24NCE015",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "name": "AZEEZ USMAN OLADOMEJI",
+        "matric": "24NCE016",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 26
+            }
+        ]
+    },
+    {
+        "name": "FATAI ABDULSALAM OLAMIDE",
+        "matric": "24NCE017",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "TOGUN SEGUN SAMUEL",
+        "matric": "24NCE018",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "ADEDEJI ABDULBAAQI ADEBIYI",
+        "matric": "24NCE019",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 38
+            }
+        ]
+    },
+    {
+        "name": "JACOB EMMANUEL BOLUWATIFE",
+        "matric": "24NCE020",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 29
+            }
+        ]
+    },
+    {
+        "name": "AYUBA WAKEEL OLANREWAJU",
+        "matric": "24NCE021",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 27
+            }
+        ]
+    },
+    {
+        "name": "ABDHAKEEM ABDROQEEB OLAWALE",
+        "matric": "24NCE022",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 27
+            }
+        ]
+    },
+    {
+        "name": "AKOREDE QUDUS OLOLADE",
+        "matric": "24NCE023",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "name": "AWE PRECIOUS SAMUEL",
+        "matric": "24NCE024",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "name": "oladejo roqeeb abiodun",
+        "matric": "24NCE025",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 43
+            }
+        ]
+    },
+    {
+        "name": "TAIWO MOJEED AYOMIDE",
+        "matric": "24NCE026",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "ADEJUNJI MUBARAK ADEYEMI",
+        "matric": "24NCE027",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "WASIU MALEEK ADEKUNLE",
+        "matric": "24NCE028",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 33
+            }
+        ]
+    },
+    {
+        "name": "OLATUNJI LATEEF ADEKUNLE",
+        "matric": "24NCE029",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "ADEPOJU JOSHUA AKANDE",
+        "matric": "24NCE030",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 30
+            }
+        ]
+    },
+    {
+        "name": "OSINOWO OLUWADAMILOLA HEZEKIAH",
+        "matric": "24NCE031",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 21
+            }
+        ]
+    },
+    {
+        "name": "TIAMIYU LAWAL OLASUNKANMI",
+        "matric": "24NCE032",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 34
+            }
+        ]
+    },
+    {
+        "name": "SULAIMAN BASIT ABIDEMI",
+        "matric": "24NCE033",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 11
+            }
+        ]
+    },
+    {
+        "name": "KAZEEM QUADRI OPEYEMI",
+        "matric": "24NCE034",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 11
+            }
+        ]
+    },
+    {
+        "name": "ADEMOLA VICTOR ADEBAYO",
+        "matric": "24NCE035",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "ABDULKABIR SODIQ SOLA",
+        "matric": "24NCE036",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "JIMOH MUSTAPHA OLALEKAN",
+        "matric": "24NCE037",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 13
+            }
+        ]
+    },
+    {
+        "name": "MUFUTAU ROQEEB OLAYIWOLA",
+        "matric": "24NCE038",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 40
+            }
+        ]
+    },
+    {
+        "name": "AGBOOLA TIMILEYIN FATHEW",
+        "matric": "24NCE039",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 19
+            }
+        ]
+    },
+    {
+        "name": "YUSUFF QUWIYU BAMIDELE",
+        "matric": "24NCE040",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 6
+            }
+        ]
+    },
+    {
+        "name": "OLOWOOKERE LEKAN JOSHUA",
+        "matric": "24NCE041",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 27
+            }
+        ]
+    },
+    {
+        "name": "ADEBAYO ESTHER ADEJOKE",
+        "matric": "24NCE042",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 25
+            }
+        ]
+    },
+    {
+        "name": "YUSHAU ABDULSEMIU",
+        "matric": "24NCE043",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 37
+            }
+        ]
+    },
+    {
+        "name": "HAMZAT JAMIU ADEKUNLE",
+        "matric": "24NCE044",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "KUNLE BLESSING O",
+        "matric": "24NCE045",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "GAFARI MUSA AYANWALE",
+        "matric": "24NCE046",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 43
+            }
+        ]
+    },
+    {
+        "name": "KAREEM ADNAN ADEKUNLE",
+        "matric": "24NCE047",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 17
+            }
+        ]
+    },
+    {
+        "name": "OLALEYE OLADAPO AREMU",
+        "matric": "24NCE048",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "BASHIR HAMAD ADEGOKE",
+        "matric": "24NCE049",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "BAMIDELE ROQEEB OPEYEMI",
+        "matric": "24NCE050",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 46
+            }
+        ]
+    },
+    {
+        "name": "TOLASE MOSES OLUWAPELUMI",
+        "matric": "24NCE051",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "ABDULAZEEZ QOZEEM ADENIOLA",
+        "matric": "24NCE052",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "OYEGOKE ABDULSALAM ISHOLA",
+        "matric": "24NCE053",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 28
+            }
+        ]
+    },
+    {
+        "name": "RAFIU SEFIU OLAMILEKAN",
+        "matric": "24NCE054",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "JOHNSON SAMUEL",
+        "matric": "24NCE055",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "AKINDELE BIODUN ISAIAH",
+        "matric": "24NCE056",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "soliu fawas ayomide",
+        "matric": "24NCE057",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 49
+            }
+        ]
+    },
+    {
+        "name": "ABANISE HAMMED OLATILEWA",
+        "matric": "24NCE058",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 12
+            }
+        ]
+    },
+    {
+        "name": "SULAIMAN SAMAD",
+        "matric": "24NCE059",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "OMOTOSHO FELICIA",
+        "matric": "24NCE060",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 57
+            }
+        ]
+    },
+    {
+        "name": "SHOBIYE DOLAPO AYOOLA",
+        "matric": "24NCE061",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 30
+            }
+        ]
+    },
+    {
+        "name": "OLADOJA OLUWABUKOLA RQCHAEL",
+        "matric": "24NCE062",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 47
+            }
+        ]
+    },
+    {
+        "name": "HASSAN ANASS OPEYEMI",
+        "matric": "24NCE063",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 55
+            }
+        ]
+    },
+    {
+        "name": "ADEYEMO SAMUEL TIMILEYIN",
+        "matric": "24NCE064",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "OLADELE BILIAMINU AYOMIDE",
+        "matric": "24NCE065",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 44
+            }
+        ]
+    },
+    {
+        "name": "OHAH WILLIAMS UGWUMSIMACHI",
+        "matric": "24NCE066",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "MALEEK MARTIN AJIBADE",
+        "matric": "24NCE067",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 31
+            }
+        ]
+    },
+    {
+        "name": "OLANREWAJU MARY OMOLARA",
+        "matric": "24NCE068",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 47
+            }
+        ]
+    },
+    {
+        "name": "OGUNDARE MUMEEN ADEKUNLE",
+        "matric": "24NCE069",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 33
+            }
+        ]
+    },
+    {
+        "name": "TAOFEEK ABDULROHEEM ADEMOLA",
+        "matric": "24NCE070",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "LAWAL KAFAYAT ADENIKE",
+        "matric": "24NCE071",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 46
+            }
+        ]
+    },
+    {
+        "name": "MOYOSADE CHRISTIANAH KEHINDE",
+        "matric": "24NCE072",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 49
+            }
+        ]
+    },
+    {
+        "name": "OGUNDARE GIDEON S",
+        "matric": "24NCE073",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 37
+            }
+        ]
+    },
+    {
+        "name": "IYIOLA WAREEZ ADIGUN",
+        "matric": "24NCE074",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "HAMMED ROQEEB AYOMIDE",
+        "matric": "24NCE075",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "ADEWALE OBALOLUWA ISAIAH",
+        "matric": "24NCE076",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 16
+            }
+        ]
+    },
+    {
+        "name": "ABDULGAFAR ABDULMUJEEB",
+        "matric": "24NCE077",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 30
+            }
+        ]
+    },
+    {
+        "name": "OLAYIWOLA OLOLADE ABEL",
+        "matric": "24NCE078",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "name": "RAJI KHALEED AKINKUNMI",
+        "matric": "24NCE079",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "RAJI MUBARAK OLAWALE",
+        "matric": "24NCE080",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "OMOTOSHO MAYOWA AYOMIDE",
+        "matric": "24NCE081",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 26
+            }
+        ]
+    },
+    {
+        "name": "OLAYINKA ENIOLA JOHN",
+        "matric": "24NCE083",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 28
+            }
+        ]
+    },
+    {
+        "name": "OLANIREGUN PROMISE ISREAL",
+        "matric": "24NCE084",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 6
+            }
+        ]
+    },
+    {
+        "name": "ODESOLA SAMUEL DAMILOLA",
+        "matric": "24NCE085",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "RAJI ROQEEB TEMIOLUWA",
+        "matric": "24NCE086",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 41
+            }
+        ]
+    },
+    {
+        "name": "JAI AMIDAH ADEBOLA",
+        "matric": "24NCE087",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "ABDULJELIL ABDULBASIT OLASUNKANMI",
+        "matric": "24NCE089",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "BADMUS WARIS DAMILARE",
+        "matric": "24NCE090",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 14
+            }
+        ]
+    },
+    {
+        "name": "BABALOLA MUBARAK AYOOLA",
+        "matric": "24NCE091",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 44
+            }
+        ]
+    },
+    {
+        "name": "AYOOLA EMMANUEL AYOKUNLE",
+        "matric": "24NCE092",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 47
+            }
+        ]
+    },
+    {
+        "name": "ISMAIL AFEEZ OLAMIDE",
+        "matric": "24NCE093",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 6
+            }
+        ]
+    },
+    {
+        "name": "tijani Sadiq olalekan",
+        "matric": "24NCE094",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 47
+            }
+        ]
+    },
+    {
+        "name": "RASHEED WASIU AYINDE",
+        "matric": "24NCE095",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "ABDULRAFIU ROFIYAT",
+        "matric": "24NCE096",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "ODEBUNMI ISAAC BLESSING",
+        "matric": "24NCE097",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 48
+            }
+        ]
+    },
+    {
+        "name": "YEKINNI WARIS AKANDE",
+        "matric": "24NCE098",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 1
+            }
+        ]
+    },
+    {
+        "name": "ABIODUN AYOMIDE OPEYEMI",
+        "matric": "24NCE099",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "OPAREMI ABDULMALIK ISHOLA",
+        "matric": "24NCE100",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "AKOMOLEDE AYOMILESI PRECIOUS",
+        "matric": "24NCE101",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "ABDULAKEEM QODRI",
+        "matric": "24NCE102",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 32
+            }
+        ]
+    },
+    {
+        "name": "ADEBAYO OPEYEMI AYOMIDE",
+        "matric": "24NCE103",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "name": "NURUDEEN MUSAH ALAYAKI",
+        "matric": "24NCE104",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 43
+            }
+        ]
+    },
+    {
+        "name": "OLAGOKE QUYUM ADEMOLA",
+        "matric": "24NCE105",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "AKINOLA ABDULQUDUS AKINKUNMI",
+        "matric": "24NCE106",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 32
+            }
+        ]
+    },
+    {
+        "name": "OLOTU EMMANUEL PELUMI",
+        "matric": "24NCE107",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "ADEGBITE SAMUEL BOLAJI",
+        "matric": "24NCE108",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 44
+            }
+        ]
+    },
+    {
+        "name": "OLUTADE EMMANUEL FAVOUR",
+        "matric": "24NCE109",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "ADENIJI QUYUM PELUMI",
+        "matric": "24NCE111",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "GIWA ABDULSALAM ADEKUNLE",
+        "matric": "24NCE112",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "ODEREMI ISAIAH KAYODE",
+        "matric": "24NCE115",
+        "level": "ND2",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "AZEEZ SELIM OLAMILEKAN",
+        "matric": "22NCE003",
+        "level": "RERUNNER (ND2)",
+        "program": "FULL TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "AFOLABI KAMAL OPEYEMI",
+        "matric": "24PCE001",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    },
+    {
+        "name": "OSHO SAMUEL AYODELE",
+        "matric": "24PCE002",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "OLANREWAJU SHUAIB AKANDE",
+        "matric": "24PCE003",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 49
+            }
+        ]
+    },
+    {
+        "name": "ADEBISI DAMILARE DANIEL",
+        "matric": "24PCE004",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "OLALERE WASIU BABATUNDE",
+        "matric": "24PCE006",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 48
+            }
+        ]
+    },
+    {
+        "name": "OJO OLUWAFEMI THEOPHLIUS",
+        "matric": "24PCE007",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 12
+            }
+        ]
+    },
+    {
+        "name": "ADEGOKE KHALIFA ADEYEMI",
+        "matric": "24PCE008",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "OYEDEPO TAOFIK OLAMIDE",
+        "matric": "24PCE009",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 29
+            }
+        ]
+    },
+    {
+        "name": "OLANREWAJU MUIDUDEEN BUKOLA",
+        "matric": "24PCE011",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "OJO SAMUEL OLAMIDE",
+        "matric": "24PCE012",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 3
+            }
+        ]
+    },
+    {
+        "name": "OGUNNIRAN SAMUEL OLUWATOBI",
+        "matric": "24PCE013",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "TIJANI SOLIU ISHOLA",
+        "matric": "24PCE014",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 52
+            }
+        ]
+    },
+    {
+        "name": "AZEEZ ADEMOLA AZEEZ",
+        "matric": "24PCE015",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 6
+            }
+        ]
+    },
+    {
+        "name": "DAUDA AYUBA OPEYEMI",
+        "matric": "24PCE016",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "ADENIYI QUMAR ISHOLA",
+        "matric": "24PCE017",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 13
+            }
+        ]
+    },
+    {
+        "name": "AZEEZ IDRIS TOBI",
+        "matric": "24PCE018",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 13
+            }
+        ]
+    },
+    {
+        "name": "ALIU ENIOLA SAMUEL",
+        "matric": "24PCE019",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 11
+            }
+        ]
+    },
+    {
+        "name": "MUKAILA SODIQ AYOMIDE",
+        "matric": "24PCE021",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 14
+            }
+        ]
+    },
+    {
+        "name": "SULAIMAN AHMED TEMITOPE",
+        "matric": "24PCE022",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 26
+            }
+        ]
+    },
+    {
+        "name": "OGUNWOLE OLAMILEKAN OLAMIDE",
+        "matric": "24PCE023",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "OKEDIJI SUNDAY ELIJAH",
+        "matric": "24PCE024",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 28
+            }
+        ]
+    },
+    {
+        "name": "HASSAN VICTOR OJOCHOKOBI",
+        "matric": "24PCE025",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 30
+            }
+        ]
+    },
+    {
+        "name": "OLADEJI JOSHUA OLAMIDE",
+        "matric": "24PCE026",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 31
+            }
+        ]
+    },
+    {
+        "name": "OYELADUN LYDIA DAMILOLA",
+        "matric": "24PCE027",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 26
+            }
+        ]
+    },
+    {
+        "name": "ADELEKE ABDULALEEM ADEBIYI",
+        "matric": "24PCE028",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 35
+            }
+        ]
+    },
+    {
+        "name": "SAMUEL TIMILEYIN CALEEB",
+        "matric": "24PCE030",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 11
+            }
+        ]
+    },
+    {
+        "name": "OKEYALE LYDIA ADESEWA",
+        "matric": "24PCE032",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 6
+            }
+        ]
+    },
+    {
+        "name": "OLUWAGBENGA BOLUWATIFE MARVELOUS",
+        "matric": "24PCE033",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 11
+            }
+        ]
+    },
+    {
+        "name": "ADEGBENLE QUADRI KAYODE",
+        "matric": "24PCE034",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "OLALERE ISAIAH ADEYEMI",
+        "matric": "24PCE035",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 48
+            }
+        ]
+    },
+    {
+        "name": "AZEEZ HAWAL ADENIYI",
+        "matric": "24PCE036",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 8
+            }
+        ]
+    },
+    {
+        "name": "PHILLIP BASIT OLALEKAN",
+        "matric": "24PCE037",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 15
+            }
+        ]
+    },
+    {
+        "name": "OLUJIMI EMMANUEL AYOMIDE",
+        "matric": "24PCE038",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "RASHEED QUDUS OLAMIDE",
+        "matric": "24PCE039",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 9
+            }
+        ]
+    },
+    {
+        "name": "AZEEZ USMAN OLADIMEJI",
+        "matric": "24PCE040",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "name": "TAOFEEQ HAMEED OLABISI",
+        "matric": "24PCE041",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 41
+            }
+        ]
+    },
+    {
+        "name": "MUSLIMDEEN ABDULRASAQ OLAITAN",
+        "matric": "24PCE043",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 12
+            }
+        ]
+    },
+    {
+        "name": "ABDUL-RASHEED UMARI ADELANI",
+        "matric": "24PCE045",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 10
+            }
+        ]
+    },
+    {
+        "name": "SIKIRU MUHAMMED OLAMILEKAN",
+        "matric": "24PCE046",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 5
+            }
+        ]
+    },
+    {
+        "name": "KOMOLAFE PETER KOREDE",
+        "matric": "24PCE048",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 4
+            }
+        ]
+    },
+    {
+        "name": "ARIYIBI RAHMAN FOLARANMI",
+        "matric": "24PCE050",
+        "level": "ND2",
+        "program": "PART TIME",
+        "courses": [
+            {
+                "title": "ENGINEERING MEASUREMENT & VALUATION",
+                "score": 2
+            }
+        ]
+    }
+];
+
+    function calculateGrade(total) {
+        if (total >= 75) return { grade: 'A', remark: 'Distinction', point: 4.00 };
+        if (total >= 70) return { grade: 'AB', remark: 'Very Good', point: 3.50 };
+        if (total >= 65) return { grade: 'B', remark: 'Very Good', point: 3.25 };
+        if (total >= 60) return { grade: 'BC', remark: 'Good', point: 3.00 };
+        if (total >= 55) return { grade: 'C', remark: 'Above Average', point: 2.75 };
+        if (total >= 50) return { grade: 'CD', remark: 'Average', point: 2.50 };
+        if (total >= 45) return { grade: 'D', remark: 'Fair', point: 2.25 };
+        if (total >= 40) return { grade: 'E', remark: 'Pass', point: 2.00 };
+        return { grade: 'F', remark: 'Failure', point: 0.00 };
+    }
+
+    function checkResult() {
+        const inputQuery = document.getElementById('studentName').value.trim().toLowerCase();
+        const inputPass = document.getElementById('studentPassword').value.trim().toLowerCase();
+        const errorDiv = document.getElementById('errorMessage');
+
+        errorDiv.textContent = "";
+
+        if (!inputQuery || !inputPass) {
+            errorDiv.textContent = "Please enter both your name and password (matric number).";
+            return;
         }
-    </script>
+
+        const student = studentDatabase.find(s => {
+            const nameParts = s.name.toLowerCase().split(/\s+/);
+            const matchesName = nameParts.some(part => part.includes(inputQuery)) || s.name.toLowerCase().includes(inputQuery);
+            const matchesPassword = s.matric.toLowerCase() === inputPass;
+            return matchesName && matchesPassword;
+        });
+
+        if (!student) {
+            errorDiv.textContent = "Invalid Name or Matric Number password. Contact Mr. Osuntoki Christopher Ayojesu (08163059669).";
+            return;
+        }
+
+        document.getElementById('studentDetails').innerHTML = `
+            <strong>Name:</strong> ${student.name}<br>
+            <strong>Matric Number:</strong> ${student.matric}<br>
+            <strong>Level:</strong> ${student.level} (${student.program})
+        `;
+
+        const tbody = document.getElementById('resultTableBody');
+        tbody.innerHTML = "";
+
+        student.courses.forEach(c => {
+            const res = calculateGrade(c.score);
+            const row = `<tr>
+                <td>${c.title}</td>
+                <td>${c.score}</td>
+                <td>${res.grade} (${res.remark})</td>
+                <td>${res.point.toFixed(2)}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'block';
+    }
+
+    function logout() {
+        document.getElementById('studentName').value = "";
+        document.getElementById('studentPassword').value = "";
+        document.getElementById('resultSection').style.display = 'none';
+        document.getElementById('loginSection').style.display = 'block';
+    }
+</script>
+
 </body>
 </html>
