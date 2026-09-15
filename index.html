@@ -748,66 +748,54 @@
             const matchedRecord = database.find(item => {
                 const matricMatch = item.matricClean === inputMatric;
                 const nameInputParts = inputName.split(/\s+/).filter(Boolean);
-                const nameMatch = nameInputParts.every(part => item.nameParts.some(dbPart => dbPart.includes(part)));
+                const nameMatch = nameInputParts.every(part => item.nameParts.some(p => p.includes(part)));
                 return matricMatch && nameMatch;
             });
 
             if (!matchedRecord) {
-                errorDiv.textContent = 'No matching result found. Please check your spelling and Matric Number.';
+                errorDiv.textContent = 'No matching result found. Please check your name and matric number.';
                 return;
             }
 
-            document.getElementById('resCourse').textContent = matchedRecord.course;
+            // Populate Result Slip
+            document.getElementById('resCourse').textContent = matchedRecord.course || 'N/A';
             document.getElementById('resName').textContent = matchedRecord.fullName;
             document.getElementById('resMatric').textContent = matchedRecord.originalMatric;
             document.getElementById('resLevel').textContent = matchedRecord.level;
             document.getElementById('resProgram').textContent = matchedRecord.program;
+
+            let dynamicHtml = '';
+            if (matchedRecord.ca !== '') dynamicHtml += `<div class="result-row"><span>Continuous Assessment (C.A):</span> <span>${matchedRecord.ca}</span></div>`;
+            if (matchedRecord.test !== '') dynamicHtml += `<div class="result-row"><span>Test Score:</span> <span>${matchedRecord.test}</span></div>`;
+            if (matchedRecord.practical !== '') dynamicHtml += `<div class="result-row"><span>Practical Score:</span> <span>${matchedRecord.practical}</span></div>`;
+            if (matchedRecord.exam !== '') dynamicHtml += `<div class="result-row"><span>Exam Score:</span> <span>${matchedRecord.exam}</span></div>`;
+
+            document.getElementById('dynamicScoresContainer').innerHTML = dynamicHtml;
             document.getElementById('resTotal').textContent = matchedRecord.total;
 
-            const dynamicContainer = document.getElementById('dynamicScoresContainer');
-            dynamicContainer.innerHTML = '';
-
-            const components = [
-                { label: 'Continuous Assessment (C.A):', val: matchedRecord.ca },
-                { label: 'Test Score:', val: matchedRecord.test },
-                { label: 'Practical Score:', val: matchedRecord.practical },
-                { label: 'Exam Score:', val: matchedRecord.exam }
-            ];
-
-            components.forEach(comp => {
-                if (comp.val !== '' && comp.val !== undefined && comp.val !== null) {
-                    const rowDiv = document.createElement('div');
-                    rowDiv.className = 'result-row';
-                    rowDiv.innerHTML = `<span>${comp.label}</span><span>${comp.val}</span>`;
-                    dynamicContainer.appendChild(rowDiv);
-                }
-            });
-
-            const msgArea = document.getElementById('scoreMessageArea');
-            if (matchedRecord.total >= 40) {
-                msgArea.innerHTML = `<div class="success-msg" style="margin-top:12px;">🎉 Congratulations! You passed this course.</div>`;
+            const scoreMsgArea = document.getElementById('scoreMessageArea');
+            if (matchedRecord.total >= 50) {
+                scoreMsgArea.innerHTML = `<div class="success-msg" style="margin-top:10px;">Status: <strong>PASS</strong> 🎉 Congratulations!</div>`;
             } else {
-                msgArea.innerHTML = `<div class="error-msg" style="margin-top:12px;">⚠️ You scored below the passing grade. Consult your department.</div>`;
+                scoreMsgArea.innerHTML = `<div class="error-msg" style="margin-top:10px;">Status: <strong>FAIL / CARRYOVER</strong> ⚠️ Please see your department adviser.</div>`;
             }
 
             resultBox.style.display = 'block';
-            resultBox.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function downloadResultImage() {
-            const box = document.getElementById('resultContainer');
-            html2canvas(box, { backgroundColor: '#1c1917', scale: 2 }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
+        async function downloadResultImage() {
+            const resultBox = document.getElementById('resultContainer');
+            const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
+            const link = document.createElement('a');
+            link.download = `${document.getElementById('resMatric').textContent}_Result_Slip.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
         }
 
         async function downloadResultPDF() {
             const { jsPDF } = window.jspdf;
-            const box = document.getElementById('resultContainer');
-            const canvas = await html2canvas(box, { backgroundColor: '#1c1917', scale: 2 });
+            const resultBox = document.getElementById('resultContainer');
+            const canvas = await html2canvas(resultBox, { scale: 2, backgroundColor: '#1c1917' });
             const imgData = canvas.toDataURL('image/png');
             
             const pdf = new jsPDF('p', 'mm', 'a4');
@@ -827,7 +815,7 @@
                 heightLeft -= pageHeight;
             }
 
-            pdf.save(`MAPKPOLY_Result_${document.getElementById('resMatric').textContent}.pdf`);
+            pdf.save(`${document.getElementById('resMatric').textContent}_Result_Slip.pdf`);
         }
     </script>
 </body>
